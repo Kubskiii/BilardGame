@@ -15,14 +15,14 @@ namespace BilardGame
         class PointFiller
         {
             Point3D[] points = new Point3D[Triangle.pointsCount];
-            WriteableBitmap bmp;
+            UInt32[,] colors;
             Func<int, int, Color> getColor;
             float[,] zBuffer;
-            public PointFiller(WriteableBitmap _bmp, Func<int, int, Color> _getColor, float[,] _zBuffer, params Point3D[] _points)
+            public PointFiller(UInt32[,] _colors, Func<int, int, Color> _getColor, float[,] _zBuffer, params Point3D[] _points)
             {
                 if (_points.Length != Triangle.pointsCount) throw new ArgumentException("Wrong number of points");
                 points = _points;
-                bmp = _bmp;
+                colors = _colors;
                 getColor = _getColor;
                 zBuffer = _zBuffer;
             }
@@ -54,7 +54,7 @@ namespace BilardGame
                 if (Z - zBuffer[x, y] >= 0)
                 {
                     zBuffer[x, y] = Z;
-                    bmp.SetPixel(x, y, getColor(x, y));
+                    colors[x,y] = BitmapEx.ConvertColor(getColor(x,y));
                 }
             }
         }

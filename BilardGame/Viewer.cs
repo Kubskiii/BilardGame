@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using System.Numerics;
 using System.Drawing;
 using System.Windows.Media.Imaging;
+using System.Windows.Media;
 
 namespace BilardGame
 {
@@ -27,7 +28,7 @@ namespace BilardGame
 
         public Viewer(int _Width, int _Height)
         {
-            Filler = new Filling(Height);
+            Filler = new Filling(1000);
             Width = _Width; Height = _Height;
             a = (float)Height / Width;
             CalculateProjMatrix();
@@ -66,7 +67,7 @@ namespace BilardGame
                 (int)(-point.Y * (Height / 2) + (Height / 2)),
                 point.Z);
         }
-        public void Draw(IEnumerable<Model> models, ref WriteableBitmap bmp)
+        public void Draw(IEnumerable<Model> models, UInt32[,] colors)
         {
             float[,] zBuffer = new float[Width, Height];
             foreach (var model in models)
@@ -84,7 +85,7 @@ namespace BilardGame
                     }
                     if (points3d.Count == Triangle.pointsCount)
                     {
-                        PointFiller pf = new PointFiller(bmp, (x, y) => triangle.color, zBuffer, points3d.ToArray());
+                        PointFiller pf = new PointFiller(colors, (x, y) => triangle.color, zBuffer, points3d.ToArray());
                         Filler.Draw(points3d, pf.Fill);
                     }
                 }

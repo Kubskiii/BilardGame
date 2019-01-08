@@ -27,35 +27,9 @@ namespace BilardGame
         {
             triangles.Add(t);
         }
-        public void RotateZ(float angle)
+        public void Transform(Matrix4x4 transformationMatrix)
         {
-            modelMatrix *= new Matrix4x4
-            (
-                (float)Math.Cos(angle), -(float)Math.Sin(angle), 0, 0,
-                (float)Math.Sin(angle), (float)Math.Cos(angle), 0, 0,
-                0, 0, 1, 0,
-                0, 0, 0, 1
-            );
-        }
-        public void RotateY(float angle)
-        {
-            modelMatrix *= new Matrix4x4
-            (
-                (float)Math.Cos(angle), 0, (float)Math.Sin(angle), 0,
-                0, 1, 0, 0,
-                -(float)Math.Sin(angle), 0, (float)Math.Cos(angle), 0,
-                0, 0, 0, 1
-            );
-        }
-        public void RotateX(float angle)
-        {
-            modelMatrix *= new Matrix4x4
-            (
-                1, 0, 0, 0,
-                0, (float)Math.Cos(angle), -(float)Math.Sin(angle), 0,
-                0, (float)Math.Sin(angle), (float)Math.Cos(angle), 0,
-                0, 0, 0, 1
-            );
+            modelMatrix *= transformationMatrix;
         }
         public IEnumerator<Triangle> GetEnumerator()
         {
