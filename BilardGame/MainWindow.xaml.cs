@@ -42,36 +42,42 @@ namespace BilardGame
                     new Triangle(new Point3D(0, 0, 0), new Point3D(1, 0, 0), new Point3D(0, 0, 1)) { color = Colors.Blue },
                     new Triangle(new Point3D(0, 0, 0), new Point3D(0, 1, 0), new Point3D(0, 0, 1)) { color = Colors.Green },
                     new Triangle(new Point3D(1, 0, 0), new Point3D(0, 1, 0), new Point3D(0, 0, 1)) { color = Colors.Pink }
-                })
+                }),
+            new Model(new Triangle[]
+                {
+                    new Triangle(new Point3D(0, 0, 0), new Point3D(2, 0, 0), new Point3D(0, 2, 0)) { color = Colors.Wheat }, //z
+                    new Triangle(new Point3D(0, 0, 0), new Point3D(2, 0, 0), new Point3D(0, 0, 2)) { color = Colors.White }, //y
+                    new Triangle(new Point3D(0, 0, 0), new Point3D(0, 2, 0), new Point3D(0, 0, 2)) { color = Colors.Gray } //x
+                }),
             };
 
         Viewer viewer;
         UInt32[,] colors;
+        Resolution res = new Resolution(1200, 800);
         BackgroundWorker worker = new BackgroundWorker();
         public MainWindow()
         {
             InitializeComponent();
-            viewer = new Viewer(1000, 800);
-            img.Source = new WriteableBitmap(1000, 800, 96, 96, PixelFormats.Bgra32, null);
+            viewer = new Viewer(res);
+            img.Source = BitmapEx.CreateBitmap(res);
             worker.DoWork += Worker_DoWork;
             worker.RunWorkerCompleted += Worker_RunWorkerCompleted;
-            colors = new UInt32[(img.Source as WriteableBitmap).PixelWidth, (img.Source as WriteableBitmap).PixelHeight];
-            models[0].Move(-1, 0, 0);
+            colors = new UInt32[res.Width, res.Height];
             worker.RunWorkerAsync();
         }
 
         private void Worker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
             (img.Source as WriteableBitmap).FillBitmap(colors);
-            colors = new UInt32[(img.Source as WriteableBitmap).PixelWidth, (img.Source as WriteableBitmap).PixelHeight];
+            colors = new UInt32[res.Width, res.Height];
             worker.RunWorkerAsync();
         }
 
         private void Worker_DoWork(object sender, DoWorkEventArgs e)
         {
-            models[0].Move(0.5f, 0, 0);
+            //models[0].Move(0.5f, 0, 0);
             models[0].RotateZ((float)Math.PI * 2 * 0.02f);
-            models[0].Move(-0.5f, 0, 0);
+            //models[0].Move(-0.5f, 0, 0);
             viewer.Draw(models, colors);
         }
     }

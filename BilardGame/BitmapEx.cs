@@ -29,7 +29,6 @@ namespace BilardGame
             bmp.AddDirtyRect(new System.Windows.Int32Rect(0, 0, bmp.PixelWidth, bmp.PixelHeight));
             bmp.Unlock();
         }
-
         static public void FillBitmap(this WriteableBitmap bmp, UInt32[,] colors)
         {
             unsafe
@@ -45,6 +44,10 @@ namespace BilardGame
                 }
             }
             bmp.FlushBuffer();
+        }
+        static public WriteableBitmap CreateBitmap(Resolution res)
+        {
+            return new WriteableBitmap(res.Width, res.Height, 96, 96, PixelFormats.Bgra32, null);
         }
     }
 }

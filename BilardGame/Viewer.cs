@@ -20,39 +20,30 @@ namespace BilardGame
                 CalculateProjMatrix();
             }
         }
-        private const float n = 1, f = 100;
-        private float e = 1 / (float)Math.Tan(Math.PI / 6), a;
-        private int Width, Height;
-        Matrix4x4 Mview, Mproj;
-        private Filling Filler;
+        const float n = 1, f = 100;
+        float e = 1 / (float)Math.Tan(Math.PI / 8);
+        Resolution res;
+        Matrix4x4 Mproj;
+        Camera camera;
+        Filling Filler;
 
-        public Viewer(int _Width, int _Height)
+        public Viewer(Resolution _res)
         {
-            Filler = new Filling(1000);
-            Width = _Width; Height = _Height;
-            a = (float)Height / Width;
+            res = _res;
+            Filler = new Filling(res.Width);
             CalculateProjMatrix();
-            CalculateViewMatrix();
+            camera = new Camera(new Vector3(6, 7, 8), new Vector3(0, 0, 0), new Vector3(0, 0, 1));
         }
-        public void Resize(int _Width, int _Height)
+        public void Resize(Resolution _res)
         {
-            Width = _Width; Height = _Height;
-            a = (float)Height / Width;
+            res = _res;
             CalculateProjMatrix();
         }
-        private void CalculateViewMatrix()
-        {
-            Mview = new Matrix4x4(
-                0, 1, 0, -0.5f,
-                0, 0, 1, -0.5f,
-                1, 0, 0, -3,
-                0, 0, 0, 1);
-        }
-        private void CalculateProjMatrix()
+        void CalculateProjMatrix()
         {
             Mproj = new Matrix4x4(
                 e, 0, 0, 0,
-                0, e / a, 0, 0,
+                0, e / res.AspectRatio, 0, 0,
                 0, 0, -(f + n) / (f - n), -2 * f * n / (f - n),
                 0, 0, -1, 0);
         }
@@ -60,24 +51,24 @@ namespace BilardGame
         {
             return _Mproj * _Mview * _Mmodel * point;
         }
-        private Point3D NormalizedToScreen(Point3D point)
+        Point3D NormalizedToScreen(Point3D point)
         {
             return new Point3D(
-                (int)(point.X * (Width / 2) + (Width / 2)),
-                (int)(-point.Y * (Height / 2) + (Height / 2)),
+                (int)(point.X * (res.Width / 2) + (res.Width / 2)),
+                (int)(point.Y * (res.Height / 2) + (res.Height / 2)),
                 point.Z);
         }
         public void Draw(IEnumerable<Model> models, UInt32[,] colors)
         {
-            float[,] zBuffer = new float[Width, Height];
+            float[,] zBuffer = new float[res.Width, res.Height];
             foreach (var model in models)
                 foreach (var triangle in model)
                 {
                     List<Point3D> points3d = new List<Point3D>(Triangle.pointsCount);
                     foreach (var edge in triangle.GetEdges())
                     {
-                        Point3D p1 = VertexShader(model.matrix, Mview, Mproj, edge.startPoint);
-                        Point3D p2 = VertexShader(model.matrix, Mview, Mproj, edge.endPoint);
+                        Point3D p1 = VertexShader(model.matrix, camera.Matrix, Mproj, edge.startPoint);
+                        Point3D p2 = VertexShader(model.matrix, camera.Matrix, Mproj, edge.endPoint);
                         p1.Normalize();
                         p2.Normalize();
                         if (Math.Abs(p1.X) <= 1 && Math.Abs(p1.Y) <= 1 && Math.Abs(p2.X) <= 1 && Math.Abs(p2.Y) <= 1)

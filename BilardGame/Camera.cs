@@ -7,34 +7,34 @@ using System.Numerics;
 
 namespace BilardGame
 {
-    static class Camera
+    class Camera
     {
-        public static Matrix4x4 CreateMatrix(Point3D position, Point3D target)
+        public Matrix4x4 Matrix { get => matrix; }
+        private Matrix4x4 matrix = new Matrix4x4();
+        public Camera(Vector3 position, Vector3 target, Vector3 UpVector)
         {
-            Vector3 UpVector = new Vector3(0, 0, 1);
             Vector3 zAxis = Vector3.Normalize(new Vector3(
-                position.X - target.X, 
+                - (position.X - target.X), 
                 position.Y - target.Y, 
-                position.Z - target.Z));
+                - (position.Z - target.Z)));
+
             Vector3 xAxis = Vector3.Normalize(new Vector3(
                 UpVector.Y * zAxis.Z - UpVector.Z * zAxis.Y,
-                UpVector.X * zAxis.Z - UpVector.Z * zAxis.X,
+                UpVector.X * zAxis.Z + UpVector.Z * zAxis.X,
                 UpVector.X * zAxis.Y - UpVector.Y * zAxis.X));
+
             Vector3 yAxis = new Vector3(
                 zAxis.Y * xAxis.Z - zAxis.Z * xAxis.Y,
-                zAxis.X * xAxis.Z - zAxis.Z * xAxis.X,
+                zAxis.X * xAxis.Z + zAxis.Z * xAxis.X,
                 zAxis.X * xAxis.Y - zAxis.Y * xAxis.X);
 
             Matrix4x4 invViewMatrix = new Matrix4x4(
-                xAxis.X, yAxis.X, zAxis.X, position.X,
+                xAxis.X, yAxis.X, zAxis.X, -position.X,
                 xAxis.Y, yAxis.Y, zAxis.Y, position.Y,
-                xAxis.Z, yAxis.Z, zAxis.Z, position.Z,
+                xAxis.Z, yAxis.Z, zAxis.Z, -position.Z,
                 0, 0, 0, 1);
 
-            Matrix4x4 viewMatrix;
-            Matrix4x4.Invert(invViewMatrix, out viewMatrix);
-
-            return viewMatrix;
+            Matrix4x4.Invert(invViewMatrix, out matrix);
         }
     }
 }
