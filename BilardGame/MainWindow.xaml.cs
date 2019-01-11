@@ -43,12 +43,13 @@ namespace BilardGame
                     new Triangle(new Point3D(0, 0, 0), new Point3D(0, 1, 0), new Point3D(0, 0, 1)) { color = Colors.Green },
                     new Triangle(new Point3D(1, 0, 0), new Point3D(0, 1, 0), new Point3D(0, 0, 1)) { color = Colors.Pink }
                 }),
-            new Model(new Triangle[]
-                {
-                    new Triangle(new Point3D(0, 0, 0), new Point3D(2, 0, 0), new Point3D(0, 2, 0)) { color = Colors.Wheat }, //z
-                    new Triangle(new Point3D(0, 0, 0), new Point3D(2, 0, 0), new Point3D(0, 0, 2)) { color = Colors.White }, //y
-                    new Triangle(new Point3D(0, 0, 0), new Point3D(0, 2, 0), new Point3D(0, 0, 2)) { color = Colors.Gray } //x
-                }),
+            ModelBuilder.CreateSphere(0.5f, Colors.BlueViolet)
+            //new Model(new Triangle[]
+            //    {
+            //        new Triangle(new Point3D(0, 0, 0), new Point3D(2, 0, 0), new Point3D(0, 2, 0)) { color = Colors.Wheat }, //z
+            //        new Triangle(new Point3D(0, 0, 0), new Point3D(2, 0, 0), new Point3D(0, 0, 2)) { color = Colors.White }, //y
+            //        new Triangle(new Point3D(0, 0, 0), new Point3D(0, 2, 0), new Point3D(0, 0, 2)) { color = Colors.Gray } //x
+            //    }),
             };
 
         Viewer viewer;
@@ -75,9 +76,7 @@ namespace BilardGame
 
         private void Worker_DoWork(object sender, DoWorkEventArgs e)
         {
-            //models[0].Move(0.5f, 0, 0);
             models[0].RotateZ((float)Math.PI * 2 * 0.02f);
-            //models[0].Move(-0.5f, 0, 0);
             viewer.Draw(models, colors);
         }
     }

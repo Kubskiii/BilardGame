@@ -26,13 +26,14 @@ namespace BilardGame
         Matrix4x4 Mproj;
         Camera camera;
         Filling Filler;
+        PhongLight pl = new PhongLight(new Point3D[] { new Point3D(5, 5, 5) });
 
         public Viewer(Resolution _res)
         {
             res = _res;
             Filler = new Filling(res.Width);
             CalculateProjMatrix();
-            camera = new Camera(new Vector3(6, 7, 8), new Vector3(0, 0, 0), new Vector3(0, 0, 1));
+            camera = new Camera(new Vector3(2, 3, 4), new Vector3(0, 0, 0), new Vector3(0, 0, 1));
         }
         public void Resize(Resolution _res)
         {
@@ -51,12 +52,11 @@ namespace BilardGame
         {
             return _Mproj * _Mview * _Mmodel * point;
         }
-        Point3D NormalizedToScreen(Point3D point)
+        Point3D NormalizeToScreen(Point3D point)
         {
-            return new Point3D(
-                (int)(point.X * (res.Width / 2) + (res.Width / 2)),
-                (int)(point.Y * (res.Height / 2) + (res.Height / 2)),
-                point.Z);
+            point.X = (int)(point.X * (res.Width / 2) + (res.Width / 2));
+            point.Y = (int)(point.Y * (res.Height / 2) + (res.Height / 2));
+            return point;
         }
         public void Draw(IEnumerable<Model> models, UInt32[,] colors)
         {
@@ -72,11 +72,11 @@ namespace BilardGame
                         p1.Normalize();
                         p2.Normalize();
                         if (Math.Abs(p1.X) <= 1 && Math.Abs(p1.Y) <= 1 && Math.Abs(p2.X) <= 1 && Math.Abs(p2.Y) <= 1)
-                            points3d.Add(NormalizedToScreen(p1));
+                            points3d.Add(NormalizeToScreen(p1));
                     }
                     if (points3d.Count == Triangle.pointsCount)
                     {
-                        PointFiller pf = new PointFiller(colors, (x, y) => triangle.color, zBuffer, points3d.ToArray());
+                        PointFiller pf = new PointFiller(pl, triangle, colors, (x, y) => triangle.color, zBuffer, points3d.ToArray());
                         Filler.Draw(points3d, pf.Fill);
                     }
                 }

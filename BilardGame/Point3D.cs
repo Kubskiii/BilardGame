@@ -49,5 +49,9 @@ namespace BilardGame
             Z /= W;
             W = 1;
         }
+        public static explicit operator Vector3(Point3D point)
+        {
+            return new Vector3(point.X, point.Y, point.Z);
+        }
     }
 }

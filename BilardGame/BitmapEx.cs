@@ -49,5 +49,11 @@ namespace BilardGame
         {
             return new WriteableBitmap(res.Width, res.Height, 96, 96, PixelFormats.Bgra32, null);
         }
+        static public Color ChangeBrigthness(this Color color, float brightness)
+        {
+            if (brightness < 0 || brightness > 1)
+                throw new ArgumentException("brightness must be from [0,1]");
+            return Color.FromArgb(color.A, (byte)(brightness * color.R), (byte)(brightness * color.G), (byte)(brightness * color.B));
+        }
     }
 }

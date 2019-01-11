@@ -64,8 +64,11 @@
     <Compile Include="BitmapEx.cs" />
     <Compile Include="Camera.cs" />
     <Compile Include="Filling.cs" />
+    <Compile Include="Geometry.cs" />
+    <Compile Include="GouraudShader.cs" />
     <Compile Include="Model.cs" />
     <Compile Include="ModelBuilder.cs" />
+    <Compile Include="PhongLight.cs" />
     <Compile Include="Point3D.cs" />
     <Compile Include="PointFiller.cs" />
     <Compile Include="Resolution.cs" />
