@@ -40,7 +40,9 @@
     <Compile Include="BitmapExtensions.cs" />
     <Compile Include="CameraBuilder.cs" />
     <Compile Include="CPUEngine.cs" />
+    <Compile Include="Filler.cs" />
     <Compile Include="Model.cs" />
+    <Compile Include="PointExtensions.cs" />
     <Compile Include="ProjectionBuilder.cs" />
     <Compile Include="Resolution.cs" />
     <Compile Include="Transformations.cs" />
