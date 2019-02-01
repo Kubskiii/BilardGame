@@ -5,6 +5,8 @@ VisualStudioVersion = 15.0.28307.136
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BilardGame", "BilardGame.csproj", "{240EA2D9-FF5A-4086-B62B-9592A81042C0}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GraphicsEngine", "..\GraphicsEngine\GraphicsEngine.csproj", "{6215F61A-963B-435F-8F62-483295054E91}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +17,10 @@ Global
 		{240EA2D9-FF5A-4086-B62B-9592A81042C0}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{240EA2D9-FF5A-4086-B62B-9592A81042C0}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{240EA2D9-FF5A-4086-B62B-9592A81042C0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6215F61A-963B-435F-8F62-483295054E91}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6215F61A-963B-435F-8F62-483295054E91}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6215F61A-963B-435F-8F62-483295054E91}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6215F61A-963B-435F-8F62-483295054E91}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
