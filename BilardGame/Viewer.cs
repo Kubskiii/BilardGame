@@ -26,7 +26,7 @@ namespace BilardGame
         Matrix4x4 Mproj;
         Camera camera;
         Filling Filler;
-        PhongLight pl = new PhongLight(new Point3D[] { new Point3D(5, 5, 5) });
+        PhongLight pl = new PhongLight(new Point3D[] { new Point3D(0, 0, -15) }, new Point3D(-2, 3, -4));
 
         public Viewer(Resolution _res)
         {
