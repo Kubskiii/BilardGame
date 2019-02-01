@@ -7,7 +7,7 @@ using System.Numerics;
 
 namespace GraphicsEngine
 {
-    static class Transformations
+    public static class Transformations
     {
         public static void Scale(this Model model, float sx, float sy, float sz)
         {

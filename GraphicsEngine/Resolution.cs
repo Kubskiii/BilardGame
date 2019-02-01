@@ -7,7 +7,7 @@ using System.Numerics;
 
 namespace GraphicsEngine
 {
-    class Resolution
+    public class Resolution
     {
         public int Width { get; }
         public int Height { get; }

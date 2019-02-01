@@ -8,7 +8,7 @@ using System.Windows.Media.Imaging;
 
 namespace GraphicsEngine
 {
-    static class BitmapExtensions
+    public static class BitmapExtensions
     {
         public static void SetPixel(this WriteableBitmap bmp, int x, int y, Color c)
         {

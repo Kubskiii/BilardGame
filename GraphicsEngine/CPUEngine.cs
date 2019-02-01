@@ -7,16 +7,17 @@ using System.Numerics;
 
 namespace GraphicsEngine
 {
-    class CPUEngine
+    public class CPUEngine
     {
         float[,] Zbuffer;
         Filler filler;
+        Resolution res;    
         Resolution resolution
         {
-            get => resolution;
+            get => res;
             set
             {
-                resolution = value;
+                res = value;
                 filler = new Filler(value.Height);
             }
         }
@@ -25,10 +26,13 @@ namespace GraphicsEngine
         public CPUEngine(Resolution _resolution)
         {
             resolution = _resolution;
+            viewMatrix = CameraBuilder.CreateLookAt(new Vector3(3, 0.5f, 0.5f), new Vector3(0, 0.5f, 0.5f), new Vector3(0, 0, 1));
+            projectionMatrix = ProjectionBuilder.CreatePerspectiveOfView((float)Math.PI / 2, resolution.AspectRatio);
         }
         Vector3 VertexShader(Matrix4x4 modelMatrix, Vector4 point)
         {
-            return (projectionMatrix * viewMatrix * modelMatrix).MultiplyByPointAndNormalize(point);
+            Matrix4x4 M = projectionMatrix * viewMatrix * modelMatrix;
+            return M.MultiplyByPointAndNormalize(point);
         }
         Vector3 getPlaneVector(Vector3 p1, Vector3 p2, Vector3 p3)
         {

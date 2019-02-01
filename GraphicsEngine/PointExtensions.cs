@@ -7,14 +7,14 @@ using System.Numerics;
 
 namespace GraphicsEngine
 {
-    static class PointExtensions
+    public static class PointExtensions
     {
-        public static Vector3 MultiplyByPointAndNormalize(this Matrix4x4 matrix, Vector4 vector)
+        public static Vector3 MultiplyByPointAndNormalize(this Matrix4x4 matrix, Vector4 point)
         {
-            float X = matrix.M11 * vector.X + matrix.M12 * vector.Y + matrix.M13 * vector.Y + matrix.M14 * vector.Z;
-            float Y = matrix.M21 * vector.X + matrix.M22 * vector.Y + matrix.M23 * vector.Y + matrix.M24 * vector.Z;
-            float Z = matrix.M31 * vector.X + matrix.M32 * vector.Y + matrix.M33 * vector.Y + matrix.M34 * vector.Z;
-            float W = matrix.M41 * vector.X + matrix.M42 * vector.Y + matrix.M43 * vector.Y + matrix.M44 * vector.Z;
+            float X = point.X * matrix.M11 + point.Y * matrix.M12 + point.Z * matrix.M13 + point.W * matrix.M14;
+            float Y = point.X * matrix.M21 + point.Y * matrix.M22 + point.Z * matrix.M23 + point.W * matrix.M24;
+            float Z = point.X * matrix.M31 + point.Y * matrix.M32 + point.Z * matrix.M33 + point.W * matrix.M34;
+            float W = point.X * matrix.M41 + point.Y * matrix.M42 + point.Z * matrix.M43 + point.W * matrix.M44;
 
             return new Vector3(X / W, Y / W, Z / W);
         }

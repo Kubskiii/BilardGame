@@ -43,6 +43,7 @@
     <Compile Include="Filler.cs" />
     <Compile Include="Model.cs" />
     <Compile Include="PointExtensions.cs" />
+    <Compile Include="Progam.cs" />
     <Compile Include="ProjectionBuilder.cs" />
     <Compile Include="Resolution.cs" />
     <Compile Include="Transformations.cs" />

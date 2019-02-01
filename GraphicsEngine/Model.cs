@@ -8,7 +8,7 @@ using System.Collections;
 
 namespace GraphicsEngine
 {
-    class Model : IEnumerable<Triangle>
+    public class Model : IEnumerable<Triangle>
     {
         List<Triangle> triangles;
         Matrix4x4 modelMatrix;

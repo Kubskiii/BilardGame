@@ -76,20 +76,6 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="BitmapEx.cs" />
-    <Compile Include="Camera.cs" />
-    <Compile Include="Filling.cs" />
-    <Compile Include="Geometry.cs" />
-    <Compile Include="GouraudShader.cs" />
-    <Compile Include="Model.cs" />
-    <Compile Include="ModelBuilder.cs" />
-    <Compile Include="PhongLight.cs" />
-    <Compile Include="Point3D.cs" />
-    <Compile Include="PointFiller.cs" />
-    <Compile Include="Resolution.cs" />
-    <Compile Include="Transformation.cs" />
-    <Compile Include="Triangle.cs" />
-    <Compile Include="Viewer.cs" />
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -141,6 +127,12 @@
       <ProductName>.NET Framework 3.5 SP1</ProductName>
       <Install>false</Install>
     </BootstrapperPackage>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\GraphicsEngine\GraphicsEngine.csproj">
+      <Project>{6215f61a-963b-435f-8f62-483295054e91}</Project>
+      <Name>GraphicsEngine</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

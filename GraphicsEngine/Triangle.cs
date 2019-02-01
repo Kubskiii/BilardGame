@@ -8,7 +8,7 @@ using System.Numerics;
 
 namespace GraphicsEngine
 {
-    class Triangle
+    public class Triangle
     {
         public static readonly int count = 3;
         List<Vector4> points;

@@ -7,7 +7,7 @@ using System.Numerics;
 
 namespace GraphicsEngine
 {
-    static class CameraBuilder
+    public static class CameraBuilder
     {
         public static Matrix4x4 CreateLookAt(Vector3 position, Vector3 target, Vector3 UpVector)
         {
