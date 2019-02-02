@@ -10,7 +10,7 @@ namespace GraphicsEngine
 {
     public static class ModelBuilder
     {
-        const float step = 0.025f;
+        const float step = 0.05f;
         /// <summary>
         /// Create sphere model with given radius
         /// </summary>
