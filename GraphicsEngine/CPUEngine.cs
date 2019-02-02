@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Numerics;
+using System.Windows.Media;
 
 namespace GraphicsEngine
 {
@@ -11,6 +12,7 @@ namespace GraphicsEngine
     {
         float[,] Zbuffer;
         Filler filler;
+        PhongIllumination phong = new PhongIllumination();
         Resolution res;    
         Resolution resolution
         {
@@ -23,10 +25,12 @@ namespace GraphicsEngine
         }
         Matrix4x4 projectionMatrix { get; }
         Matrix4x4 viewMatrix { get; }
+        Vector3 cameraPos = Vector3.Normalize(new Vector3(3, 3, 3));
+        Vector3 L = new Vector3(100, 100, 100);
         public CPUEngine(Resolution _resolution)
         {
             resolution = _resolution;
-            viewMatrix = CameraBuilder.CreateLookAt(new Vector3(3, 0.5f, 0.5f), new Vector3(0, 0.5f, 0.5f), new Vector3(0, 0, 1));
+            viewMatrix = CameraBuilder.CreateLookAt(new Vector3(3, 3, 3), new Vector3(0, 0, 0), new Vector3(0, 0, 1));
             projectionMatrix = ProjectionBuilder.CreatePerspectiveOfView((float)Math.PI / 2, resolution.AspectRatio);
         }
         Vector3 VertexShader(Matrix4x4 modelMatrix, Vector4 point)
@@ -63,6 +67,9 @@ namespace GraphicsEngine
         {
             uint[,] colors = new uint[resolution.Width, resolution.Height];
             Zbuffer = new float[resolution.Width, resolution.Height];
+            //for (int i = 0; i < resolution.Width; i++)
+            //    for (int j = 0; j < resolution.Height; j++)
+            //        Zbuffer[i,j] = float.MaxValue;
             foreach(var model in models)
                 foreach(var triangle in model)
                 {
@@ -78,13 +85,23 @@ namespace GraphicsEngine
                     if(processedCount == Triangle.count)
                     {
                         Vector3 plane = getPlaneVector(processedPoints[0], processedPoints[1], processedPoints[2]);
+                        var N4 = model.matrix.MultiplyByPointAndNormalize(triangle.NormalVector);
+                        var N = Vector3.Normalize(new Vector3(N4.X, N4.Y, N4.Z));
                         filler.Draw(processedPoints, (x, y) =>
                         {
-                            float Z = (1 - plane.X * x - plane.Y * y) / plane.Z;
-                            if(Z - Zbuffer[x, y] >= 0.0001f)
+                            float Z = 1 - (1 - plane.X * x - plane.Y * y) / plane.Z;
+                            var mid4 = triangle.Middle;
+                            var mid3 = Vector3.Normalize(new Vector3(mid4.X, mid4.Y, mid4.Z));
+                            var V = Vector3.Normalize(cameraPos - mid3);
+                            if (Z - Zbuffer[x, y] >= 0.0001f)
                             {
                                 Zbuffer[x, y] = Z;
-                                colors[x, y] = BitmapExtensions.ConvertColor(triangle.color);
+                                Color c = triangle.color;
+                                float intensivity = phong.getIntensivity(N, Vector3.Normalize(L), 1, 1, V);
+                                c.R = (byte)(c.R * intensivity);
+                                c.G = (byte)(c.G * intensivity);
+                                c.B = (byte)(c.B * intensivity);
+                                colors[x, y] = BitmapExtensions.ConvertColor(c);
                             }
                         });
                     }

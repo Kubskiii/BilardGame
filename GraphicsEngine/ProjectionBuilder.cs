@@ -7,7 +7,7 @@ using System.Numerics;
 
 namespace GraphicsEngine
 {
-    public static class ProjectionBuilder
+    static class ProjectionBuilder
     {
         public static Matrix4x4 CreatePerspectiveOfView(float fieldOfView, float aspectRatio, float nearPlaneDistance = 1, float farPlaneDistance = 100)
         {

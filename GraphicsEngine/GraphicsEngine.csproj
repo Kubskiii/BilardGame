@@ -42,6 +42,8 @@
     <Compile Include="CPUEngine.cs" />
     <Compile Include="Filler.cs" />
     <Compile Include="Model.cs" />
+    <Compile Include="ModelBuilder.cs" />
+    <Compile Include="PhongIllumination.cs" />
     <Compile Include="PointExtensions.cs" />
     <Compile Include="Progam.cs" />
     <Compile Include="ProjectionBuilder.cs" />

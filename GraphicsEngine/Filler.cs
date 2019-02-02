@@ -7,7 +7,7 @@ using System.Numerics;
 
 namespace GraphicsEngine
 {
-    public class Filler
+    class Filler
     {
         class Node
         {
