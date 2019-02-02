@@ -26,16 +26,12 @@ namespace GraphicsEngine
             //    new Vector3(points[1].X - points[0].X, points[1].Y - points[0].Y, points[1].Z - points[0].Z),
             //    new Vector3(points[2].X - points[0].X, points[2].Y - points[0].Y, points[2].Z - points[0].Z)));
             //NormalVector = new Vector4(N.X, N.Y, N.Z, 1);
-            Middle = new Vector4(points.Average(p => p.X), points.Average(p => p.Y), points.Average(p => p.Z), 1);
+            Middle =new Vector4(points.Average(p => p.X), points.Average(p => p.Y), points.Average(p => p.Z), 1);
         }
-        public IEnumerable<(Vector4 startPoint, Vector4 endPoint)> GetEdges()
+        public IEnumerable<(Vector4 startPoint, Vector4 endPoint, Vector4 endNormal)> GetEdges()
         {
-            Vector4 prev = points.Last();
-            foreach (Vector4 p in points)
-            {
-                yield return (prev, p);
-                prev = p;
-            }
+            for (int i = 0; i < points.Count; i++)
+                yield return (points[(i + 1) % points.Count], points[i], NormalVectors[(i + 1) % points.Count]);
         }
         public IEnumerable<Vector4> GetPoints()
         {

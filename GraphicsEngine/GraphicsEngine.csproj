@@ -41,6 +41,7 @@
     <Compile Include="CameraBuilder.cs" />
     <Compile Include="CPUEngine.cs" />
     <Compile Include="Filler.cs" />
+    <Compile Include="Interpolations.cs" />
     <Compile Include="Model.cs" />
     <Compile Include="ModelBuilder.cs" />
     <Compile Include="PhongIllumination.cs" />

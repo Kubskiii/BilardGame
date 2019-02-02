@@ -30,9 +30,16 @@ namespace GraphicsEngine
             triangles.Add(t);
             var mid = t.Middle;
             int count = triangles.Count;
-            Middle.X = (Middle.X * (count - 1) + mid.X) / count;
-            Middle.Y = (Middle.Y * (count - 1) + mid.Y) / count;
-            Middle.Z = (Middle.Z * (count - 1) + mid.Z) / count;
+            if(count == 1)
+            {
+                Middle = mid;
+            }
+            else
+            {
+                Middle.X = (Middle.X * (count - 1) + mid.X) / count;
+                Middle.Y = (Middle.Y * (count - 1) + mid.Y) / count;
+                Middle.Z = (Middle.Z * (count - 1) + mid.Z) / count;
+            }
         }
         public void Transform(Matrix4x4 transformationMatrix)
         {

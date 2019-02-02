@@ -18,8 +18,19 @@ namespace GraphicsEngine
 
             return new Vector3(X / W, Y / W, Z / W);
         }
+        public static Vector3 MultiplyByVector(this Matrix4x4 matrix, Vector4 vector)
+        {
+            float X = vector.X * matrix.M11 + vector.Y * matrix.M12 + vector.Z * matrix.M13;
+            float Y = vector.X * matrix.M21 + vector.Y * matrix.M22 + vector.Z * matrix.M23;
+            float Z = vector.X * matrix.M31 + vector.Y * matrix.M32 + vector.Z * matrix.M33;
+
+            return new Vector3(X, Y, Z);
+        }
         public static Vector4 fromSphericalCoordinates(float R, float t, float f)
         {
+            float X = R * (float)(Math.Sin(t) * Math.Cos(f));
+            float Y = R * (float)(Math.Sin(t) * Math.Sin(f));
+            float Z = R * (float)Math.Cos(t);
             return new Vector4(
                 R * (float)(Math.Sin(t) * Math.Cos(f)),
                 R * (float)(Math.Sin(t) * Math.Sin(f)),
