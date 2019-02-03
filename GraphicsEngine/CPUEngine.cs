@@ -31,7 +31,7 @@ namespace GraphicsEngine
         public CPUEngine(Resolution _resolution)
         {
             resolution = _resolution;
-            viewMatrix = CameraBuilder.CreateLookAt(new Vector3(5, 5, 5), new Vector3(0, 0, 0), new Vector3(0, 0, 1));
+            viewMatrix = CameraBuilder.CreateLookAt(new Vector3(15, 15, 15), new Vector3(0, 0, 0), new Vector3(0, 0, 1));
             projectionMatrix = ProjectionBuilder.CreatePerspectiveOfView((float)Math.PI / 3, resolution.AspectRatio);
         }
         public void ChangeCameraPosition(Vector3 position, Vector3 target)
@@ -59,15 +59,17 @@ namespace GraphicsEngine
         }
         public uint[,] Render(IEnumerable<Model> models)
         {
+            int count = 0;
             uint[,] colors = new uint[resolution.Width, resolution.Height];
             Zbuffer = new float[resolution.Width, resolution.Height];
             foreach (var model in models)
             {
                 foreach (var triangle in model)
                 {
-                    var normalToMiddle = Vector3.Normalize(model.matrix.Multiply(triangle.NormalVector).To3Dim());
-                    //var V = Vector3.Normalize(model.matrix.Multiply(triangle.Middle).To3Dim() - cameraPos);
-                    //if (Vector3.Dot(normalToMiddle, V) < 0) continue;
+                    //var normalToMiddle = Vector3.Normalize(model.matrix.Multiply(triangle.NormalVector).To3Dim());
+                    //var view = Vector3.Normalize(model.matrix.Multiply(triangle.Middle).To3Dim() - cameraPos);
+                    //if (Vector3.Dot(normalToMiddle, view) < 0) continue;
+                    //count++;
                     var barycentricPoints = new List<Vector3>();
                     var normalVectors = new List<Vector3>();
                     var points = new List<Vector3>();
@@ -109,9 +111,29 @@ namespace GraphicsEngine
                             }
                         });
                     }
+
+                    var lolo = VertexShader(model.matrix, triangle.Middle, triangle.NormalVector);
+                    var lolo2 = VertexShader(model.matrix, triangle.Middle + 2 * triangle.NormalVector, triangle.NormalVector);
+                    if (isNormal(lolo.barycentricPoint) && isNormal(lolo2.barycentricPoint))
+                    {
+                        var v1 = resolution.ToScreen(lolo.barycentricPoint);
+                        var v2 = resolution.ToScreen(lolo2.barycentricPoint);
+                        DrawLine(v1.X, v1.Y, v2.X, v2.Y, colors);
+                    }
                 }
             }
             return colors;
+        }
+
+        static void DrawLine(float x1, float y1, float x2, float y2, uint[,] colors)
+        {
+            float M = (y2 - y1) / (x2 - x1);
+            float y = y1;
+            for(int x = (int)x1; x <= (int)x2; x++)
+            {
+                colors[x, (int)y] = BitmapExtensions.ConvertColor(Colors.Green);
+                y += M;
+            }
         }
     }
 }

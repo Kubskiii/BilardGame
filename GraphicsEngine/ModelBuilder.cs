@@ -41,9 +41,9 @@ namespace GraphicsEngine
                         var p2 = PointExtensions.fromSphericalCoordinates(R, theta2, phi2);
                         var p3 = PointExtensions.fromSphericalCoordinates(R, theta2, phi1);
                         sphere.Add(new Triangle(new List<(Vector4, Vector4)>() {
-                        (p1, p1.Normalize3Dim()),
-                        (p2, p2.Normalize3Dim()),
-                        (p3, p3.Normalize3Dim()) })
+                        (p1, p1.ToNormalVector()),
+                        (p2, p2.ToNormalVector()),
+                        (p3, p3.ToNormalVector()) })
                         {
                             color = c
                         });
@@ -54,9 +54,9 @@ namespace GraphicsEngine
                         var p2 = PointExtensions.fromSphericalCoordinates(R, theta1, phi1);
                         var p3 = PointExtensions.fromSphericalCoordinates(R, theta1, phi2);
                         sphere.Add(new Triangle(new List<(Vector4, Vector4)>() {
-                        (p1, p1.Normalize3Dim()),
-                        (p2, p2.Normalize3Dim()),
-                        (p3, p3.Normalize3Dim()) })
+                        (p1, p1.ToNormalVector()),
+                        (p2, p2.ToNormalVector()),
+                        (p3, p3.ToNormalVector()) })
                         {
                             color = c
                         });
@@ -67,9 +67,9 @@ namespace GraphicsEngine
                         var p2 = PointExtensions.fromSphericalCoordinates(R, theta1, phi2);
                         var p3 = PointExtensions.fromSphericalCoordinates(R, theta2, phi1);
                         sphere.Add(new Triangle(new List<(Vector4, Vector4)>() {
-                        (p1, p1.Normalize3Dim()),
-                        (p2, p2.Normalize3Dim()),
-                        (p3, p3.Normalize3Dim()) })
+                        (p1, p1.ToNormalVector()),
+                        (p2, p2.ToNormalVector()),
+                        (p3, p3.ToNormalVector()) })
                         {
                             color = c
                         });
@@ -77,9 +77,9 @@ namespace GraphicsEngine
                         p2 = PointExtensions.fromSphericalCoordinates(R, theta2, phi2);
                         p3 = PointExtensions.fromSphericalCoordinates(R, theta2, phi1);
                         sphere.Add(new Triangle(new List<(Vector4, Vector4)>() {
-                        (p1, p1.Normalize3Dim()),
-                        (p2, p2.Normalize3Dim()),
-                        (p3, p3.Normalize3Dim()) })
+                        (p1, p1.ToNormalVector()),
+                        (p2, p2.ToNormalVector()),
+                        (p3, p3.ToNormalVector()) })
                         {
                             color = c
                         });
@@ -93,7 +93,7 @@ namespace GraphicsEngine
             Model tube = new Model();
             for (float t = 0; t < 1; t += step)
             {
-                var n = new Vector4(0, 0, -1, 1);
+                var n = new Vector4(0, 0, -1, 0);
                 tube.Add(new Triangle(new List<(Vector4, Vector4)>() {
                     (new Vector4(0, 0, 0, 1), n),
                     (PointExtensions.fromPolarCoordinates(R, t * 2 * (float)Math.PI, 0), n),
@@ -105,10 +105,10 @@ namespace GraphicsEngine
                 var p3 = PointExtensions.fromPolarCoordinates(R, t * 2 * (float)Math.PI, H);
                 var p4 = PointExtensions.fromPolarCoordinates(R, (t + step) * 2 * (float)Math.PI, H);
 
-                var n1 = (new Vector4(p1.X, p1.Y, 0, 1)).Normalize3Dim();
-                var n2 = (new Vector4(p2.X, p2.Y, 0, 1)).Normalize3Dim();
-                var n3 = (new Vector4(p3.X, p3.Y, 0, 1)).Normalize3Dim();
-                var n4 = (new Vector4(p4.X, p4.Y, 0, 1)).Normalize3Dim();
+                var n1 = (new Vector4(p1.X, p1.Y, 0, 1)).ToNormalVector();
+                var n2 = (new Vector4(p2.X, p2.Y, 0, 1)).ToNormalVector();
+                var n3 = (new Vector4(p3.X, p3.Y, 0, 1)).ToNormalVector();
+                var n4 = (new Vector4(p4.X, p4.Y, 0, 1)).ToNormalVector();
 
                 tube.Add(new Triangle(new List<(Vector4, Vector4)>() {
                     (p1, n1),
@@ -121,7 +121,7 @@ namespace GraphicsEngine
                     (p3, n3)})
                 { color = c });
 
-                n = new Vector4(0, 0, 1, 1);
+                n = new Vector4(0, 0, 1, 0);
                 tube.Add(new Triangle(new List<(Vector4, Vector4)>() {
                     (new Vector4(0, 0, H, 1), n),
                     (PointExtensions.fromPolarCoordinates(R, t * 2 * (float)Math.PI, H), n),
@@ -148,27 +148,81 @@ namespace GraphicsEngine
         //    }
         //    return cone;
         //}
-        //public static Model CreateCuboid(float A, float B, float C, Color c)
-        //{
-        //    return new Model(
-        //        new Triangle(new List<Vector4>() { new Vector4(-A / 2f, -B / 2f, -C / 2f, 1), new Vector4(-A / 2f, -B / 2f, C / 2f, 1), new Vector4(-A / 2f, B / 2f, -C / 2f, 1) }) { color = c },
-        //        new Triangle(new List<Vector4>() { new Vector4(-A / 2f, B / 2f, C / 2f, 1), new Vector4(-A / 2f, -B / 2f, C / 2f, 1), new Vector4(-A / 2f, B / 2f, -C / 2f, 1) }) { color = c },
+        public static Model CreateCuboid(float A, float B, float C, Color c)
+        {
+            var p1 = new Vector4(-A / 2, -B / 2, -C / 2, 1);
+            var p2 = new Vector4(A / 2, -B / 2, -C / 2, 1);
+            var p3 = new Vector4(-A / 2, B / 2, -C / 2, 1);
+            var p4 = new Vector4(A / 2, B / 2, -C / 2, 1);
 
-        //        new Triangle(new List<Vector4>() {new Vector4(-A / 2f, -B / 2f, -C / 2f, 1), new Vector4(-A / 2f, -B / 2f, C / 2f, 1), new Vector4(A / 2f, -B / 2f, -C / 2f, 1) }) { color = c },
-        //        new Triangle(new List<Vector4>() {new Vector4(A / 2f, B / 2f, -C / 2f, 1), new Vector4(-A / 2f, -B / 2f, C / 2f, 1), new Vector4(A / 2f, -B / 2f, -C / 2f, 1) }) { color = c },
+            var p5 = new Vector4(-A / 2, -B / 2, C / 2, 1);
+            var p6 = new Vector4(A / 2, -B / 2, C / 2, 1);
+            var p7 = new Vector4(-A / 2, B / 2, C / 2, 1);
+            var p8 = new Vector4(A / 2, B / 2, C / 2, 1);
 
-        //        new Triangle(new List<Vector4>() {new Vector4(-A / 2f, -B / 2f, -C / 2f, 1), new Vector4(A / 2f, -B / 2f, -C / 2f, 1), new Vector4(-A / 2f, -B / 2f, C / 2f, 1) }) { color = c },
-        //        new Triangle(new List<Vector4>() {new Vector4(A / 2f, -B / 2f, C / 2f, 1), new Vector4(A / 2f, -B / 2f, -C / 2f, 1), new Vector4(-A / 2f, -B / 2f, C / 2f, 1) }) { color = c },
+            var n1 = new Vector4(1, 0, 0, 0);
+            var n2 = new Vector4(-1, 0, 0, 0);
+            var n3 = new Vector4(0, 1, 0, 0);
+            var n4 = new Vector4(0, -1, 0, 0);
+            var n5 = new Vector4(0, 0, 1, 0);
+            var n6 = new Vector4(0, 0, -1, 0);
 
-        //        new Triangle(new List<Vector4>() {new Vector4(A / 2f, B / 2f, C / 2f, 1), new Vector4(A / 2f, B / 2f, -C / 2f, 1), new Vector4(A / 2f, -B / 2f, C / 2f, 1) }) { color = c },
-        //        new Triangle(new List<Vector4>() {new Vector4(A / 2f, -B / 2f, -C / 2f, 1), new Vector4(A / 2f, B / 2f, -C / 2f, 1), new Vector4(A / 2f, -B / 2f, C / 2f, 1) }) { color = c },
+            return new Model(new Triangle[]
+            {
+                new Triangle(new List<(Vector4 point, Vector4 NormalVector)>()
+                {
+                    (p1, n6), (p2, n6), (p3, n6)
+                }) { color = c },
+                new Triangle(new List<(Vector4 point, Vector4 NormalVector)>()
+                {
+                    (p4, n6), (p2, n6), (p3, n6)
+                }){ color = c },
 
-        //        new Triangle(new List<Vector4>() {new Vector4(A / 2f, B / 2f, C / 2f, 1), new Vector4(A / 2f, B / 2f, -C / 2f, 1), new Vector4(-A / 2f, B / 2f, C / 2f, 1) }) { color = c },
-        //        new Triangle(new List<Vector4>() {new Vector4(-A / 2f, -B / 2f, C / 2f, 1), new Vector4(A / 2f, B / 2f, -C / 2f, 1), new Vector4(-A / 2f, B / 2f, C / 2f, 1) }) { color = c },
+                new Triangle(new List<(Vector4 point, Vector4 NormalVector)>()
+                {
+                    (p5, n5), (p6, n5), (p7, n5)
+                }){ color = c },
+                new Triangle(new List<(Vector4 point, Vector4 NormalVector)>()
+                {
+                    (p8, n5), (p6, n5), (p7, n5)
+                }){ color = c },
 
-        //        new Triangle(new List<Vector4>() {new Vector4(A / 2f, B / 2f, C / 2f, 1), new Vector4(-A / 2f, B / 2f, C / 2f, 1), new Vector4(A / 2f, B / 2f, -C / 2f, 1) }) { color = c },
-        //        new Triangle(new List<Vector4>() {new Vector4(-A / 2f, B / 2f, -C / 2f, 1), new Vector4(-A / 2f, B / 2f, C / 2f, 1), new Vector4(A / 2f, B / 2f, -C / 2f, 1) }) { color = c }
-        //        );
-        //}
+                new Triangle(new List<(Vector4 point, Vector4 NormalVector)>()
+                {
+                    (p1, n2), (p3, n2), (p5, n2)
+                }){ color = c },
+                new Triangle(new List<(Vector4 point, Vector4 NormalVector)>()
+                {
+                    (p7, n2), (p3, n2), (p5, n2)
+                }){ color = c },
+
+                new Triangle(new List<(Vector4 point, Vector4 NormalVector)>()
+                {
+                    (p2, n1), (p4, n1), (p6, n1)
+                }){ color = c },
+                new Triangle(new List<(Vector4 point, Vector4 NormalVector)>()
+                {
+                    (p8, n1), (p4, n1), (p6, n1)
+                }){ color = c },
+
+                new Triangle(new List<(Vector4 point, Vector4 NormalVector)>()
+                {
+                    (p1, n4), (p2, n4), (p5, n4)
+                }){ color = c },
+                new Triangle(new List<(Vector4 point, Vector4 NormalVector)>()
+                {
+                    (p6, n4), (p2, n4), (p5, n4)
+                }){ color = c },
+
+                new Triangle(new List<(Vector4 point, Vector4 NormalVector)>()
+                {
+                    (p3, n3), (p4, n3), (p7, n3)
+                }){ color = c },
+                new Triangle(new List<(Vector4 point, Vector4 NormalVector)>()
+                {
+                    (p8, n3), (p4, n3), (p7, n3)
+                }){ color = c },
+            });
+        }
     }
 }

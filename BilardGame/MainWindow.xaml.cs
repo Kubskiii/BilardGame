@@ -40,7 +40,8 @@ namespace BilardGame
             {
             ModelBuilder.CreateSphere(1, Colors.Magenta),
             ModelBuilder.CreateSphere(0.8f, Colors.Red),
-            ModelBuilder.CreateTube(0.5f, 2, Colors.Orange)
+            ModelBuilder.CreateTube(0.5f, 2, Colors.Orange),
+            ModelBuilder.CreateCuboid(2, 2, 2, Colors.White)
             };
         CPUEngine engine;
         uint[,] colors;
@@ -51,8 +52,9 @@ namespace BilardGame
             InitializeComponent();
             engine = new CPUEngine(res);
             img.Source = BitmapExtensions.CreateBitmap(res);
-            models[0].Translate(1, 0, 0);
-            models[1].Translate(0.8f, 0, 0);
+            models[0].Translate(3, 0, 0);
+            models[1].Translate(3, 0, 0);
+            models[2].Translate(0, 0, 3);
             worker.DoWork += Worker_DoWork;
             worker.RunWorkerCompleted += Worker_RunWorkerCompleted;
             worker.RunWorkerAsync();
@@ -66,15 +68,19 @@ namespace BilardGame
 
         private void Worker_DoWork(object sender, DoWorkEventArgs e)
         {
-            models[0].Translate(-1, 0, 0);
+            models[0].Translate(-3, 0, 0);
             models[0].RotateZ((float)Math.PI * 2 * 0.02f);
-            models[0].Translate(1, 0, 0);
+            models[0].Translate(3, 0, 0);
 
-            models[1].Translate(-0.8f, 0, 0);
+            models[1].Translate(-3, 0, 0);
             models[1].RotateZ((float)-Math.PI * 2 * 0.02f);
-            models[1].Translate(0.8f, 0, 0);
+            models[1].Translate(3, 0, 0);
 
+            models[2].Translate(0, 0, -3);
             models[2].RotateY((float)Math.PI * 2 * 0.02f);
+            models[2].Translate(0, 0, 3);
+
+            models[3].RotateX((float)Math.PI * 2 * 0.02f);
 
             colors = engine.Render(models);
         }

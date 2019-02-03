@@ -19,7 +19,7 @@ namespace GraphicsEngine
         {
             if (_parameters.Count != count) throw new ArgumentException("Wrong number of points");
             parameters = _parameters;
-            NormalVector = new Vector4(parameters.Average(v => v.NormalVector.X), parameters.Average(v => v.NormalVector.Y), parameters.Average(v => v.NormalVector.Z), 1);
+            NormalVector = new Vector4(parameters.Average(v => v.NormalVector.X), parameters.Average(v => v.NormalVector.Y), parameters.Average(v => v.NormalVector.Z), 0);
             Middle =new Vector4(parameters.Average(p => p.point.X), parameters.Average(p => p.point.Y), parameters.Average(p => p.point.Z), 1);
         }
         public IEnumerable<(Vector4 point, Vector4 vector)> GetPointsAndNormalVectors()
