@@ -53,11 +53,25 @@ namespace BilardGame
         private void Worker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
             (img.Source as WriteableBitmap).FillBitmap(colors);
+            game.Update();
             worker.RunWorkerAsync();
         }
         private void Worker_DoWork(object sender, DoWorkEventArgs e)
         {
             colors = game.Display();
+        }
+
+        private void Window_KeyDown(object sender, KeyEventArgs e)
+        {
+            switch(e.Key)
+            {
+                case Key.Left:
+                    game.RotateStickLeft();
+                    break;
+                case Key.Right:
+                    game.RotateStickRigth();
+                    break;
+            }
         }
     }
 }

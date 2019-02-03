@@ -15,6 +15,7 @@ namespace TheGame
         readonly public float stickL = 40;
         readonly public float tableWidth = 40;
         readonly public float tableDepth = 80;
+        readonly public float angle = (float)Math.PI / 300;
         public readonly Color[] ballColors = new Color[6]
             { Colors.Red, Colors.Yellow, Colors.Blue, Colors.Magenta, Colors.Orange, Colors.DarkGray };
         public List<ObjectParameters> balls = new List<ObjectParameters>();

@@ -14,6 +14,8 @@ namespace TheGame
         List<Model> models = new List<Model>();
         CPUEngine engine;
         GameParameters gp = new GameParameters();
+        bool rotateRigth = false;
+        bool rotateLeft = false;
         public Game(Resolution res)
         {
             engine = new CPUEngine(res);
@@ -107,6 +109,26 @@ namespace TheGame
             ball.position.X += x;
             ball.position.Y += y;
             models[ball.id].Translate(x, y, 0);
+        }
+        void RotateStick(float angle)
+        {
+            models[gp.stick.id].RotateZ(angle);
+        }
+        public void RotateStickLeft() => rotateLeft = true;
+        public void RotateStickRigth() => rotateRigth = true;
+        public void Update()
+        {
+            if(rotateLeft)
+            {
+                RotateStick(-gp.angle);
+                rotateLeft = false;
+            }
+
+            if(rotateRigth)
+            {
+                RotateStick(gp.angle);
+                rotateRigth = false;
+            }
         }
         public uint[,] Display()
         {
