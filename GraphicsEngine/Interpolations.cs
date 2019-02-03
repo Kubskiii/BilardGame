@@ -10,41 +10,26 @@ namespace GraphicsEngine
 {
     static class Interpolations
     {
-        static bool IsBetween(int x, int y, Vector3 p1, Vector3 p2)
+        static float getArea(Vector3 a, Vector3 b, Vector3 c)
         {
-            return x >= Math.Min(p1.X, p2.X) && x <= Math.Max(p1.X, p2.X) &&
-                y >= Math.Min(p1.Y, p2.Y) && y <= Math.Max(p1.Y, p2.Y);
+            return Math.Abs((a.X - c.X) * (b.Y - a.Y) - (a.X - b.X) * (c.Y - a.Y)) / 2;
         }
-        public static float Gouraud(float[] intensivities, Vector3[] points, int x, int y)
+        public static Vector4 getIntensivityGouraudVector(float[] intensivities, Vector3[] points)
         {
-            if(!IsBetween(x, y, points[0], points[1]))
-            {
-                float xb;
-                float xa;
-                float Ia = intensivities[2] - (intensivities[2] - intensivities[0]) * (points[2].Y - y) / (points[2].Y - points[0].Y);
-                float Ib = intensivities[2] - (intensivities[2] - intensivities[1]) * (points[2].Y - y) / (points[2].Y - points[1].Y);
+            Vector3 p1 = new Vector3(points[0].X, points[0].Y, intensivities[0]);
+            Vector3 p2 = new Vector3(points[1].X, points[1].Y, intensivities[1]);
+            Vector3 p3 = new Vector3(points[2].X, points[2].Y, intensivities[2]);
+            var planeN = Vector3.Cross(p2 - p1, p3 - p1);
+            return new Vector4(planeN.X, planeN.Y, planeN.Z, -(planeN.X * p1.X + planeN.Y * p1.Y + planeN.Z * p1.Z));
+        }
 
-                return Ib - (Ib - Ia) * 1/2;
-            }
-            else if(!IsBetween(x, y, points[0], points[2]))
-            {
-                float xb;
-                float xa;
-                float Ia = intensivities[1] - (intensivities[1] - intensivities[0]) * (points[1].Y - y) / (points[1].Y - points[0].Y);
-                float Ib = intensivities[1] - (intensivities[1] - intensivities[2]) * (points[1].Y - y) / (points[1].Y - points[2].Y);
+        public static float Gouraud(Vector4 intensivityVector, int x, int y)
+        {
+            return (-intensivityVector.W - intensivityVector.X * x - intensivityVector.Y * y) / intensivityVector.Z;
+            //float area = getArea(points[0], points[1], points[2]);
+            //Vector3 p = new Vector3(x, y, 0);
 
-                return Ib - (Ib - Ia) * 1 / 2;
-            }
-            else
-            {
-                float xb;
-                float xa;
-                float Ia = intensivities[0] - (intensivities[0] - intensivities[1]) * (points[0].Y - y) / (points[0].Y - points[1].Y);
-                float Ib = intensivities[0] - (intensivities[0] - intensivities[2]) * (points[0].Y - y) / (points[0].Y - points[2].Y);
-
-                return Ib - (Ib - Ia) * 1 / 2;
-            }
-            return 1;
+            //return intensivities[0] * getArea(points[1], points[2], p) / area + intensivities[1] * getArea(points[0], points[2], p) / area + intensivities[2] * getArea(points[0], points[1], p) / area;
         }
     }
 }

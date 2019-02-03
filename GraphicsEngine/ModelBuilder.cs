@@ -36,6 +36,7 @@ namespace GraphicsEngine
                     //vertex4 = vertex on a sphere of radius r at spherical coords theta2, phi1
 
                     if (t == 0) // top cap
+                    {
                         sphere.Add(new Triangle(new List<Vector4>() {
                         PointExtensions.fromSphericalCoordinates(R, theta1, phi1),
                         PointExtensions.fromSphericalCoordinates(R, theta2, phi2),
@@ -43,7 +44,9 @@ namespace GraphicsEngine
                         {
                             color = c
                         });
+                    }
                     else if (t + step >= 1) //end cap
+                    {
                         sphere.Add(new Triangle(new List<Vector4>() {
                         PointExtensions.fromSphericalCoordinates(R, theta2, phi2),
                         PointExtensions.fromSphericalCoordinates(R, theta1, phi1),
@@ -51,6 +54,7 @@ namespace GraphicsEngine
                         {
                             color = c
                         });
+                    }
                     else
                     {
                         sphere.Add(new Triangle(new List<Vector4>() {

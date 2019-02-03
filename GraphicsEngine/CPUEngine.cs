@@ -26,7 +26,7 @@ namespace GraphicsEngine
         Matrix4x4 projectionMatrix;
         Matrix4x4 viewMatrix;
         Vector3 cameraPos = Vector3.Normalize(new Vector3(3, 3, 3));
-        Vector3 L = Vector3.Normalize(new Vector3(100, 100, 100));
+        Vector3 L = Vector3.Normalize(new Vector3(0, 0, 1));
         Vector3 V = Vector3.Normalize(new Vector3(3, 3, 3));
         public CPUEngine(Resolution _resolution)
         {
@@ -40,10 +40,11 @@ namespace GraphicsEngine
             cameraPos = position;
             V = position - target;
         }
-        Vector3 VertexShader(Matrix4x4 modelMatrix, Vector4 point)
+        (Vector3 barycentricPoint, Vector3 normalVector, Vector3 point) VertexShader(Matrix4x4 modelMatrix, Vector4 point, Vector4 normalVector)
         {
-            Matrix4x4 M = projectionMatrix * viewMatrix * modelMatrix;
-            return M.MultiplyByPointAndNormalize(point);
+            var _normalVector = modelMatrix.Multiply(normalVector).To3Dim();
+            var _point = modelMatrix.Multiply(point);
+            return ((projectionMatrix * viewMatrix).Multiply(_point).NormalizeByW(), _normalVector, _point.To3Dim());
         }
         Vector4 getPlaneVector(Vector3 p1, Vector3 p2, Vector3 p3)
         {
@@ -52,21 +53,25 @@ namespace GraphicsEngine
         }
         public uint[,] Render(IEnumerable<Model> models)
         {
+            int count = 0;
             uint[,] colors = new uint[resolution.Width, resolution.Height];
             Zbuffer = new float[resolution.Width, resolution.Height];
-            //Parallel.ForEach(models, model =>
             foreach (var model in models)
             {
                 foreach (var triangle in model)
                 {
-                    var TriangleNormalVector = Vector3.Normalize(model.matrix.MultiplyByVector(triangle.NormalVector));
-                    var VV = V;// Vector3.Normalize(-cameraPos + model.matrix.MultiplyByPointAndNormalize(triangle.Middle));
-                    if (Vector3.Dot(TriangleNormalVector, VV) < 0) continue;
+                    //var TriangleNormalVector = Vector3.Normalize(model.matrix.MultiplyByVector(triangle.NormalVector));
+                    //var TriangleNormalVector2 = Vector3.Normalize(model.matrix.MultiplyByPointAndNormalize(triangle.NormalVector));
+                    //var TriangleNormalVector3 = Vector3.Normalize(new Vector3(triangle.NormalVector.X, triangle.NormalVector.Y, triangle.NormalVector.Z));
+                    //var VV = V;// Vector3.Normalize(-cameraPos + model.matrix.MultiplyByPointAndNormalize(triangle.Middle));
+                    //if (Vector3.Dot(TriangleNormalVector3, VV) < 0) continue;
+                    count++;
                     Vector3[] processedPoints = new Vector3[Triangle.count];
                     Vector3[] unprocessedPoints = new Vector3[Triangle.count];
                     Vector4[] normals = new Vector4[Triangle.count];
                     int processedCount = 0;
                     Vector3? start = null, end = null;
+            
                     foreach (var edge in triangle.GetEdges())
                     {
                         if (!start.HasValue) start = VertexShader(model.matrix, edge.startPoint);
@@ -75,7 +80,7 @@ namespace GraphicsEngine
                         {
                             processedPoints[processedCount] = resolution.ToScreen(end.Value);
                             unprocessedPoints[processedCount] = model.matrix.MultiplyByPointAndNormalize(edge.endPoint);
-                            normals[processedCount++] = edge.endNormal;
+                            normals[processedCount++] = edge.endPoint;
                         }
                         start = end;
                     }
@@ -89,9 +94,10 @@ namespace GraphicsEngine
                         for(int i = 0; i < Triangle.count; i++)
                         {
                             var p = unprocessedPoints[i];
-                            intensivities[i] = phong.getIntensivity(model.matrix.MultiplyByVector(normals[i]), L, 0.5f, 1, Vector3.Normalize(new Vector3(cameraPos.X - p.X, cameraPos.Y - p.Y, cameraPos.Z - p.Z)));
+                            intensivities[i] = phong.getIntensivity(model.matrix.MultiplyByVector(normals[i]), L, 1, Vector3.Normalize(new Vector3(cameraPos.X - p.X, cameraPos.Y - p.Y, cameraPos.Z - p.Z)));
                         }
-                        //float intensivity = phong.getIntensivity(TriangleNormalVector, L, 0.5f, 1, v);
+                        var intensivityVector = Interpolations.getIntensivityGouraudVector(intensivities, processedPoints);
+                        //float intensivity = phong.getIntensivity(TriangleNormalVector, L, 1, v);
                         //c.R = (byte)(c.R * intensivity);
                         //c.G = (byte)(c.G * intensivity);
                         //c.B = (byte)(c.B * intensivity);
@@ -101,7 +107,7 @@ namespace GraphicsEngine
                             if (Z - Zbuffer[x, y] >= 0.0001f)
                             {
                                 Zbuffer[x, y] = Z;
-                                float intensivity = Interpolations.Gouraud(intensivities, processedPoints, x, y);
+                                float intensivity = Math.Min(1,Interpolations.Gouraud(intensivityVector, x, y));
                                 Color c = triangle.color;
                                 c.R = (byte)(c.R * intensivity);
                                 c.G = (byte)(c.G * intensivity);
@@ -111,7 +117,7 @@ namespace GraphicsEngine
                         });
                     }
                 }
-            }//);
+            }
             return colors;
         }
     }
