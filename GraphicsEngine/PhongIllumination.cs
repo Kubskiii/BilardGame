@@ -9,19 +9,26 @@ namespace GraphicsEngine
 {
     class PhongIllumination
     {
-        float ka = 0.3f;
-        float ks = 0.5f;
-        float kd = 0.4f;
-        int nshiny = 5;
-        public float getIntensivity(Vector3 N, List<Vector3> Lights, float Il, Vector3 V)
+        float ka, kd, ks;
+        int nshiny;
+        public PhongIllumination(float _ka = 0.5f, float _kd = 0.5f, float _ks = 0.5f, int _nshiny = 5)
+        {
+            ka = _ka;
+            kd = _kd;
+            ks = _ks;
+            nshiny = _nshiny;
+        }
+        public float getIntensivity(Vector3 N, List<Light> Lights, Vector3 V, Vector3 point)
         {
             float intensivity = ka;
-            foreach (var L in Lights)
+            foreach (var light in Lights)
             {
+                var L = light.getValue(point);
+                var Il = light.GetIntensivity();
                 Vector3 R = Vector3.Normalize(2 * Vector3.Dot(L, N) * N - L);
                 intensivity += kd * Il * Vector3.Dot(N, L) + ks * Il * (float)Math.Pow(Math.Abs(Vector3.Dot(R, V)), nshiny);
             }
-            return Math.Min(1, Math.Max(intensivity, 0));
+            return intensivity;
         }
     }
 }

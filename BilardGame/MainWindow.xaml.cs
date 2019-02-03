@@ -65,7 +65,6 @@ namespace BilardGame
             (img.Source as WriteableBitmap).FillBitmap(colors);
             worker.RunWorkerAsync();
         }
-
         private void Worker_DoWork(object sender, DoWorkEventArgs e)
         {
             models[0].Translate(-3, 0, 0);

@@ -39,13 +39,16 @@
   <ItemGroup>
     <Compile Include="BitmapExtensions.cs" />
     <Compile Include="CameraBuilder.cs" />
+    <Compile Include="ConstLight.cs" />
     <Compile Include="CPUEngine.cs" />
     <Compile Include="Filler.cs" />
     <Compile Include="Interpolations.cs" />
+    <Compile Include="Light.cs" />
     <Compile Include="Model.cs" />
     <Compile Include="ModelBuilder.cs" />
     <Compile Include="PhongIllumination.cs" />
     <Compile Include="PointExtensions.cs" />
+    <Compile Include="PointLight.cs" />
     <Compile Include="Progam.cs" />
     <Compile Include="ProjectionBuilder.cs" />
     <Compile Include="Resolution.cs" />

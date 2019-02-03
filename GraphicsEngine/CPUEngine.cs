@@ -10,10 +10,17 @@ namespace GraphicsEngine
 {
     public class CPUEngine
     {
+        enum Shading
+        {
+            Constant,
+            Phong,
+            Gouraud
+        }
         float[,] Zbuffer;
         Filler filler;
         PhongIllumination phong = new PhongIllumination();
         Resolution res;
+        Shading shading = Shading.Phong;
         Resolution resolution
         {
             get => res;
@@ -26,8 +33,7 @@ namespace GraphicsEngine
         Matrix4x4 projectionMatrix;
         Matrix4x4 viewMatrix;
         Vector3 cameraPos = new Vector3(10, 10, 10);
-        List<Vector3> Lights = new List<Vector3>() { Vector3.Normalize(new Vector3(0, 0, 1)) };
-        Vector3 V = Vector3.Normalize(new Vector3(3, 3, 3));
+        List<Light> Lights = new List<Light>() { new PointLight(new Vector3(0, 2, 2)) };
         public CPUEngine(Resolution _resolution)
         {
             resolution = _resolution;
@@ -38,7 +44,6 @@ namespace GraphicsEngine
         {
             viewMatrix = CameraBuilder.CreateLookAt(position, target, new Vector3(0, 0, 1));
             cameraPos = position;
-            V = position - target;
         }
         (Vector3 barycentricPoint, Vector3 normalVector, Vector3 point) VertexShader(Matrix4x4 modelMatrix, Vector4 point, Vector4 normalVector)
         {
@@ -66,8 +71,9 @@ namespace GraphicsEngine
             {
                 foreach (var triangle in model)
                 {
+                    var middle = model.matrix.Multiply(triangle.Middle).To3Dim();
                     var normalToMiddle = Vector3.Normalize(model.matrix.Multiply(triangle.NormalVector).To3Dim());
-                    var view = Vector3.Normalize(model.matrix.Multiply(triangle.Middle).To3Dim() - cameraPos);
+                    var view = Vector3.Normalize(middle - cameraPos);
                     if (Vector3.Dot(normalToMiddle, view) > 0) continue;
                     count++;
                     var barycentricPoints = new List<Vector3>();
@@ -87,31 +93,89 @@ namespace GraphicsEngine
                     if(barycentricPoints.Count == Triangle.count)
                     {
                         var plane = getPlaneVector(barycentricPoints[0], barycentricPoints[1], barycentricPoints[2]);
-                        float[] intensivities = new float[Triangle.count];
-                        for (int i = 0; i < Triangle.count; i++)
+                        switch(shading)
                         {
-                            //Lights.Add(Vector3.Normalize(new Vector3(5-points[i].X, 5-points[i].Y, 5-points[i].Z)));
-                            intensivities[i] = phong.getIntensivity(normalVectors[i], Lights, 1,
-                                Vector3.Normalize(new Vector3(cameraPos.X - points[i].X, cameraPos.Y - points[i].Y, cameraPos.Z - points[i].Z)));
-                            //Lights.RemoveAt(0);
+                            case Shading.Constant:
+                                {
+                                    var intensivity = phong.getIntensivity(normalToMiddle, Lights, view, middle);
+                                    Color c = triangle.color;
+                                    c.R = (byte)(Math.Min(Math.Max(c.R * intensivity, 0), 255));
+                                    c.G = (byte)(Math.Min(Math.Max(c.G * intensivity, 0), 255));
+                                    c.B = (byte)(Math.Min(Math.Max(c.B * intensivity, 0), 255));
+                                    filler.Draw(barycentricPoints, (x, y) =>
+                                    {
+                                        float Z = 1 - (float)Math.Log10((-plane.W - plane.X * x - plane.Y * y) / plane.Z);
+                                        if (Z > Zbuffer[x, y])
+                                        {
+                                            Zbuffer[x, y] = Z;
+                                            colors[x, y] = BitmapExtensions.ConvertColor(c);
+                                        }
+                                    });
+                                    break;
+                                }
+                            case Shading.Phong:
+                                {
+                                    var pointsArray = barycentricPoints.ToArray();
+                                    var pointsviews = new Vector3[Triangle.count];
+                                    for(int i = 0; i < Triangle.count; i++)
+                                    {
+                                        pointsviews[i] = Vector3.Normalize(new Vector3(cameraPos.X - points[i].X, cameraPos.Y - points[i].Y, cameraPos.Z - points[i].Z));
+                                    }
+
+                                    var normals = Interpolations.getNormalPhongEquations(normalVectors.ToArray(), pointsArray);
+                                    var views = Interpolations.getNormalPhongEquations(pointsviews, pointsArray);
+                                    var positions = Interpolations.getNormalPhongEquations(points.ToArray(), pointsArray);
+                                    filler.Draw(barycentricPoints, (x, y) =>
+                                    {
+                                        float Z = 1 - (float)Math.Log10((-plane.W - plane.X * x - plane.Y * y) / plane.Z);
+                                        if (Z > Zbuffer[x, y])
+                                        {
+                                            Zbuffer[x, y] = Z;
+
+                                            var N = Interpolations.Phong(normals, x, y);
+                                            var pview = Interpolations.Phong(views, x, y);
+                                            var pposition = Interpolations.Phong(positions, x, y);
+                                            var intensivity = phong.getIntensivity(N, Lights, pview, pposition);
+                                            Color c = triangle.color;
+                                            c.R = (byte)(Math.Min(Math.Max(c.R * intensivity, 0), 255));
+                                            c.G = (byte)(Math.Min(Math.Max(c.G * intensivity, 0), 255));
+                                            c.B = (byte)(Math.Min(Math.Max(c.B * intensivity, 0), 255));
+
+                                            colors[x, y] = BitmapExtensions.ConvertColor(c);
+                                        }
+                                    });
+                                    break;
+                                }
+                            case Shading.Gouraud:
+                                {
+                                    float[] intensivities = new float[Triangle.count];
+                                    for (int i = 0; i < Triangle.count; i++)
+                                    {
+                                        intensivities[i] = phong.getIntensivity(normalVectors[i], Lights,
+                                            Vector3.Normalize(new Vector3(cameraPos.X - points[i].X, cameraPos.Y - points[i].Y, cameraPos.Z - points[i].Z)),
+                                            points[i]);
+                                    }
+                                    var intensivityVector = Interpolations.getIntensivityGouraudVector(intensivities, barycentricPoints.ToArray());
+                                    filler.Draw(barycentricPoints, (x, y) =>
+                                    {
+                                        float Z = 1 - (float)Math.Log10((-plane.W - plane.X * x - plane.Y * y) / plane.Z);
+                                        if (Z > Zbuffer[x, y])
+                                        {
+                                            Zbuffer[x, y] = Z;
+                                            float intensivity = Interpolations.Gouraud(intensivityVector, x, y);
+                                            Color c = triangle.color;
+                                            c.R = (byte)(Math.Min(Math.Max(c.R * intensivity, 0), 255));
+                                            c.G = (byte)(Math.Min(Math.Max(c.G * intensivity, 0), 255));
+                                            c.B = (byte)(Math.Min(Math.Max(c.B * intensivity, 0), 255));
+                                            colors[x, y] = BitmapExtensions.ConvertColor(c);
+                                        }
+                                    });
+                                    break;
+                                }
                         }
-                        var intensivityVector = Interpolations.getIntensivityGouraudVector(intensivities, barycentricPoints.ToArray());
-                        filler.Draw(barycentricPoints, (x, y) =>
-                        {
-                            float Z = 1 - (float)Math.Log10((-plane.W - plane.X * x - plane.Y * y) / plane.Z);
-                            if (Z > Zbuffer[x, y])
-                            {
-                                Zbuffer[x, y] = Z;
-                                float intensivity = Math.Min(1, Interpolations.Gouraud(intensivityVector, x, y));
-                                Color c = triangle.color;
-                                c.R = (byte)(c.R * intensivity);
-                                c.G = (byte)(c.G * intensivity);
-                                c.B = (byte)(c.B * intensivity);
-                                colors[x, y] = BitmapExtensions.ConvertColor(c);
-                            }
-                        });
                     }
-                    
+
+                    #region drawing normal vectors
                     //var lolo = VertexShader(model.matrix, triangle.Middle, triangle.NormalVector);
                     //var lolo2 = VertexShader(model.matrix, triangle.Middle + triangle.NormalVector, triangle.NormalVector);
                     //var l = triangle.NormalVector.Length();
@@ -122,6 +186,7 @@ namespace GraphicsEngine
                     //    var v2 = resolution.ToScreen(lolo2.barycentricPoint);
                     //    DrawLine(v1.X, v1.Y, v2.X, v2.Y, colors);
                     //}
+                    #endregion
                 }
             }
             return colors;
