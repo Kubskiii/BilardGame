@@ -133,6 +133,10 @@
       <Project>{6215f61a-963b-435f-8f62-483295054e91}</Project>
       <Name>GraphicsEngine</Name>
     </ProjectReference>
+    <ProjectReference Include="..\TheGame\TheGame.csproj">
+      <Project>{95543020-f8fe-49e6-962f-d4cf0bd645f4}</Project>
+      <Name>TheGame</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

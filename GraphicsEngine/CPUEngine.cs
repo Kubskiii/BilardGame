@@ -42,12 +42,12 @@ namespace GraphicsEngine
         }
         Matrix4x4 projectionMatrix;
         Matrix4x4 viewMatrix;
-        Vector3 cameraPos = new Vector3(10, 10, 10);
+        Vector3 cameraPos = new Vector3(50, 50, 50);
         List<Light> Lights = new List<Light>();
         public CPUEngine(Resolution _resolution)
         {
             resolution = _resolution;
-            viewMatrix = CameraBuilder.CreateLookAt(new Vector3(10, 10, 10), new Vector3(0, 0, 0), new Vector3(0, 0, 1));
+            viewMatrix = CameraBuilder.CreateLookAt(cameraPos, new Vector3(0, 0, 0), new Vector3(0, 0, 1));
             projectionMatrix = ProjectionBuilder.CreatePerspectiveOfView((float)Math.PI / 3, resolution.AspectRatio);
         }
         public void ChangeCameraPosition(Vector3 position, Vector3 target)

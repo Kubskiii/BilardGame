@@ -7,6 +7,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BilardGame", "BilardGame.cs
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GraphicsEngine", "..\GraphicsEngine\GraphicsEngine.csproj", "{6215F61A-963B-435F-8F62-483295054E91}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TheGame", "..\TheGame\TheGame.csproj", "{95543020-F8FE-49E6-962F-D4CF0BD645F4}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +23,10 @@ Global
 		{6215F61A-963B-435F-8F62-483295054E91}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6215F61A-963B-435F-8F62-483295054E91}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{6215F61A-963B-435F-8F62-483295054E91}.Release|Any CPU.Build.0 = Release|Any CPU
+		{95543020-F8FE-49E6-962F-D4CF0BD645F4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{95543020-F8FE-49E6-962F-D4CF0BD645F4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{95543020-F8FE-49E6-962F-D4CF0BD645F4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{95543020-F8FE-49E6-962F-D4CF0BD645F4}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

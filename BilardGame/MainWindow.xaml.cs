@@ -15,6 +15,7 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.Numerics;
 using GraphicsEngine;
+using TheGame;
 
 namespace BilardGame
 {
@@ -35,28 +36,15 @@ namespace BilardGame
             }
         }
         #endregion
-
-        Model[] models = new Model[]
-            {
-            ModelBuilder.CreateSphere(1, Colors.Magenta),
-            ModelBuilder.CreateSphere(0.8f, Colors.Red),
-            ModelBuilder.CreateTube(0.5f, 2, Colors.Orange),
-            ModelBuilder.CreateCuboid(2, 2, 2, Colors.White)
-            };
-        CPUEngine engine;
-        uint[,] colors;
         Resolution res = new Resolution(1200, 800);
+        uint[,] colors;
+        Game game;
         BackgroundWorker worker = new BackgroundWorker();
         public MainWindow()
         {
             InitializeComponent();
-            engine = new CPUEngine(res);
             img.Source = BitmapExtensions.CreateBitmap(res);
-            models[0].Translate(3, 0, 0);
-            models[1].Translate(3, 0, 0);
-            models[2].Translate(0, 0, 3);
-            engine.AddLight(new PointLight(new Vector3(4, 4, 4)));
-            engine.SwitchToGouraudShading();
+            game = new Game(res);
             worker.DoWork += Worker_DoWork;
             worker.RunWorkerCompleted += Worker_RunWorkerCompleted;
             worker.RunWorkerAsync();
@@ -67,29 +55,9 @@ namespace BilardGame
             (img.Source as WriteableBitmap).FillBitmap(colors);
             worker.RunWorkerAsync();
         }
-
-        float angle = 0;
-        float R = 15;
         private void Worker_DoWork(object sender, DoWorkEventArgs e)
         {
-            angle += (float)Math.PI / 16;
-
-            engine.ChangeCameraPosition(new Vector3((float)Math.Cos(angle) * R, (float)Math.Sin(angle) * R, 0), new Vector3(0, 0, 0));
-            //models[0].Translate(-3, 0, 0);
-            //models[0].RotateZ((float)Math.PI * 2 * 0.02f);
-            //models[0].Translate(3, 0, 0);
-
-            //models[1].Translate(-3, 0, 0);
-            //models[1].RotateZ((float)-Math.PI * 2 * 0.02f);
-            //models[1].Translate(3, 0, 0);
-
-            //models[2].Translate(0, 0, -3);
-            //models[2].RotateY((float)Math.PI * 2 * 0.02f);
-            //models[2].Translate(0, 0, 3);
-
-            //models[3].RotateX((float)Math.PI * 2 * 0.02f);
-
-            colors = engine.Render(models);
+            colors = game.Display();
         }
     }
 }
