@@ -20,7 +20,7 @@ namespace GraphicsEngine
         Filler filler;
         PhongIllumination phong = new PhongIllumination();
         Resolution res;
-        Shading shading = Shading.Phong;
+        Shading shading = Shading.Constant;
         Resolution resolution
         {
             get => res;
@@ -28,12 +28,22 @@ namespace GraphicsEngine
             {
                 res = value;
                 filler = new Filler(value.Height);
+                projectionMatrix = ProjectionBuilder.CreatePerspectiveOfView(fov, res.AspectRatio);
+            }
+        }
+        float fov;
+        public float FOV
+        {
+            set
+            {
+                fov = value * (float)Math.PI / 180;
+                projectionMatrix = ProjectionBuilder.CreatePerspectiveOfView(fov, resolution.AspectRatio);
             }
         }
         Matrix4x4 projectionMatrix;
         Matrix4x4 viewMatrix;
         Vector3 cameraPos = new Vector3(10, 10, 10);
-        List<Light> Lights = new List<Light>() { new PointLight(new Vector3(0, 2, 2)) };
+        List<Light> Lights = new List<Light>();
         public CPUEngine(Resolution _resolution)
         {
             resolution = _resolution;
@@ -45,6 +55,13 @@ namespace GraphicsEngine
             viewMatrix = CameraBuilder.CreateLookAt(position, target, new Vector3(0, 0, 1));
             cameraPos = position;
         }
+        public void AddLight(Light L)
+        {
+            Lights.Add(L);
+        }
+        public void SwitchToConstantShading() => shading = Shading.Constant;
+        public void SwitchToGouraudShading() => shading = Shading.Gouraud;
+        public void SwitchToPhongShading() => shading = Shading.Phong;
         (Vector3 barycentricPoint, Vector3 normalVector, Vector3 point) VertexShader(Matrix4x4 modelMatrix, Vector4 point, Vector4 normalVector)
         {
             var _normalVector = modelMatrix.Multiply(normalVector).To3Dim();
@@ -69,17 +86,19 @@ namespace GraphicsEngine
             Zbuffer = new float[resolution.Width, resolution.Height];
             foreach (var model in models)
             {
-                foreach (var triangle in model)
+                Parallel.ForEach(model, triangle =>
+                //foreach (var triangle in model)
                 {
                     var middle = model.matrix.Multiply(triangle.Middle).To3Dim();
                     var normalToMiddle = Vector3.Normalize(model.matrix.Multiply(triangle.NormalVector).To3Dim());
                     var view = Vector3.Normalize(middle - cameraPos);
-                    if (Vector3.Dot(normalToMiddle, view) > 0) continue;
+                    if (Vector3.Dot(normalToMiddle, view) > 0) return;
+                    var filler1 = new Filler(resolution.Height);
                     count++;
                     var barycentricPoints = new List<Vector3>();
                     var normalVectors = new List<Vector3>();
                     var points = new List<Vector3>();
-                    foreach(var vertex in triangle.GetPointsAndNormalVectors())
+                    foreach (var vertex in triangle.GetPointsAndNormalVectors())
                     {
                         var parameters = VertexShader(model.matrix, vertex.point, vertex.vector);
                         if (isNormal(parameters.barycentricPoint))
@@ -90,10 +109,10 @@ namespace GraphicsEngine
                         }
                         else break;
                     }
-                    if(barycentricPoints.Count == Triangle.count)
+                    if (barycentricPoints.Count == Triangle.count)
                     {
                         var plane = getPlaneVector(barycentricPoints[0], barycentricPoints[1], barycentricPoints[2]);
-                        switch(shading)
+                        switch (shading)
                         {
                             case Shading.Constant:
                                 {
@@ -102,7 +121,7 @@ namespace GraphicsEngine
                                     c.R = (byte)(Math.Min(Math.Max(c.R * intensivity, 0), 255));
                                     c.G = (byte)(Math.Min(Math.Max(c.G * intensivity, 0), 255));
                                     c.B = (byte)(Math.Min(Math.Max(c.B * intensivity, 0), 255));
-                                    filler.Draw(barycentricPoints, (x, y) =>
+                                    filler1.Draw(barycentricPoints, (x, y) =>
                                     {
                                         float Z = 1 - (float)Math.Log10((-plane.W - plane.X * x - plane.Y * y) / plane.Z);
                                         if (Z > Zbuffer[x, y])
@@ -117,7 +136,7 @@ namespace GraphicsEngine
                                 {
                                     var pointsArray = barycentricPoints.ToArray();
                                     var pointsviews = new Vector3[Triangle.count];
-                                    for(int i = 0; i < Triangle.count; i++)
+                                    for (int i = 0; i < Triangle.count; i++)
                                     {
                                         pointsviews[i] = Vector3.Normalize(new Vector3(cameraPos.X - points[i].X, cameraPos.Y - points[i].Y, cameraPos.Z - points[i].Z));
                                     }
@@ -125,7 +144,7 @@ namespace GraphicsEngine
                                     var normals = Interpolations.getNormalPhongEquations(normalVectors.ToArray(), pointsArray);
                                     var views = Interpolations.getNormalPhongEquations(pointsviews, pointsArray);
                                     var positions = Interpolations.getNormalPhongEquations(points.ToArray(), pointsArray);
-                                    filler.Draw(barycentricPoints, (x, y) =>
+                                    filler1.Draw(barycentricPoints, (x, y) =>
                                     {
                                         float Z = 1 - (float)Math.Log10((-plane.W - plane.X * x - plane.Y * y) / plane.Z);
                                         if (Z > Zbuffer[x, y])
@@ -156,7 +175,7 @@ namespace GraphicsEngine
                                             points[i]);
                                     }
                                     var intensivityVector = Interpolations.getIntensivityGouraudVector(intensivities, barycentricPoints.ToArray());
-                                    filler.Draw(barycentricPoints, (x, y) =>
+                                    filler1.Draw(barycentricPoints, (x, y) =>
                                     {
                                         float Z = 1 - (float)Math.Log10((-plane.W - plane.X * x - plane.Y * y) / plane.Z);
                                         if (Z > Zbuffer[x, y])
@@ -187,7 +206,7 @@ namespace GraphicsEngine
                     //    DrawLine(v1.X, v1.Y, v2.X, v2.Y, colors);
                     //}
                     #endregion
-                }
+                });
             }
             return colors;
         }
