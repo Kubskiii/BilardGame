@@ -13,11 +13,15 @@ namespace GraphicsEngine
         float ks = 0.5f;
         float kd = 0.4f;
         int nshiny = 5;
-        public float getIntensivity(Vector3 N, Vector3 L, float Il, Vector3 V)
+        public float getIntensivity(Vector3 N, List<Vector3> Lights, float Il, Vector3 V)
         {
-            Vector3 R = Vector3.Normalize(2 * Vector3.Dot(L, N) * N - L);
-            float intensivity = ka + kd * Il * Vector3.Dot(N, L) + ks * Il * (float)Math.Pow(Math.Abs(Vector3.Dot(R, V)), nshiny);
-            return Math.Min(1, intensivity);
+            float intensivity = ka;
+            foreach (var L in Lights)
+            {
+                Vector3 R = Vector3.Normalize(2 * Vector3.Dot(L, N) * N - L);
+                intensivity += kd * Il * Vector3.Dot(N, L) + ks * Il * (float)Math.Pow(Math.Abs(Vector3.Dot(R, V)), nshiny);
+            }
+            return Math.Min(1, Math.Max(intensivity, 0));
         }
     }
 }

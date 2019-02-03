@@ -21,6 +21,11 @@ namespace GraphicsEngine
         {
             return new Vector3(vector.X / vector.W, vector.Y / vector.W, vector.Z / vector.W);
         }
+        public static Vector4 Normalize3Dim(this Vector4 vector)
+        {
+            var L = (float)Math.Sqrt(vector.X * vector.X + vector.Y * vector.Y + vector.Z * vector.Z);
+            return new Vector4(vector.X / L, vector.Y / L, vector.Z / L, 1);
+        }
         public static Vector3 To3Dim(this Vector4 vector)
         {
             return new Vector3(vector.X, vector.Y, vector.Z);

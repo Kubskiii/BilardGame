@@ -37,37 +37,49 @@ namespace GraphicsEngine
 
                     if (t == 0) // top cap
                     {
-                        sphere.Add(new Triangle(new List<Vector4>() {
-                        PointExtensions.fromSphericalCoordinates(R, theta1, phi1),
-                        PointExtensions.fromSphericalCoordinates(R, theta2, phi2),
-                        PointExtensions.fromSphericalCoordinates(R, theta2, phi1) })
+                        var p1 = PointExtensions.fromSphericalCoordinates(R, theta1, phi1);
+                        var p2 = PointExtensions.fromSphericalCoordinates(R, theta2, phi2);
+                        var p3 = PointExtensions.fromSphericalCoordinates(R, theta2, phi1);
+                        sphere.Add(new Triangle(new List<(Vector4, Vector4)>() {
+                        (p1, p1.Normalize3Dim()),
+                        (p2, p2.Normalize3Dim()),
+                        (p3, p3.Normalize3Dim()) })
                         {
                             color = c
                         });
                     }
                     else if (t + step >= 1) //end cap
                     {
-                        sphere.Add(new Triangle(new List<Vector4>() {
-                        PointExtensions.fromSphericalCoordinates(R, theta2, phi2),
-                        PointExtensions.fromSphericalCoordinates(R, theta1, phi1),
-                        PointExtensions.fromSphericalCoordinates(R, theta1, phi2) })
+                        var p1 = PointExtensions.fromSphericalCoordinates(R, theta2, phi2);
+                        var p2 = PointExtensions.fromSphericalCoordinates(R, theta1, phi1);
+                        var p3 = PointExtensions.fromSphericalCoordinates(R, theta1, phi2);
+                        sphere.Add(new Triangle(new List<(Vector4, Vector4)>() {
+                        (p1, p1.Normalize3Dim()),
+                        (p2, p2.Normalize3Dim()),
+                        (p3, p3.Normalize3Dim()) })
                         {
                             color = c
                         });
                     }
                     else
                     {
-                        sphere.Add(new Triangle(new List<Vector4>() {
-                        PointExtensions.fromSphericalCoordinates(R, theta1, phi1),
-                        PointExtensions.fromSphericalCoordinates(R, theta1, phi2),
-                        PointExtensions.fromSphericalCoordinates(R, theta2, phi1) })
+                        var p1 = PointExtensions.fromSphericalCoordinates(R, theta1, phi1);
+                        var p2 = PointExtensions.fromSphericalCoordinates(R, theta1, phi2);
+                        var p3 = PointExtensions.fromSphericalCoordinates(R, theta2, phi1);
+                        sphere.Add(new Triangle(new List<(Vector4, Vector4)>() {
+                        (p1, p1.Normalize3Dim()),
+                        (p2, p2.Normalize3Dim()),
+                        (p3, p3.Normalize3Dim()) })
                         {
                             color = c
                         });
-                        sphere.Add(new Triangle(new List<Vector4>() {
-                        PointExtensions.fromSphericalCoordinates(R, theta1, phi2),
-                        PointExtensions.fromSphericalCoordinates(R, theta2, phi2),
-                        PointExtensions.fromSphericalCoordinates(R, theta2, phi1) })
+                        p1 = PointExtensions.fromSphericalCoordinates(R, theta1, phi2);
+                        p2 = PointExtensions.fromSphericalCoordinates(R, theta2, phi2);
+                        p3 = PointExtensions.fromSphericalCoordinates(R, theta2, phi1);
+                        sphere.Add(new Triangle(new List<(Vector4, Vector4)>() {
+                        (p1, p1.Normalize3Dim()),
+                        (p2, p2.Normalize3Dim()),
+                        (p3, p3.Normalize3Dim()) })
                         {
                             color = c
                         });
@@ -79,70 +91,84 @@ namespace GraphicsEngine
         public static Model CreateTube(float R, float H, Color c)
         {
             Model tube = new Model();
-            for (float t = 0; t <= 1; t += step)
+            for (float t = 0; t < 1; t += step)
             {
-                tube.Add(new Triangle(new List<Vector4>() {
-                    new Vector4(0, 0, 0, 1),
-                    PointExtensions.fromPolarCoordinates(R, t * 2 * (float)Math.PI, 0),
-                    PointExtensions.fromPolarCoordinates(R, (t + step) * 2 * (float)Math.PI, 0) })
+                var n = new Vector4(0, 0, -1, 1);
+                tube.Add(new Triangle(new List<(Vector4, Vector4)>() {
+                    (new Vector4(0, 0, 0, 1), n),
+                    (PointExtensions.fromPolarCoordinates(R, t * 2 * (float)Math.PI, 0), n),
+                    (PointExtensions.fromPolarCoordinates(R, (t + step) * 2 * (float)Math.PI, 0), n) })
                 { color = c });
-                tube.Add(new Triangle(new List<Vector4>() {
-                    PointExtensions.fromPolarCoordinates(R, t * 2 * (float)Math.PI, 0),
-                    PointExtensions.fromPolarCoordinates(R, (t + step) * 2 * (float)Math.PI, 0),
-                    PointExtensions.fromPolarCoordinates(R, t * 2 * (float)Math.PI, H) })
+
+                var p1 = PointExtensions.fromPolarCoordinates(R, t * 2 * (float)Math.PI, 0);
+                var p2 = PointExtensions.fromPolarCoordinates(R, (t + step) * 2 * (float)Math.PI, 0);
+                var p3 = PointExtensions.fromPolarCoordinates(R, t * 2 * (float)Math.PI, H);
+                var p4 = PointExtensions.fromPolarCoordinates(R, (t + step) * 2 * (float)Math.PI, H);
+
+                var n1 = (new Vector4(p1.X, p1.Y, 0, 1)).Normalize3Dim();
+                var n2 = (new Vector4(p2.X, p2.Y, 0, 1)).Normalize3Dim();
+                var n3 = (new Vector4(p3.X, p3.Y, 0, 1)).Normalize3Dim();
+                var n4 = (new Vector4(p4.X, p4.Y, 0, 1)).Normalize3Dim();
+
+                tube.Add(new Triangle(new List<(Vector4, Vector4)>() {
+                    (p1, n1),
+                    (p2, n2),
+                    (p3, n3)})
                 { color = c });
-                tube.Add(new Triangle(new List<Vector4>() {
-                    PointExtensions.fromPolarCoordinates(R, (t + step) * 2 * (float)Math.PI, 0),
-                    PointExtensions.fromPolarCoordinates(R, t * 2 * (float)Math.PI, H),
-                    PointExtensions.fromPolarCoordinates(R, (t + step) * 2 * (float)Math.PI, H) })
+                tube.Add(new Triangle(new List<(Vector4, Vector4)>() {
+                    (p2, n2),
+                    (p4, n4),
+                    (p3, n3)})
                 { color = c });
-                tube.Add(new Triangle(new List<Vector4>() {
-                    new Vector4(0, 0, H, 1),
-                    PointExtensions.fromPolarCoordinates(R, t * 2 * (float)Math.PI, H),
-                    PointExtensions.fromPolarCoordinates(R, (t + step) * 2 * (float)Math.PI, H) })
+
+                n = new Vector4(0, 0, 1, 1);
+                tube.Add(new Triangle(new List<(Vector4, Vector4)>() {
+                    (new Vector4(0, 0, H, 1), n),
+                    (PointExtensions.fromPolarCoordinates(R, t * 2 * (float)Math.PI, H), n),
+                    (PointExtensions.fromPolarCoordinates(R, (t + step) * 2 * (float)Math.PI, H), n) })
                 { color = c });
             }
             return tube;
         }
-        public static Model CreateCone(float R, float H, Color c)
-        {
-            Model cone = new Model();
-            for (float t = 0; t < 1; t += step)
-            {
-                cone.Add(new Triangle(new List<Vector4>() {
-                    new Vector4(0, 0, 0, 1),
-                    PointExtensions.fromPolarCoordinates(R, t * 2 * (float)Math.PI, 0),
-                    PointExtensions.fromPolarCoordinates(R, (t + step) * 2 * (float)Math.PI, 0) })
-                { color = c });
-                cone.Add(new Triangle(new List<Vector4>() {
-                    new Vector4(0, 0, H, 1),
-                    PointExtensions.fromPolarCoordinates(R, t * 2 * (float)Math.PI, 0),
-                    PointExtensions.fromPolarCoordinates(R, (t + step) * 2 * (float)Math.PI, 0) })
-                { color = c });
-            }
-            return cone;
-        }
-        public static Model CreateCuboid(float A, float B, float C, Color c)
-        {
-            return new Model(
-                new Triangle(new List<Vector4>() { new Vector4(-A / 2f, -B / 2f, -C / 2f, 1), new Vector4(-A / 2f, -B / 2f, C / 2f, 1), new Vector4(-A / 2f, B / 2f, -C / 2f, 1) }) { color = c },
-                new Triangle(new List<Vector4>() { new Vector4(-A / 2f, B / 2f, C / 2f, 1), new Vector4(-A / 2f, -B / 2f, C / 2f, 1), new Vector4(-A / 2f, B / 2f, -C / 2f, 1) }) { color = c },
+        //public static Model CreateCone(float R, float H, Color c)
+        //{
+        //    Model cone = new Model();
+        //    for (float t = 0; t < 1; t += step)
+        //    {
+        //        cone.Add(new Triangle(new List<Vector4>() {
+        //            new Vector4(0, 0, 0, 1),
+        //            PointExtensions.fromPolarCoordinates(R, t * 2 * (float)Math.PI, 0),
+        //            PointExtensions.fromPolarCoordinates(R, (t + step) * 2 * (float)Math.PI, 0) })
+        //        { color = c });
+        //        cone.Add(new Triangle(new List<Vector4>() {
+        //            new Vector4(0, 0, H, 1),
+        //            PointExtensions.fromPolarCoordinates(R, t * 2 * (float)Math.PI, 0),
+        //            PointExtensions.fromPolarCoordinates(R, (t + step) * 2 * (float)Math.PI, 0) })
+        //        { color = c });
+        //    }
+        //    return cone;
+        //}
+        //public static Model CreateCuboid(float A, float B, float C, Color c)
+        //{
+        //    return new Model(
+        //        new Triangle(new List<Vector4>() { new Vector4(-A / 2f, -B / 2f, -C / 2f, 1), new Vector4(-A / 2f, -B / 2f, C / 2f, 1), new Vector4(-A / 2f, B / 2f, -C / 2f, 1) }) { color = c },
+        //        new Triangle(new List<Vector4>() { new Vector4(-A / 2f, B / 2f, C / 2f, 1), new Vector4(-A / 2f, -B / 2f, C / 2f, 1), new Vector4(-A / 2f, B / 2f, -C / 2f, 1) }) { color = c },
 
-                new Triangle(new List<Vector4>() {new Vector4(-A / 2f, -B / 2f, -C / 2f, 1), new Vector4(-A / 2f, -B / 2f, C / 2f, 1), new Vector4(A / 2f, -B / 2f, -C / 2f, 1) }) { color = c },
-                new Triangle(new List<Vector4>() {new Vector4(A / 2f, B / 2f, -C / 2f, 1), new Vector4(-A / 2f, -B / 2f, C / 2f, 1), new Vector4(A / 2f, -B / 2f, -C / 2f, 1) }) { color = c },
+        //        new Triangle(new List<Vector4>() {new Vector4(-A / 2f, -B / 2f, -C / 2f, 1), new Vector4(-A / 2f, -B / 2f, C / 2f, 1), new Vector4(A / 2f, -B / 2f, -C / 2f, 1) }) { color = c },
+        //        new Triangle(new List<Vector4>() {new Vector4(A / 2f, B / 2f, -C / 2f, 1), new Vector4(-A / 2f, -B / 2f, C / 2f, 1), new Vector4(A / 2f, -B / 2f, -C / 2f, 1) }) { color = c },
 
-                new Triangle(new List<Vector4>() {new Vector4(-A / 2f, -B / 2f, -C / 2f, 1), new Vector4(A / 2f, -B / 2f, -C / 2f, 1), new Vector4(-A / 2f, -B / 2f, C / 2f, 1) }) { color = c },
-                new Triangle(new List<Vector4>() {new Vector4(A / 2f, -B / 2f, C / 2f, 1), new Vector4(A / 2f, -B / 2f, -C / 2f, 1), new Vector4(-A / 2f, -B / 2f, C / 2f, 1) }) { color = c },
+        //        new Triangle(new List<Vector4>() {new Vector4(-A / 2f, -B / 2f, -C / 2f, 1), new Vector4(A / 2f, -B / 2f, -C / 2f, 1), new Vector4(-A / 2f, -B / 2f, C / 2f, 1) }) { color = c },
+        //        new Triangle(new List<Vector4>() {new Vector4(A / 2f, -B / 2f, C / 2f, 1), new Vector4(A / 2f, -B / 2f, -C / 2f, 1), new Vector4(-A / 2f, -B / 2f, C / 2f, 1) }) { color = c },
 
-                new Triangle(new List<Vector4>() {new Vector4(A / 2f, B / 2f, C / 2f, 1), new Vector4(A / 2f, B / 2f, -C / 2f, 1), new Vector4(A / 2f, -B / 2f, C / 2f, 1) }) { color = c },
-                new Triangle(new List<Vector4>() {new Vector4(A / 2f, -B / 2f, -C / 2f, 1), new Vector4(A / 2f, B / 2f, -C / 2f, 1), new Vector4(A / 2f, -B / 2f, C / 2f, 1) }) { color = c },
+        //        new Triangle(new List<Vector4>() {new Vector4(A / 2f, B / 2f, C / 2f, 1), new Vector4(A / 2f, B / 2f, -C / 2f, 1), new Vector4(A / 2f, -B / 2f, C / 2f, 1) }) { color = c },
+        //        new Triangle(new List<Vector4>() {new Vector4(A / 2f, -B / 2f, -C / 2f, 1), new Vector4(A / 2f, B / 2f, -C / 2f, 1), new Vector4(A / 2f, -B / 2f, C / 2f, 1) }) { color = c },
 
-                new Triangle(new List<Vector4>() {new Vector4(A / 2f, B / 2f, C / 2f, 1), new Vector4(A / 2f, B / 2f, -C / 2f, 1), new Vector4(-A / 2f, B / 2f, C / 2f, 1) }) { color = c },
-                new Triangle(new List<Vector4>() {new Vector4(-A / 2f, -B / 2f, C / 2f, 1), new Vector4(A / 2f, B / 2f, -C / 2f, 1), new Vector4(-A / 2f, B / 2f, C / 2f, 1) }) { color = c },
+        //        new Triangle(new List<Vector4>() {new Vector4(A / 2f, B / 2f, C / 2f, 1), new Vector4(A / 2f, B / 2f, -C / 2f, 1), new Vector4(-A / 2f, B / 2f, C / 2f, 1) }) { color = c },
+        //        new Triangle(new List<Vector4>() {new Vector4(-A / 2f, -B / 2f, C / 2f, 1), new Vector4(A / 2f, B / 2f, -C / 2f, 1), new Vector4(-A / 2f, B / 2f, C / 2f, 1) }) { color = c },
 
-                new Triangle(new List<Vector4>() {new Vector4(A / 2f, B / 2f, C / 2f, 1), new Vector4(-A / 2f, B / 2f, C / 2f, 1), new Vector4(A / 2f, B / 2f, -C / 2f, 1) }) { color = c },
-                new Triangle(new List<Vector4>() {new Vector4(-A / 2f, B / 2f, -C / 2f, 1), new Vector4(-A / 2f, B / 2f, C / 2f, 1), new Vector4(A / 2f, B / 2f, -C / 2f, 1) }) { color = c }
-                );
-        }
+        //        new Triangle(new List<Vector4>() {new Vector4(A / 2f, B / 2f, C / 2f, 1), new Vector4(-A / 2f, B / 2f, C / 2f, 1), new Vector4(A / 2f, B / 2f, -C / 2f, 1) }) { color = c },
+        //        new Triangle(new List<Vector4>() {new Vector4(-A / 2f, B / 2f, -C / 2f, 1), new Vector4(-A / 2f, B / 2f, C / 2f, 1), new Vector4(A / 2f, B / 2f, -C / 2f, 1) }) { color = c }
+        //        );
+        //}
     }
 }

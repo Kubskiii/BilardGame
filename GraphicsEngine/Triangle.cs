@@ -11,32 +11,25 @@ namespace GraphicsEngine
     public class Triangle
     {
         public static readonly int count = 3;
-        List<Vector4> points;
-        List<Vector4> NormalVectors;
+        List<(Vector4 point, Vector4 NormalVector)> parameters;
         public Color color = Colors.Black;
         public Vector4 NormalVector;
         public Vector4 Middle;
-        public Triangle(List<Vector4> _points)
+        public Triangle(List<(Vector4 point, Vector4 NormalVector)> _parameters)
         {
-            if (_points.Count() != count) throw new ArgumentException("Wrong number of points");
-            points = _points;
-            NormalVectors = _points;
-            NormalVector = new Vector4(NormalVectors.Average(v => v.X), NormalVectors.Average(v => v.Y), NormalVectors.Average(v => v.Z), 1);
-            //Vector3 N = Vector3.Normalize(Vector3.Cross(
-            //    new Vector3(points[1].X - points[0].X, points[1].Y - points[0].Y, points[1].Z - points[0].Z),
-            //    new Vector3(points[2].X - points[0].X, points[2].Y - points[0].Y, points[2].Z - points[0].Z)));
-            //NormalVector = new Vector4(N.X, N.Y, N.Z, 1);
-            Middle =new Vector4(points.Average(p => p.X), points.Average(p => p.Y), points.Average(p => p.Z), 1);
+            if (_parameters.Count != count) throw new ArgumentException("Wrong number of points");
+            parameters = _parameters;
+            NormalVector = new Vector4(parameters.Average(v => v.NormalVector.X), parameters.Average(v => v.NormalVector.Y), parameters.Average(v => v.NormalVector.Z), 1);
+            Middle =new Vector4(parameters.Average(p => p.point.X), parameters.Average(p => p.point.Y), parameters.Average(p => p.point.Z), 1);
         }
-        public IEnumerable<(Vector4 startPoint, Vector4 endPoint, Vector4 endNormal)> GetEdges()
+        public IEnumerable<(Vector4 point, Vector4 vector)> GetPointsAndNormalVectors()
         {
-            for (int i = 0; i < points.Count; i++)
-                yield return (points[(i + 1) % points.Count], points[i], NormalVectors[(i + 1) % points.Count]);
-        }
-        public IEnumerable<Vector4> GetPoints()
-        {
-            foreach (var point in points)
-                yield return point;
+            var prev = parameters.Last();
+            foreach(var par in parameters)
+            {
+                yield return par;
+                prev = par;
+            }
         }
     }
 }

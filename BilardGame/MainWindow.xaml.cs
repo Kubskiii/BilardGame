@@ -38,26 +38,9 @@ namespace BilardGame
 
         Model[] models = new Model[]
             {
-            new Model(new Triangle[]
-                {
-                    new Triangle(new List<Vector4>() { new Vector4(0, 0, 0, 1), new Vector4(1, 0, 0, 1), new Vector4(0, 1, 0, 1) }) { color = Colors.Red },
-                    new Triangle(new List<Vector4>() { new Vector4(0, 0, 0, 1), new Vector4(1, 0, 0, 1), new Vector4(0, 0, 1, 1) }) { color = Colors.Blue },
-                    new Triangle(new List<Vector4>() { new Vector4(0, 0, 0, 1), new Vector4(0, 1, 0, 1), new Vector4(0, 0, 1, 1) }) { color = Colors.Green },
-                    new Triangle(new List<Vector4>() { new Vector4(1, 0, 0, 1), new Vector4(0, 1, 0, 1), new Vector4(0, 0, 1, 1) }) { color = Colors.Pink }
-                }),
-            //new Model(new Triangle[]
-            //    {
-            //        new Triangle(new List<Vector4>() { new Vector4(0, 0, 0, 1), new Vector4(2, 0, 0, 1), new Vector4(0, 2, 0, 1) }) { color = Colors.Gray }, // XY
-            //        new Triangle(new List<Vector4>() { new Vector4(0, 0, 0, 1), new Vector4(2, 0, 0, 1), new Vector4(0, 0, 2, 1) }) { color = Colors.Wheat }, // XZ
-            //        new Triangle(new List<Vector4>() { new Vector4(0, 0, 0, 1), new Vector4(0, 2, 0, 1), new Vector4(0, 0, 2, 1) }) { color = Colors.Brown } // YZ 
-            //    }),
-            //new Model(new Triangle[]
-            //{
-            //    new Triangle(new List<Vector4> {new Vector4(3, 0, 0, 1), new Vector4(0, 3, 0, 1), new Vector4(6, 3, 0, 1)}) {color = Colors.DarkCyan },
-            //    new Triangle(new List<Vector4> {new Vector4(3, 6, 0, 1), new Vector4(0, 3, 0, 1), new Vector4(6, 3, 0, 1)}) {color = Colors.DarkCyan }
-            //}),
             ModelBuilder.CreateSphere(1, Colors.Magenta),
-            ModelBuilder.CreateSphere(0.8f, Colors.Red)
+            ModelBuilder.CreateSphere(0.8f, Colors.Red),
+            ModelBuilder.CreateTube(0.5f, 2, Colors.Orange)
             };
         CPUEngine engine;
         uint[,] colors;
@@ -68,9 +51,8 @@ namespace BilardGame
             InitializeComponent();
             engine = new CPUEngine(res);
             img.Source = BitmapExtensions.CreateBitmap(res);
-            models[0].Translate(2, 0, 0);
-            models[1].Translate(1, 0, 0);
-            models[2].Translate(0.8f, 0, 0);
+            models[0].Translate(1, 0, 0);
+            models[1].Translate(0.8f, 0, 0);
             worker.DoWork += Worker_DoWork;
             worker.RunWorkerCompleted += Worker_RunWorkerCompleted;
             worker.RunWorkerAsync();
@@ -84,17 +66,15 @@ namespace BilardGame
 
         private void Worker_DoWork(object sender, DoWorkEventArgs e)
         {
-            models[0].Translate(-2, 0, 0);
-            models[0].RotateZ((float)-Math.PI * 2 * 0.02f);
-            models[0].Translate(2, 0, 0);
+            models[0].Translate(-1, 0, 0);
+            models[0].RotateZ((float)Math.PI * 2 * 0.02f);
+            models[0].Translate(1, 0, 0);
 
-            models[1].Translate(-1, 0, 0);
-            models[1].RotateZ((float)Math.PI * 2 * 0.02f);
-            models[1].Translate(1, 0, 0);
+            models[1].Translate(-0.8f, 0, 0);
+            models[1].RotateZ((float)-Math.PI * 2 * 0.02f);
+            models[1].Translate(0.8f, 0, 0);
 
-            models[2].Translate(-0.8f, 0, 0);
-            models[2].RotateZ((float)-Math.PI * 2 * 0.02f);
-            models[2].Translate(0.8f, 0, 0);
+            models[2].RotateY((float)Math.PI * 2 * 0.02f);
 
             colors = engine.Render(models);
         }
