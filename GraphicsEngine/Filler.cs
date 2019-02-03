@@ -35,7 +35,7 @@ namespace GraphicsEngine
         int Ymin = int.MaxValue;
         public Filler(int size)
         {
-            bucketTable = new Node[size];
+            bucketTable = new Node[size + 1];
         }
         void FillTable(IEnumerable<Vector3> Polygon)
         {

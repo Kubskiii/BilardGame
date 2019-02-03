@@ -82,8 +82,8 @@ namespace GraphicsEngine
         public uint[,] Render(IEnumerable<Model> models)
         {
             int count = 0;
-            uint[,] colors = new uint[resolution.Width, resolution.Height];
-            Zbuffer = new float[resolution.Width, resolution.Height];
+            uint[,] colors = new uint[resolution.Width + 1, resolution.Height + 1];
+            Zbuffer = new float[resolution.Width + 1, resolution.Height + 1];
             foreach (var model in models)
             {
                 Parallel.ForEach(model, triangle =>

@@ -43,7 +43,7 @@ namespace GraphicsEngine
         }
         public void Transform(Matrix4x4 transformationMatrix)
         {
-            modelMatrix *= transformationMatrix;
+            modelMatrix = transformationMatrix * modelMatrix;
         }
         public IEnumerator<Triangle> GetEnumerator()
         {
