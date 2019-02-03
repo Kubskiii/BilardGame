@@ -25,13 +25,13 @@ namespace GraphicsEngine
         }
         Matrix4x4 projectionMatrix;
         Matrix4x4 viewMatrix;
-        Vector3 cameraPos = Vector3.Normalize(new Vector3(3, 3, 3));
+        Vector3 cameraPos = new Vector3(10, 10, 10);
         List<Vector3> Lights = new List<Vector3>() { Vector3.Normalize(new Vector3(0, 0, 1)) };
         Vector3 V = Vector3.Normalize(new Vector3(3, 3, 3));
         public CPUEngine(Resolution _resolution)
         {
             resolution = _resolution;
-            viewMatrix = CameraBuilder.CreateLookAt(new Vector3(15, 15, 15), new Vector3(0, 0, 0), new Vector3(0, 0, 1));
+            viewMatrix = CameraBuilder.CreateLookAt(new Vector3(10, 10, 10), new Vector3(0, 0, 0), new Vector3(0, 0, 1));
             projectionMatrix = ProjectionBuilder.CreatePerspectiveOfView((float)Math.PI / 3, resolution.AspectRatio);
         }
         public void ChangeCameraPosition(Vector3 position, Vector3 target)
@@ -66,10 +66,10 @@ namespace GraphicsEngine
             {
                 foreach (var triangle in model)
                 {
-                    //var normalToMiddle = Vector3.Normalize(model.matrix.Multiply(triangle.NormalVector).To3Dim());
-                    //var view = Vector3.Normalize(model.matrix.Multiply(triangle.Middle).To3Dim() - cameraPos);
-                    //if (Vector3.Dot(normalToMiddle, view) < 0) continue;
-                    //count++;
+                    var normalToMiddle = Vector3.Normalize(model.matrix.Multiply(triangle.NormalVector).To3Dim());
+                    var view = Vector3.Normalize(model.matrix.Multiply(triangle.Middle).To3Dim() - cameraPos);
+                    if (Vector3.Dot(normalToMiddle, view) > 0) continue;
+                    count++;
                     var barycentricPoints = new List<Vector3>();
                     var normalVectors = new List<Vector3>();
                     var points = new List<Vector3>();
@@ -111,15 +111,17 @@ namespace GraphicsEngine
                             }
                         });
                     }
-
-                    var lolo = VertexShader(model.matrix, triangle.Middle, triangle.NormalVector);
-                    var lolo2 = VertexShader(model.matrix, triangle.Middle + 2 * triangle.NormalVector, triangle.NormalVector);
-                    if (isNormal(lolo.barycentricPoint) && isNormal(lolo2.barycentricPoint))
-                    {
-                        var v1 = resolution.ToScreen(lolo.barycentricPoint);
-                        var v2 = resolution.ToScreen(lolo2.barycentricPoint);
-                        DrawLine(v1.X, v1.Y, v2.X, v2.Y, colors);
-                    }
+                    
+                    //var lolo = VertexShader(model.matrix, triangle.Middle, triangle.NormalVector);
+                    //var lolo2 = VertexShader(model.matrix, triangle.Middle + triangle.NormalVector, triangle.NormalVector);
+                    //var l = triangle.NormalVector.Length();
+                    //if (l < 0.9) count++;
+                    //if (isNormal(lolo.barycentricPoint) && isNormal(lolo2.barycentricPoint))
+                    //{
+                    //    var v1 = resolution.ToScreen(lolo.barycentricPoint);
+                    //    var v2 = resolution.ToScreen(lolo2.barycentricPoint);
+                    //    DrawLine(v1.X, v1.Y, v2.X, v2.Y, colors);
+                    //}
                 }
             }
             return colors;
@@ -127,12 +129,53 @@ namespace GraphicsEngine
 
         static void DrawLine(float x1, float y1, float x2, float y2, uint[,] colors)
         {
-            float M = (y2 - y1) / (x2 - x1);
-            float y = y1;
-            for(int x = (int)x1; x <= (int)x2; x++)
+            const int size = 1;
+            int dx = (int)Math.Abs(x1 - x2);
+            int dy = (int)Math.Abs(y1 - y2);
+            int xi = x2 > x1 ? size : -size;
+            int yi = y2 > y1 ? size : -size;
+            colors[(int)x1, (int)y1] = BitmapExtensions.ConvertColor(Colors.Green);
+            if (dx > dy)
             {
-                colors[x, (int)y] = BitmapExtensions.ConvertColor(Colors.Green);
-                y += M;
+                int d = 2 * dy - dx; //initial value of d
+                int incrE = 2 * dy; //increment used for move to E
+                int incrNE = 2 * (dy - dx); //increment used for move to NE
+                while (x1 != x2)
+                {
+                    if (d < 0) //choose E
+                    {
+                        d += incrE;
+                        x1 += xi;
+                    }
+                    else //choose NE
+                    {
+                        d += incrNE;
+                        x1 += xi;
+                        y1 += yi;
+                    }
+                    colors[(int)x1, (int)y1] = BitmapExtensions.ConvertColor(Colors.Green);
+                }
+            }
+            else
+            {
+                int d = 2 * dx - dy;
+                int incrE = 2 * dx;
+                int incrNE = 2 * (dx - dy);
+                while (y1 != y2)
+                {
+                    if (d < 0)
+                    {
+                        d += incrE;
+                        y1 += yi;
+                    }
+                    else
+                    {
+                        d += incrNE;
+                        x1 += xi;
+                        y1 += yi;
+                    }
+                    colors[(int)x1, (int)y1] = BitmapExtensions.ConvertColor(Colors.Green);
+                }
             }
         }
     }
