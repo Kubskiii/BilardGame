@@ -8,19 +8,20 @@ using System.Windows.Media;
 
 namespace TheGame
 {
-    class GameParameters
+    static class GameParameters
     {
-        readonly public float ballR = 1;
-        readonly public float stickR = 0.5f;
-        readonly public float stickL = 40;
-        readonly public float tableWidth = 40;
-        readonly public float tableDepth = 80;
-        readonly public float angle = (float)Math.PI / 300;
-        public readonly Color[] ballColors = new Color[6]
+        static readonly public float ballR = 1;
+        static readonly public float stickR = 0.5f;
+        static readonly public float stickL = 40;
+        static readonly public float tableWidth = 40;
+        static readonly public float tableDepth = 80;
+        static readonly public float angle = (float)Math.PI / 100;
+        static readonly public float powerStep = 0.5f;
+        static readonly public float maxPower = 10;
+        static readonly public float releaseSpeed = 1;
+        static readonly public float v = 0.2f;
+        static readonly public float a = -0.01f;
+        static public readonly Color[] ballColors = new Color[6]
             { Colors.Red, Colors.Yellow, Colors.Blue, Colors.Magenta, Colors.Orange, Colors.DarkGray };
-        public List<ObjectParameters> balls = new List<ObjectParameters>();
-        public ObjectParameters whiteBall;
-        public ObjectParameters stick;
-        public ObjectParameters table;
     }
 }

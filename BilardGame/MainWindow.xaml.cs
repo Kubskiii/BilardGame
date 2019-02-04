@@ -71,6 +71,19 @@ namespace BilardGame
                 case Key.Right:
                     game.RotateStickRigth();
                     break;
+                case Key.Space:
+                    game.HoldOnStick();
+                    break;
+            }
+        }
+
+        private void Window_KeyUp(object sender, KeyEventArgs e)
+        {
+            switch(e.Key)
+            {
+                case Key.Space:
+                    game.HoldOffStick();
+                    break;
             }
         }
     }
