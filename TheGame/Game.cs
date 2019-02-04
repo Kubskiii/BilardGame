@@ -145,6 +145,27 @@ namespace TheGame
         //    ball.position.Y += y;
         //    ball.model.Translate(x, y, 0);
         //}
+        IEnumerable<ObjectParameters> AllBalls()
+        {
+            foreach (var b in balls) yield return b;
+            yield return whiteBall;
+        }
+        void UpdateBallPosition(ObjectParameters ball)
+        {
+            var dist = ball.UpdatePosition(GameParameters.ballAcceleration);
+            if(ball.position.X + GameParameters.ballRadius > GameParameters.tableWidth / 2
+                || ball.position.X - GameParameters.ballRadius < -GameParameters.tableWidth / 2)
+            {
+                var newAngle = (float)Math.PI - ball.directionAngle;
+                ball.ApplyVelocity(ball.velocity, newAngle);
+            }
+            if(ball.position.Y + GameParameters.ballRadius > GameParameters.tableDepth / 2
+                || ball.position.Y - GameParameters.ballRadius < -GameParameters.tableDepth / 2)
+            {
+                var newAngle = -ball.directionAngle;
+                ball.ApplyVelocity(ball.velocity, newAngle);
+            }
+        }
         public void RotateStickLeft() => rotateLeft = true;
         public void RotateStickRigth() => rotateRigth = true;
         public void HoldStick()
@@ -165,6 +186,7 @@ namespace TheGame
         {
             if (!duringMove)
             {
+                #region setting hit parameters
                 if (Hold)
                 {
                     if (power < GameParameters.maxPower)
@@ -184,6 +206,7 @@ namespace TheGame
                     stick.Rotate(GameParameters.angleStep);
                     rotateRigth = false;
                 }
+                #endregion
             }
             else
             {
@@ -196,8 +219,12 @@ namespace TheGame
                 }
                 else
                 {
-                    if (whiteBall.velocity > 0)
-                        whiteBall.UpdatePosition(GameParameters.ballAcceleration);
+                    if (balls.Sum(b => b.velocity) + whiteBall.velocity > 0)
+                    {
+                        UpdateBallPosition(whiteBall);
+                        foreach (var b in balls)
+                            UpdateBallPosition(b);
+                    }
                     else
                     {
                         duringMove = false;

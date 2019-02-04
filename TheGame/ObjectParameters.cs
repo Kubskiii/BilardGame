@@ -42,15 +42,19 @@ namespace TheGame
             velocity = _velocity;
             directionAngle = _directionAngle;
         }
-        public void UpdatePosition(float acceleration)
+        public (float x, float y) UpdatePosition(float acceleration)
         {
             if(velocity > 0)
             {
                 acceleration = Math.Min(velocity, acceleration);
-                Move((float)Math.Cos(directionAngle) * velocity, (float)Math.Sin(directionAngle) * velocity);
+                var x = (float)Math.Cos(directionAngle) * velocity;
+                var y = (float)Math.Sin(directionAngle) * velocity;
+                Move(x, y);
                 velocity -= acceleration;
                 if (velocity == 0) directionAngle = 0;
+                return (x, y);
             }
+            return (0, 0);
         }
     }
 }
