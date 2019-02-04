@@ -21,6 +21,7 @@ namespace TheGame
         static readonly public float releaseSpeed = 1;
         static readonly public float ballVelocity = 0.2f;
         static readonly public float ballAcceleration = 0.01f;
+        static readonly public float eps = 0.1f;
         static public readonly Color[] ballColors = new Color[6]
             {
                 Colors.Red,

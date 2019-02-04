@@ -104,47 +104,6 @@ namespace TheGame
             models.Add(ball);
             whiteBall = new ObjectParameters(ball, new Vector3(0, 0, GameParameters.ballRadius));
         }
-        //void MoveBall(ObjectParameters ball, float x, float y)
-        //{
-        //    if(ball.position.X + x > GameParameters.tableWidth / 2 - GameParameters.ballR)
-        //    {
-        //        var dir = Vector2.Normalize(new Vector2(x, y));
-        //        var N = new Vector2(0, 1);
-        //        var cos = Vector2.Dot(dir, N);
-        //        x *= -1;
-        //        ball.directionAngle += 2 * (float)Math.Acos(cos);
-        //    }
-
-        //    if(ball.position.X + x < -GameParameters.tableWidth / 2 + GameParameters.ballR)
-        //    {
-        //        var dir = Vector2.Normalize(new Vector2(x, y));
-        //        var N = new Vector2(0, -1);
-        //        var cos = Vector2.Dot(dir, N);
-        //        x *= -1;
-        //        ball.directionAngle += 2 * (float)Math.Acos(cos);
-        //    }
-
-        //    if(ball.position.Y + y > GameParameters.tableDepth / 2 - GameParameters.ballR)
-        //    {
-        //        var dir = Vector2.Normalize(new Vector2(x, y));
-        //        var N = new Vector2(-1, 0);
-        //        var cos = Vector2.Dot(dir, N);
-        //        y *= -1;
-        //        ball.directionAngle += 2 * (float)Math.Acos(cos);
-        //    }
-
-        //    if (ball.position.Y + y < -GameParameters.tableDepth / 2 + GameParameters.ballR)
-        //    {
-        //        var dir = Vector2.Normalize(new Vector2(x, y));
-        //        var N = new Vector2(1, 0);
-        //        var cos = Vector2.Dot(dir, N);
-        //        y *= -1;
-        //        ball.directionAngle += 2 * (float)Math.Acos(cos);
-        //    }
-        //    ball.position.X += x;
-        //    ball.position.Y += y;
-        //    ball.model.Translate(x, y, 0);
-        //}
         IEnumerable<ObjectParameters> AllBalls()
         {
             foreach (var b in balls) yield return b;
@@ -153,18 +112,45 @@ namespace TheGame
         void UpdateBallPosition(ObjectParameters ball)
         {
             var dist = ball.UpdatePosition(GameParameters.ballAcceleration);
-            if(ball.position.X + GameParameters.ballRadius > GameParameters.tableWidth / 2
-                || ball.position.X - GameParameters.ballRadius < -GameParameters.tableWidth / 2)
+            if(ball.position.X + GameParameters.ballRadius > GameParameters.tableWidth / 2)
             {
+                var alpha = 1 - (GameParameters.tableWidth / 2 - ball.position.X - GameParameters.ballRadius + dist.x) / dist.x;
+                ball.Move(-dist.x * alpha, -dist.y * alpha);
                 var newAngle = (float)Math.PI - ball.directionAngle;
-                ball.ApplyVelocity(ball.velocity, newAngle);
+                ball.ApplyVelocity(ball.velocity - GameParameters.ballAcceleration, newAngle);
             }
-            if(ball.position.Y + GameParameters.ballRadius > GameParameters.tableDepth / 2
-                || ball.position.Y - GameParameters.ballRadius < -GameParameters.tableDepth / 2)
+            else if (ball.position.X - GameParameters.ballRadius < -GameParameters.tableWidth / 2)
             {
-                var newAngle = -ball.directionAngle;
-                ball.ApplyVelocity(ball.velocity, newAngle);
+                var alpha = 1 - (-GameParameters.tableWidth / 2 - ball.position.X + GameParameters.ballRadius + dist.x) / dist.x;
+                ball.Move(-dist.x * alpha, -dist.y * alpha);
+                var newAngle = (float)Math.PI - ball.directionAngle;
+                ball.ApplyVelocity(ball.velocity - GameParameters.ballAcceleration, newAngle);
             }
+            if (ball.position.Y + GameParameters.ballRadius > GameParameters.tableDepth / 2)
+            {
+                var alpha = 1 - (GameParameters.tableDepth / 2 - ball.position.Y - GameParameters.ballRadius + dist.y) / dist.y;
+                ball.Move(-dist.x * alpha, -dist.y * alpha);
+                var newAngle = -ball.directionAngle;
+                ball.ApplyVelocity(ball.velocity - GameParameters.ballAcceleration, newAngle);
+            }
+            else if (ball.position.Y - GameParameters.ballRadius < -GameParameters.tableDepth / 2)
+            {
+                var alpha = 1 - (-GameParameters.tableDepth / 2 - ball.position.Y * GameParameters.ballRadius + dist.y) / dist.y;
+                ball.Move(-dist.x * alpha, -dist.y * alpha);
+                var newAngle = -ball.directionAngle;
+                ball.ApplyVelocity(ball.velocity - GameParameters.ballAcceleration, newAngle);
+            }
+
+            foreach (var b in AllBalls())
+            if(b != ball)
+                if((b.position - ball.position).Length() + GameParameters.eps <=GameParameters.ballRadius * 2)
+                {
+                    //ball.Move(-dist.x, -dist.y);
+                    var newAngle = (float)Math.Atan((b.position.X - ball.position.X) / (b.position.Y - ball.position.Y));
+                    ball.ApplyVelocity(ball.velocity, ball.directionAngle * 2f / 3 - newAngle);
+                    b.ApplyVelocity(ball.velocity, newAngle);
+                    //b.UpdatePosition(GameParameters.ballAcceleration);
+                }
         }
         public void RotateStickLeft() => rotateLeft = true;
         public void RotateStickRigth() => rotateRigth = true;
@@ -196,15 +182,18 @@ namespace TheGame
                             stick.MoveInDirection(stick.directionAngle, GameParameters.powerStep);
                     }
                 }
-                if (rotateLeft)
+                else
                 {
-                    stick.Rotate(-GameParameters.angleStep);
-                    rotateLeft = false;
-                }
-                if (rotateRigth)
-                {
-                    stick.Rotate(GameParameters.angleStep);
-                    rotateRigth = false;
+                    if (rotateLeft)
+                    {
+                        stick.Rotate(-GameParameters.angleStep);
+                        rotateLeft = false;
+                    }
+                    if (rotateRigth)
+                    {
+                        stick.Rotate(GameParameters.angleStep);
+                        rotateRigth = false;
+                    }
                 }
                 #endregion
             }
