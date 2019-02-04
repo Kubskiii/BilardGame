@@ -24,8 +24,8 @@ namespace GraphicsEngine
         }
         public Vector3 ToScreen(Vector3 point)
         {
-            if (Math.Abs(point.X) > 1 || Math.Abs(point.Y) > 1)
-                throw new ArgumentException("given point not in normal coordinates");
+            //if (Math.Abs(point.X) > 1 || Math.Abs(point.Y) > 1)
+            //    throw new ArgumentException("given point not in normal coordinates");
             point.X = (int)(point.X * (Width / 2) + (Width / 2));
             point.Y = (int)(point.Y * (-Height / 2) + (Height / 2));
             return point;

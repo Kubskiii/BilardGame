@@ -20,7 +20,7 @@ namespace GraphicsEngine
             {
                 Ymax = Math.Max((int)p1.Y, (int)p2.Y);
                 xmin = Ymax == p1.Y ? p2.X : p1.X;
-                fracM = (float)(p1.X - p2.X) / (p1.Y - p2.Y);
+                fracM = (p1.X - p2.X) / (p1.Y - p2.Y);
                 next = _next;
             }
             public static Node operator ++(Node n)
@@ -33,9 +33,11 @@ namespace GraphicsEngine
         Node scanLine;
         int Ymax = 0;
         int Ymin = int.MaxValue;
-        public Filler(int size)
+        Resolution res;
+        public Filler(Resolution _res)
         {
-            bucketTable = new Node[size + 1];
+            res = _res;
+            bucketTable = new Node[res.Height + 1];
         }
         void FillTable(IEnumerable<Vector3> Polygon)
         {
@@ -44,10 +46,13 @@ namespace GraphicsEngine
             foreach (var p in Polygon)
             {
                 int position = Math.Min((int)prevPoint.Y, (int)p.Y);
-                bucketTable[position] = new Node(prevPoint, p, bucketTable[position]);
+                if (position < res.Height && position > 0)
+                {
+                    bucketTable[position] = new Node(prevPoint, p, bucketTable[position]);
+                    Ymax = Math.Max((int)Ymax, (int)p.Y);
+                    Ymin = Math.Min((int)Ymin, (int)p.Y);
+                }
                 prevPoint = p;
-                Ymax = Math.Max((int)Ymax, (int)p.Y);
-                Ymin = Math.Min((int)Ymin, (int)p.Y);
             }
         }
         void InsertSorted(Node newNode)
@@ -80,7 +85,7 @@ namespace GraphicsEngine
             scanLine = null;
             // sort edges
             FillTable(Polygon);
-            for (int y = Ymin; y <= Ymax; y++)
+            for (int y = Ymin; y <= Math.Min(Ymax, res.Height - 1); y++)
             {
                 // delete edges and correct crossing points
                 for (Node n = scanLine, prevn = null; n != null; n = n.next)
@@ -106,7 +111,9 @@ namespace GraphicsEngine
                     for (Node n = scanLine; n != null && n.next != null; n = n.next)
                         if (draw)
                         {
-                            for (int x = (int)RoundUp(n.Xmin); x <= (int)n.next.Xmin; x++) Fill(x, y);
+                            int min = Math.Max(0, (int)RoundUp(n.Xmin));
+                            int max = Math.Min((int)n.next.Xmin, res.Width - 1);
+                            for (int x = min; x <= max; x++) Fill(x, y);
                             draw = false;
                         }
                         else draw = true;

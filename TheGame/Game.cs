@@ -27,7 +27,7 @@ namespace TheGame
         {
             engine = new CPUEngine(res);
             engine.FOV = 90;
-            engine.ChangeCameraPosition(new Vector3(-20, 0, 80), new Vector3(0, 0, 0));
+            engine.ChangeCameraPosition(new Vector3(-10, 0, 10), new Vector3(0, 0, 0));
             engine.SwitchToGouraudShading();
             engine.AddLight(new PointLight(new Vector3(0, 0, 20)));
 

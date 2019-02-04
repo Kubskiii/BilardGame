@@ -27,7 +27,7 @@ namespace GraphicsEngine
             set
             {
                 res = value;
-                filler = new Filler(value.Height);
+                //filler = new Filler(value);
                 projectionMatrix = ProjectionBuilder.CreatePerspectiveOfView(fov, res.AspectRatio);
             }
         }
@@ -81,7 +81,6 @@ namespace GraphicsEngine
         }
         public uint[,] Render(IEnumerable<Model> models)
         {
-            int count = 0;
             uint[,] colors = new uint[resolution.Width + 1, resolution.Height + 1];
             Zbuffer = new float[resolution.Width + 1, resolution.Height + 1];
             foreach (var model in models)
@@ -93,23 +92,25 @@ namespace GraphicsEngine
                     var normalToMiddle = Vector3.Normalize(model.matrix.Multiply(triangle.NormalVector).To3Dim());
                     var view = Vector3.Normalize(middle - cameraPos);
                     if (Vector3.Dot(normalToMiddle, view) > 0) return;
-                    var filler1 = new Filler(resolution.Height);
-                    count++;
+                    var filler1 = new Filler(resolution);
                     var barycentricPoints = new List<Vector3>();
                     var normalVectors = new List<Vector3>();
                     var points = new List<Vector3>();
+                    int count = 0;
                     foreach (var vertex in triangle.GetPointsAndNormalVectors())
                     {
                         var parameters = VertexShader(model.matrix, vertex.point, vertex.vector);
-                        if (isNormal(parameters.barycentricPoint))
-                        {
-                            barycentricPoints.Add(resolution.ToScreen(parameters.barycentricPoint));
-                            normalVectors.Add(parameters.normalVector);
-                            points.Add(parameters.point);
-                        }
-                        else break;
+                        if (isNormal(parameters.barycentricPoint)) count++;
+                        //if (isNormal(parameters.barycentricPoint))
+                        //{
+                        barycentricPoints.Add(resolution.ToScreen(parameters.barycentricPoint));
+                        normalVectors.Add(parameters.normalVector);
+                        points.Add(parameters.point);
+                        //}
+                        //else break;
                     }
-                    if (barycentricPoints.Count == Triangle.count)
+                    //if (barycentricPoints.Count == Triangle.count)
+                    if(count > 0)
                     {
                         var plane = getPlaneVector(barycentricPoints[0], barycentricPoints[1], barycentricPoints[2]);
                         switch (shading)

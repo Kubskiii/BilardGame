@@ -11,13 +11,7 @@ namespace GraphicsEngine
     public static class ModelBuilder
     {
         const float step = 0.08f;
-        /// <summary>
-        /// Create sphere model with given radius
-        /// </summary>
-        /// <remarks>center of sphere located in he begining of coordinate system</remarks>
-        /// <param name="R">sphere radius</param>
-        /// <param name="c">sphere color</param>
-        /// <returns>sphere model</returns>
+
         public static Model CreateSphere(float R, Color c)
         {
             Model sphere = new Model();
@@ -90,9 +84,11 @@ namespace GraphicsEngine
         }
         public static Model CreateTube(float R, float H, Color c)
         {
+            const int heightDivide = 20;
             Model tube = new Model();
             for (float t = 0; t < 1; t += step)
             {
+                // up
                 var n = new Vector4(0, 0, -1, 0);
                 tube.Add(new Triangle(new List<(Vector4, Vector4)>() {
                     (new Vector4(0, 0, 0, 1), n),
@@ -100,54 +96,42 @@ namespace GraphicsEngine
                     (PointExtensions.fromPolarCoordinates(R, (t + step) * 2 * (float)Math.PI, 0), n) })
                 { color = c });
 
-                var p1 = PointExtensions.fromPolarCoordinates(R, t * 2 * (float)Math.PI, 0);
-                var p2 = PointExtensions.fromPolarCoordinates(R, (t + step) * 2 * (float)Math.PI, 0);
-                var p3 = PointExtensions.fromPolarCoordinates(R, t * 2 * (float)Math.PI, H);
-                var p4 = PointExtensions.fromPolarCoordinates(R, (t + step) * 2 * (float)Math.PI, H);
-
-                var n1 = (new Vector4(p1.X, p1.Y, 0, 1)).ToNormalVector();
-                var n2 = (new Vector4(p2.X, p2.Y, 0, 1)).ToNormalVector();
-                var n3 = (new Vector4(p3.X, p3.Y, 0, 1)).ToNormalVector();
-                var n4 = (new Vector4(p4.X, p4.Y, 0, 1)).ToNormalVector();
-
-                tube.Add(new Triangle(new List<(Vector4, Vector4)>() {
-                    (p1, n1),
-                    (p2, n2),
-                    (p3, n3)})
-                { color = c });
-                tube.Add(new Triangle(new List<(Vector4, Vector4)>() {
-                    (p2, n2),
-                    (p4, n4),
-                    (p3, n3)})
-                { color = c });
-
+                // down
                 n = new Vector4(0, 0, 1, 0);
                 tube.Add(new Triangle(new List<(Vector4, Vector4)>() {
                     (new Vector4(0, 0, H, 1), n),
                     (PointExtensions.fromPolarCoordinates(R, t * 2 * (float)Math.PI, H), n),
                     (PointExtensions.fromPolarCoordinates(R, (t + step) * 2 * (float)Math.PI, H), n) })
                 { color = c });
+
+                for (int i = 0; i < heightDivide; i++)
+                {
+                    var p1 = PointExtensions.fromPolarCoordinates(R, t * 2 * (float)Math.PI, (float)i/heightDivide * H);
+                    var p2 = PointExtensions.fromPolarCoordinates(R, (t + step) * 2 * (float)Math.PI, (float)i / heightDivide * H);
+                    var p3 = PointExtensions.fromPolarCoordinates(R, t * 2 * (float)Math.PI, (float)(i + 1) / heightDivide * H);
+                    var p4 = PointExtensions.fromPolarCoordinates(R, (t + step) * 2 * (float)Math.PI, (float)(i + 1) / heightDivide * H);
+
+                    var n1 = (new Vector4(p1.X, p1.Y, 0, 1)).ToNormalVector();
+                    var n2 = (new Vector4(p2.X, p2.Y, 0, 1)).ToNormalVector();
+                    var n3 = (new Vector4(p3.X, p3.Y, 0, 1)).ToNormalVector();
+                    var n4 = (new Vector4(p4.X, p4.Y, 0, 1)).ToNormalVector();
+
+                    tube.Add(new Triangle(new List<(Vector4, Vector4)>() {
+                    (p1, n1),
+                    (p2, n2),
+                    (p3, n3)})
+                    { color = c });
+                    tube.Add(new Triangle(new List<(Vector4, Vector4)>() {
+                    (p2, n2),
+                    (p4, n4),
+                    (p3, n3)})
+                    { color = c });
+                }
+
             }
             return tube;
         }
-        //public static Model CreateCone(float R, float H, Color c)
-        //{
-        //    Model cone = new Model();
-        //    for (float t = 0; t < 1; t += step)
-        //    {
-        //        cone.Add(new Triangle(new List<Vector4>() {
-        //            new Vector4(0, 0, 0, 1),
-        //            PointExtensions.fromPolarCoordinates(R, t * 2 * (float)Math.PI, 0),
-        //            PointExtensions.fromPolarCoordinates(R, (t + step) * 2 * (float)Math.PI, 0) })
-        //        { color = c });
-        //        cone.Add(new Triangle(new List<Vector4>() {
-        //            new Vector4(0, 0, H, 1),
-        //            PointExtensions.fromPolarCoordinates(R, t * 2 * (float)Math.PI, 0),
-        //            PointExtensions.fromPolarCoordinates(R, (t + step) * 2 * (float)Math.PI, 0) })
-        //        { color = c });
-        //    }
-        //    return cone;
-        //}
+
         public static Model CreateCuboid(float A, float B, float C, Color c)
         {
             var p1 = new Vector4(-A / 2, -B / 2, -C / 2, 1);
