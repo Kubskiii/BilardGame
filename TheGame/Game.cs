@@ -22,12 +22,11 @@ namespace TheGame
         bool Hold = false;
         bool duringMove = false;
         float power = 0;
-        float ballV;
         public Game(Resolution res)
         {
             engine = new CPUEngine(res);
             engine.FOV = 90;
-            engine.ChangeCameraPosition(new Vector3(-10, 0, 10), new Vector3(0, 0, 0));
+            engine.ChangeCameraPosition(new Vector3(-30, 0, 30), new Vector3(0, 0, 0));
             engine.SwitchToGouraudShading();
             engine.AddLight(new PointLight(new Vector3(0, 0, 20)));
 
@@ -35,35 +34,29 @@ namespace TheGame
             AddTable(Colors.DarkGreen);
             AddStick(Colors.Brown);
             AddWhiteBall();
-            BallTriangle(0, 5);
+            AddBallTriangle(0, 5);
         }
-        void AddBall(Color color)
+        void AddBall(Color color, float x, float y)
         {
-            var ball = ModelBuilder.CreateSphere(GameParameters.ballR, color);
-            var position = new Vector3(0, 0, GameParameters.ballR);
+            var ball = ModelBuilder.CreateSphere(GameParameters.ballRadius, color);
+            var position = new Vector3(x, y, GameParameters.ballRadius);
             ball.Translate(position.X, position.Y, position.Z);
             models.Add(ball);
             balls.Add(new ObjectParameters(ball, position));
         }
-        void BallTriangle(float x, float y)
+        void AddBallTriangle(float x, float y)
         {
-            float yStep = (float)Math.Sqrt(3) * GameParameters.ballR;
-            AddBall(GameParameters.ballColors[0]);
-            MoveBall(balls[balls.Count - 1], x, y);
+            float yStep = (float)Math.Sqrt(3) * GameParameters.ballRadius;
+            AddBall(GameParameters.ballColors[0], x, y);
 
             y += yStep;
-            AddBall(GameParameters.ballColors[1]);
-            MoveBall(balls[balls.Count - 1], x - GameParameters.ballR, y);
-            AddBall(GameParameters.ballColors[2]);
-            MoveBall(balls[balls.Count - 1], x + GameParameters.ballR, y);
+            AddBall(GameParameters.ballColors[1], x - GameParameters.ballRadius, y);
+            AddBall(GameParameters.ballColors[2], x + GameParameters.ballRadius, y);
 
             y += yStep;
-            AddBall(GameParameters.ballColors[3]);
-            MoveBall(balls[balls.Count - 1], x, y);
-            AddBall(GameParameters.ballColors[4]);
-            MoveBall(balls[balls.Count - 1], x - 2 * GameParameters.ballR, y);
-            AddBall(GameParameters.ballColors[5]);
-            MoveBall(balls[balls.Count - 1], x + 2 * GameParameters.ballR, y);
+            AddBall(GameParameters.ballColors[3], x, y);
+            AddBall(GameParameters.ballColors[4], x - 2 * GameParameters.ballRadius, y);
+            AddBall(GameParameters.ballColors[5], x + 2 * GameParameters.ballRadius, y);
         }
         void AddTable(Color c)
         {
@@ -98,135 +91,119 @@ namespace TheGame
         }
         void AddStick(Color c)
         {
-            var model = ModelBuilder.CreateTube(GameParameters.stickR, GameParameters.stickL, c);
+            var model = ModelBuilder.CreateTube(GameParameters.stickRadius, GameParameters.stickLength, c);
             model.RotateX((float)Math.PI / 2);
-            model.Translate(0, -GameParameters.ballR, GameParameters.ballR);
+            model.Translate(0, -GameParameters.ballRadius, GameParameters.ballRadius);
             models.Add(model);
-            stick = new ObjectParameters(model, new Vector3(0, 0, GameParameters.ballR));
+            stick = new ObjectParameters(model, new Vector3(0, 0, GameParameters.ballRadius));
         }
         void AddWhiteBall()
         {
-            var ball = ModelBuilder.CreateSphere(GameParameters.ballR, Colors.White);
-            ball.Translate(0, 0, GameParameters.ballR);
+            var ball = ModelBuilder.CreateSphere(GameParameters.ballRadius, Colors.White);
+            ball.Translate(0, 0, GameParameters.ballRadius);
             models.Add(ball);
-            whiteBall = new ObjectParameters(ball, new Vector3(0, 0, GameParameters.ballR));
+            whiteBall = new ObjectParameters(ball, new Vector3(0, 0, GameParameters.ballRadius));
         }
-        void MoveBall(ObjectParameters ball, float x, float y)
-        {
-            if(ball.position.X + x > GameParameters.tableWidth / 2 - GameParameters.ballR)
-            {
-                var dir = Vector2.Normalize(new Vector2(x, y));
-                var N = new Vector2(0, 1);
-                var cos = Vector2.Dot(dir, N);
-                x *= -1;
-                ball.directionAngle += 2 * (float)Math.Acos(cos);
-            }
+        //void MoveBall(ObjectParameters ball, float x, float y)
+        //{
+        //    if(ball.position.X + x > GameParameters.tableWidth / 2 - GameParameters.ballR)
+        //    {
+        //        var dir = Vector2.Normalize(new Vector2(x, y));
+        //        var N = new Vector2(0, 1);
+        //        var cos = Vector2.Dot(dir, N);
+        //        x *= -1;
+        //        ball.directionAngle += 2 * (float)Math.Acos(cos);
+        //    }
 
-            if(ball.position.X + x < -GameParameters.tableWidth / 2 + GameParameters.ballR)
-            {
-                var dir = Vector2.Normalize(new Vector2(x, y));
-                var N = new Vector2(0, -1);
-                var cos = Vector2.Dot(dir, N);
-                x *= -1;
-                ball.directionAngle += 2 * (float)Math.Acos(cos);
-            }
+        //    if(ball.position.X + x < -GameParameters.tableWidth / 2 + GameParameters.ballR)
+        //    {
+        //        var dir = Vector2.Normalize(new Vector2(x, y));
+        //        var N = new Vector2(0, -1);
+        //        var cos = Vector2.Dot(dir, N);
+        //        x *= -1;
+        //        ball.directionAngle += 2 * (float)Math.Acos(cos);
+        //    }
 
-            if(ball.position.Y + y > GameParameters.tableDepth / 2 - GameParameters.ballR)
-            {
-                var dir = Vector2.Normalize(new Vector2(x, y));
-                var N = new Vector2(-1, 0);
-                var cos = Vector2.Dot(dir, N);
-                y *= -1;
-                ball.directionAngle += 2 * (float)Math.Acos(cos);
-            }
+        //    if(ball.position.Y + y > GameParameters.tableDepth / 2 - GameParameters.ballR)
+        //    {
+        //        var dir = Vector2.Normalize(new Vector2(x, y));
+        //        var N = new Vector2(-1, 0);
+        //        var cos = Vector2.Dot(dir, N);
+        //        y *= -1;
+        //        ball.directionAngle += 2 * (float)Math.Acos(cos);
+        //    }
 
-            if (ball.position.Y + y < -GameParameters.tableDepth / 2 + GameParameters.ballR)
-            {
-                var dir = Vector2.Normalize(new Vector2(x, y));
-                var N = new Vector2(1, 0);
-                var cos = Vector2.Dot(dir, N);
-                y *= -1;
-                ball.directionAngle += 2 * (float)Math.Acos(cos);
-            }
-            ball.position.X += x;
-            ball.position.Y += y;
-            ball.model.Translate(x, y, 0);
-        }
-        void RotateStick(float angle)
-        {
-            var x = stick.position.X;
-            var y = stick.position.Y;
-            stick.model.Translate(-x, -y, 0);
-            stick.model.RotateZ(angle);
-            stick.model.Translate(x, y, 0);
-            stick.directionAngle += angle;
-        }
+        //    if (ball.position.Y + y < -GameParameters.tableDepth / 2 + GameParameters.ballR)
+        //    {
+        //        var dir = Vector2.Normalize(new Vector2(x, y));
+        //        var N = new Vector2(1, 0);
+        //        var cos = Vector2.Dot(dir, N);
+        //        y *= -1;
+        //        ball.directionAngle += 2 * (float)Math.Acos(cos);
+        //    }
+        //    ball.position.X += x;
+        //    ball.position.Y += y;
+        //    ball.model.Translate(x, y, 0);
+        //}
         public void RotateStickLeft() => rotateLeft = true;
         public void RotateStickRigth() => rotateRigth = true;
-        public void HoldOnStick() => Hold = true;
-        public void HoldOffStick() => Hold = false;
+        public void HoldStick()
+        {
+            if (!Hold) power = 0;
+            Hold = true;
+        }
+        public void ReleaseStick()
+        {
+            if (Hold && !duringMove)
+            {
+                Hold = false;
+                duringMove = true;
+                stick.ApplyVelocity(power, stick.directionAngle);
+            }
+        }
         public void Update()
         {
             if (!duringMove)
             {
                 if (Hold)
                 {
-                    power += GameParameters.powerStep;
-                    power = Math.Min(GameParameters.maxPower, power);
-                    if (power != GameParameters.maxPower)
+                    if (power < GameParameters.maxPower)
                     {
-                        var x = (float)Math.Sin(stick.directionAngle) * GameParameters.powerStep;
-                        var y = -(float)Math.Cos(stick.directionAngle) * GameParameters.powerStep;
-                        stick.model.Translate(x, y, 0);
-                    }
-                    whiteBall.velocity = power * GameParameters.v;
-                }
-                else if(power > 0)
-                {
-                    var release = Math.Min(GameParameters.releaseSpeed, power);
-                    var x = -(float)Math.Sin(stick.directionAngle) * release;
-                    var y = (float)Math.Cos(stick.directionAngle) * release;
-                    if (power > 0)
-                        stick.model.Translate(x, y, 0);
-                    power -= release;
-                    if (power <= 0)
-                    {
-                        duringMove = true;
-                        whiteBall.directionAngle = stick.directionAngle;
+                        power += GameParameters.powerStep;
+                        if (power <= GameParameters.maxPower)
+                            stick.MoveInDirection(stick.directionAngle, GameParameters.powerStep);
                     }
                 }
-
                 if (rotateLeft)
                 {
-                    RotateStick(-GameParameters.angle);
+                    stick.Rotate(-GameParameters.angleStep);
                     rotateLeft = false;
                 }
-
                 if (rotateRigth)
                 {
-                    RotateStick(GameParameters.angle);
+                    stick.Rotate(GameParameters.angleStep);
                     rotateRigth = false;
                 }
             }
-            else if(whiteBall.velocity > 0)
-            {
-                var x = -(float)Math.Sin(whiteBall.directionAngle) * whiteBall.velocity;
-                var y = (float)Math.Cos(whiteBall.directionAngle) * whiteBall.velocity;
-
-                MoveBall(whiteBall, x, y);
-
-                whiteBall.velocity += GameParameters.a;
-            }
             else
             {
-                ballV = 0;
-                duringMove = false;
-                var x = whiteBall.position.X - stick.position.X;
-                var y = whiteBall.position.Y - stick.position.Y;
-
-                stick.model.Translate(x, y, 0);
-                stick.position.X += x;
-                stick.position.Y += y;
+                if (stick.velocity > 0)
+                {
+                    var release = Math.Min(GameParameters.releaseSpeed, stick.velocity);
+                    stick.MoveInDirection(stick.directionAngle, -release);
+                    stick.ApplyVelocity(stick.velocity - release, stick.directionAngle);
+                    if (stick.velocity <= 0) whiteBall.ApplyVelocity(GameParameters.ballVelocity * power, stick.directionAngle + (float)Math.PI);
+                }
+                else
+                {
+                    if (whiteBall.velocity > 0)
+                        whiteBall.UpdatePosition(GameParameters.ballAcceleration);
+                    else
+                    {
+                        duringMove = false;
+                        stick.Move(whiteBall.position.X - stick.position.X, whiteBall.position.Y - stick.position.Y);
+                    }
+                }
             }
         }
         public uint[,] Display()

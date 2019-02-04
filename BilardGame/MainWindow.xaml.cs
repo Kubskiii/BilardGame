@@ -72,7 +72,7 @@ namespace BilardGame
                     game.RotateStickRigth();
                     break;
                 case Key.Space:
-                    game.HoldOnStick();
+                    game.HoldStick();
                     break;
             }
         }
@@ -82,7 +82,7 @@ namespace BilardGame
             switch(e.Key)
             {
                 case Key.Space:
-                    game.HoldOffStick();
+                    game.ReleaseStick();
                     break;
             }
         }
