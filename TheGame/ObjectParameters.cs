@@ -42,7 +42,7 @@ namespace TheGame
             velocity = _velocity;
             directionAngle = _directionAngle;
         }
-        public (float x, float y) UpdatePosition(float acceleration)
+        public Vector3 UpdatePosition(float acceleration)
         {
             if(velocity > 0)
             {
@@ -51,10 +51,10 @@ namespace TheGame
                 var y = (float)Math.Sin(directionAngle) * velocity;
                 Move(x, y);
                 velocity -= acceleration;
-                if (velocity == 0) directionAngle = 0;
-                return (x, y);
+                //if (velocity == 0) directionAngle = 0;
+                return new Vector3(x, y, 0);
             }
-            return (0, 0);
+            return new Vector3(0, 0, 0);
         }
     }
 }
