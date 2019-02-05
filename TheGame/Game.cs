@@ -26,7 +26,7 @@ namespace TheGame
         {
             engine = new CPUEngine(res);
             engine.FOV = 90;
-            engine.ChangeCameraPosition(new Vector3(5, 5, 5), new Vector3(0, 0, 0));
+            engine.ChangeCameraPosition(new Vector3(10, -1, 10), new Vector3(0, -1, 0));
             engine.SwitchToGouraudShading();
             engine.AddLight(new PointLight(new Vector3(0, 0, 20)));
 
@@ -152,7 +152,9 @@ namespace TheGame
                     //if(ball.position.X != b.position.X)
                     //    alpha = 1 - (b.position.X - ball.position.X - dist.x) / dist.x;
                     ball.Move(-dist.x, -dist.y);
-                    ball.MoveInDirection((b.position - ball.position).Length() + GameParameters.ballRadius, (float)Math.Atan((b.position.X - ball.position.X) / (b.position.Y - ball.position.Y)));
+                    var D = b.position - ball.position;
+                    var ang = (float)Math.Atan(D.Y / D.X) * -Math.Sign(D.X * D.Y);
+                    ball.Move(D.X + (float)Math.Cos(ang) * 2 * GameParameters.ballRadius, D.Y + (float)Math.Sin(ang) * 2 * GameParameters.ballRadius);
                     ball.ApplyVelocity(0, ball.directionAngle);
                     //var newAngle = (float)Math.Atan((b.position.X - ball.position.X) / (b.position.Y - ball.position.Y));
                     //ball.ApplyVelocity(ball.velocity, ball.directionAngle * 2f / 3 - newAngle);
