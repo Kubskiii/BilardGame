@@ -26,7 +26,7 @@ namespace TheGame
         {
             engine = new CPUEngine(res);
             engine.FOV = 90;
-            engine.ChangeCameraPosition(new Vector3(10, -1, 10), new Vector3(0, -1, 0));
+            engine.ChangeCameraPosition(new Vector3(30, 0, 30), new Vector3(0, 0, 0));
             engine.SwitchToGouraudShading();
             engine.AddLight(new PointLight(new Vector3(0, 0, 20)));
 
@@ -97,6 +97,7 @@ namespace TheGame
             model.Translate(0, -GameParameters.ballRadius, GameParameters.ballRadius);
             models.Add(model);
             stick = new ObjectParameters(model, new Vector3(0, 0, GameParameters.ballRadius));
+            stick.ApplyVelocity(0, (float)Math.PI / 2);
         }
         void AddWhiteBall()
         {
@@ -186,7 +187,7 @@ namespace TheGame
                     {
                         power += GameParameters.powerStep;
                         if (power <= GameParameters.maxPower)
-                            stick.MoveInDirection(stick.directionAngle, GameParameters.powerStep);
+                            stick.MoveInDirection(stick.directionAngle, -GameParameters.powerStep);
                     }
                 }
                 else
@@ -209,9 +210,9 @@ namespace TheGame
                 if (stick.velocity > 0)
                 {
                     var release = Math.Min(GameParameters.releaseSpeed, stick.velocity);
-                    stick.MoveInDirection(stick.directionAngle, -release);
+                    stick.MoveInDirection(stick.directionAngle, release);
                     stick.ApplyVelocity(stick.velocity - release, stick.directionAngle);
-                    if (stick.velocity <= 0) whiteBall.ApplyVelocity(GameParameters.ballVelocity * power, stick.directionAngle + (float)Math.PI);
+                    if (stick.velocity <= 0) whiteBall.ApplyVelocity(GameParameters.ballVelocity * power, stick.directionAngle);
                 }
                 else
                 {

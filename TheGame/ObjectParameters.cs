@@ -14,7 +14,7 @@ namespace TheGame
         public Vector3 position { get => pos; }
         Vector3 pos;
         public float velocity { get; private set; } = 0;
-        public float directionAngle { get; private set; } = -(float)Math.PI / 2;
+        public float directionAngle { get; private set; } = 0;
         public ObjectParameters(Model _model, Vector3 _position)
         {
             model = _model;
