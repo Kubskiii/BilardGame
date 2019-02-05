@@ -150,14 +150,13 @@ namespace TheGame
                 if ((b.position - ball.position).Length() < GameParameters.ballRadius * 2)
                 {
                     var distanceBetweenBalls = b.position - ball.position;
+                    var speedratio = distanceBetweenBalls.Y / distanceBetweenBalls.X;
+                    var bAngle = (float)Math.Atan(distanceBetweenBalls.Y / distanceBetweenBalls.X);
+                    var newAngle = -((float)Math.PI - 2 * bAngle + ball.directionAngle);
+                    var speedRatio = 1 - (float)Math.Cos(bAngle);
                     ball.MoveInDirection(ball.directionAngle, (-distanceBetweenBalls).Length() - GameParameters.ballRadius * 2);
-                    b.ApplyVelocity(ball.velocity, (float)Math.Atan(distanceBetweenBalls.Y / distanceBetweenBalls.X));
-                    ball.ApplyVelocity(0, 0);
-                    //        ball.Move(-dist.x, -dist.y);
-                    //        var D = b.position - ball.position;
-                    //        var L = D.Length();
-                    //        ball.Move(D.X - D.X / L * 2 * GameParameters.ballRadius, D.Y - D.Y / L * 2 * GameParameters.ballRadius);
-                    //        ball.ApplyVelocity(ball.velocity - GameParameters.ballAcceleration, (float)Math.PI / 2 - ball.directionAngle);
+                    b.ApplyVelocity(ball.velocity * speedRatio, bAngle);
+                    ball.ApplyVelocity(ball.velocity * (1 - speedRatio), newAngle);
                 }
         }
         public void RotateStickLeft() => rotateLeft = true;
