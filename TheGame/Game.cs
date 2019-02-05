@@ -26,7 +26,7 @@ namespace TheGame
         {
             engine = new CPUEngine(res);
             engine.FOV = 90;
-            engine.ChangeCameraPosition(new Vector3(-30, 0, 30), new Vector3(0, 0, 0));
+            engine.ChangeCameraPosition(new Vector3(5, 5, 5), new Vector3(0, 0, 0));
             engine.SwitchToGouraudShading();
             engine.AddLight(new PointLight(new Vector3(0, 0, 20)));
 
@@ -34,7 +34,8 @@ namespace TheGame
             AddTable(Colors.DarkGreen);
             AddStick(Colors.Brown);
             AddWhiteBall();
-            AddBallTriangle(0, 5);
+            AddBall(Colors.Red, 0, 5);
+            //AddBallTriangle(0, 5);
         }
         void AddBall(Color color, float x, float y)
         {
@@ -104,13 +105,17 @@ namespace TheGame
             models.Add(ball);
             whiteBall = new ObjectParameters(ball, new Vector3(0, 0, GameParameters.ballRadius));
         }
-        IEnumerable<ObjectParameters> AllBalls()
+        IEnumerable<ObjectParameters> AllOtherBalls(ObjectParameters ball)
         {
-            foreach (var b in balls) yield return b;
-            yield return whiteBall;
+            var list = new List<ObjectParameters>();
+            foreach (var b in balls)
+                if (b != ball) list.Add(b);
+            if (ball != whiteBall) list.Add(whiteBall);
+            foreach (var b in list) yield return b;
         }
         void UpdateBallPosition(ObjectParameters ball)
         {
+            if (ball.velocity == 0) return;
             var dist = ball.UpdatePosition(GameParameters.ballAcceleration);
             if(ball.position.X + GameParameters.ballRadius > GameParameters.tableWidth / 2)
             {
@@ -141,14 +146,17 @@ namespace TheGame
                 ball.ApplyVelocity(ball.velocity - GameParameters.ballAcceleration, newAngle);
             }
 
-            foreach (var b in AllBalls())
-            if(b != ball)
-                if((b.position - ball.position).Length() + GameParameters.eps <=GameParameters.ballRadius * 2)
+            foreach (var b in AllOtherBalls(ball))
+                if((b.position - ball.position).Length() < GameParameters.ballRadius * 2)
                 {
-                    //ball.Move(-dist.x, -dist.y);
-                    var newAngle = (float)Math.Atan((b.position.X - ball.position.X) / (b.position.Y - ball.position.Y));
-                    ball.ApplyVelocity(ball.velocity, ball.directionAngle * 2f / 3 - newAngle);
-                    b.ApplyVelocity(ball.velocity, newAngle);
+                    //if(ball.position.X != b.position.X)
+                    //    alpha = 1 - (b.position.X - ball.position.X - dist.x) / dist.x;
+                    ball.Move(-dist.x, -dist.y);
+                    ball.MoveInDirection((b.position - ball.position).Length() + GameParameters.ballRadius, (float)Math.Atan((b.position.X - ball.position.X) / (b.position.Y - ball.position.Y)));
+                    ball.ApplyVelocity(0, ball.directionAngle);
+                    //var newAngle = (float)Math.Atan((b.position.X - ball.position.X) / (b.position.Y - ball.position.Y));
+                    //ball.ApplyVelocity(ball.velocity, ball.directionAngle * 2f / 3 - newAngle);
+                    //b.ApplyVelocity(ball.velocity, (float)Math.PI /2 - newAngle);
                     //b.UpdatePosition(GameParameters.ballAcceleration);
                 }
         }
