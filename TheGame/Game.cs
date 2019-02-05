@@ -108,11 +108,9 @@ namespace TheGame
         }
         IEnumerable<ObjectParameters> AllOtherBalls(ObjectParameters ball)
         {
-            var list = new List<ObjectParameters>();
             foreach (var b in balls)
-                if (b != ball) list.Add(b);
-            if (ball != whiteBall) list.Add(whiteBall);
-            foreach (var b in list) yield return b;
+                if (b != ball) yield return b;
+            if (ball != whiteBall) yield return whiteBall;
         }
         void UpdateBallPosition(ObjectParameters ball)
         {
@@ -148,15 +146,19 @@ namespace TheGame
             }
             #endregion
 
-            //foreach (var b in AllOtherBalls(ball))
-            //    if((b.position - ball.position).Length() < GameParameters.ballRadius * 2)
-            //    {
-            //        ball.Move(-dist.x, -dist.y);
-            //        var D = b.position - ball.position;
-            //        var L = D.Length();
-            //        ball.Move(D.X - D.X / L * 2 * GameParameters.ballRadius, D.Y - D.Y / L * 2 * GameParameters.ballRadius);
-            //        ball.ApplyVelocity(ball.velocity - GameParameters.ballAcceleration, (float)Math.PI / 2 - ball.directionAngle);
-            //    } 
+            foreach (var b in AllOtherBalls(ball))
+                if ((b.position - ball.position).Length() < GameParameters.ballRadius * 2)
+                {
+                    var distanceBetweenBalls = b.position - ball.position;
+                    ball.MoveInDirection(ball.directionAngle, (-distanceBetweenBalls).Length() - GameParameters.ballRadius * 2);
+                    b.ApplyVelocity(ball.velocity, (float)Math.Atan(distanceBetweenBalls.Y / distanceBetweenBalls.X));
+                    ball.ApplyVelocity(0, 0);
+                    //        ball.Move(-dist.x, -dist.y);
+                    //        var D = b.position - ball.position;
+                    //        var L = D.Length();
+                    //        ball.Move(D.X - D.X / L * 2 * GameParameters.ballRadius, D.Y - D.Y / L * 2 * GameParameters.ballRadius);
+                    //        ball.ApplyVelocity(ball.velocity - GameParameters.ballAcceleration, (float)Math.PI / 2 - ball.directionAngle);
+                }
         }
         public void RotateStickLeft() => rotateLeft = true;
         public void RotateStickRigth() => rotateRigth = true;
