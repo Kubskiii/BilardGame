@@ -55,6 +55,29 @@ namespace GraphicsEngine
             viewMatrix = CameraBuilder.CreateLookAt(position, target, new Vector3(0, 0, 1));
             cameraPos = position;
         }
+
+        public void ChangeCameraPosition2(Vector3 position, Vector3 target)
+        {
+            cameraPos = position;
+            var CUp = new Vector3(0, 0, 1);
+
+            Vector3 cZ = (position - target) / (position - target).Length();
+            Vector3 cX = (Vector3.Cross(CUp, cZ)) / (float)(Vector3.Cross(CUp, cZ)).Length();
+            Vector3 cY = (Vector3.Cross(cZ, cX)) / (float)(Vector3.Cross(cZ, cX)).Length();
+
+            viewMatrix = new Matrix4x4
+            (
+
+                cX.X, cY.X, cZ.X, position.X,
+                cX.Y, cY.Y, cZ.Y, position.Y,
+                cX.Z, cY.Z, cZ.Z, position.Z,
+
+                0, 0, 0, 1
+            );
+            Matrix4x4.Invert(viewMatrix, out var invertedViewMatrix);
+            viewMatrix = invertedViewMatrix;
+        }
+
         public void AddLight(Light L)
         {
             Lights.Add(L);

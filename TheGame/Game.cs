@@ -21,6 +21,7 @@ namespace TheGame
         bool rotateLeft = false;
         bool Hold = false;
         bool duringMove = false;
+        bool staticCamera = false;
         float power = 0;
         public Game(Resolution res)
         {
@@ -222,6 +223,8 @@ namespace TheGame
                     if (models.Contains(stick.model)) models.Remove(stick.model);
                     if (balls.Sum(b => b.velocity) + whiteBall.velocity > 0)
                     {
+                        if (whiteBall.velocity > 0 && !staticCamera)
+                            engine.ChangeCameraPosition2( whiteBall.position + new Vector3(0, -30, 30), whiteBall.position);
                         UpdateBallPosition(whiteBall);
                         foreach (var b in balls)
                             UpdateBallPosition(b);
