@@ -23,20 +23,24 @@ namespace TheGame
         bool duringMove = false;
         bool staticCamera = false;
         float power = 0;
+        Vector3 cameraDirection = new Vector3(0, -GameParameters.cameraDistance, GameParameters.cameraDistance);
+        bool staticLightOn = false;
+        bool trackingLightOn = false;
+        PointLight staticLight = new PointLight(new Vector3(0, 0, GameParameters.lightHeight));
         public Game(Resolution res)
         {
             engine = new CPUEngine(res);
             engine.FOV = 90;
-            engine.ChangeCameraPosition(new Vector3(30, 0, 30), new Vector3(0, 0, 0));
-            engine.SwitchToGouraudShading();
-            engine.AddLight(new PointLight(new Vector3(0, 0, 20)));
-
 
             AddTable(Colors.DarkGreen);
             AddStick(Colors.Brown);
             AddWhiteBall();
-            //AddBall(Colors.Red, 0, 5);
             AddBallTriangle(0, 5);
+            engine.SwitchToPhongShading();
+            StaticCamera();
+            //SwitchPointLight();
+            SwitchTrackingLight();
+            UpdateLights();
         }
         void AddBall(Color color, float x, float y)
         {
@@ -161,6 +165,19 @@ namespace TheGame
                     ball.ApplyVelocity(Math.Max(velocity * (1 - speedRatio), 0), newAngle);
                 }
         }
+        Vector3 UpdateCameraDirection()
+        {
+            return new Vector3(-(float)Math.Cos(stick.directionAngle), -(float)Math.Sin(stick.directionAngle), 1) * GameParameters.cameraDistance;
+        }
+        void UpdateLights()
+        {
+            if(trackingLightOn)
+            {
+                engine.RemoveAllLights();
+                if (staticLightOn) engine.AddLight(staticLight);
+                engine.AddLight(new PointLight(new Vector3(whiteBall.position.X, whiteBall.position.Y, GameParameters.cameraDistance)));
+            }
+        }
         public void RotateStickLeft() => rotateLeft = true;
         public void RotateStickRigth() => rotateRigth = true;
         public void HoldStick()
@@ -176,6 +193,26 @@ namespace TheGame
                 duringMove = true;
                 stick.ApplyVelocity(power, stick.directionAngle);
             }
+        }
+        public void StaticCamera()
+        {
+            staticCamera = true;
+            engine.ChangeCameraPosition(new Vector3(0.5f, 0, 1.5f) * GameParameters.cameraDistance, new Vector3(0, 0, 0));
+        }
+        public void ActiveCamera()
+        {
+            staticCamera = false;
+            cameraDirection = UpdateCameraDirection();
+            engine.ChangeCameraPosition(stick.position + cameraDirection, stick.position);
+        }
+        public void SwitchPointLight()
+        {
+            staticLightOn = !staticLightOn;
+            engine.AddLight(staticLight);
+        }
+        public void SwitchTrackingLight()
+        {
+            trackingLightOn = !trackingLightOn;
         }
         public void Update()
         {
@@ -196,11 +233,21 @@ namespace TheGame
                     if (rotateLeft)
                     {
                         stick.Rotate(-GameParameters.angleStep);
+                        if (!staticCamera)
+                        {
+                            cameraDirection = UpdateCameraDirection();
+                            engine.ChangeCameraPosition(stick.position + cameraDirection, stick.position);
+                        }
                         rotateLeft = false;
                     }
                     if (rotateRigth)
                     {
                         stick.Rotate(GameParameters.angleStep);
+                        if (!staticCamera)
+                        {
+                            cameraDirection = UpdateCameraDirection();
+                            engine.ChangeCameraPosition(stick.position + cameraDirection, stick.position);
+                        }
                         rotateRigth = false;
                     }
                 }
@@ -224,10 +271,11 @@ namespace TheGame
                     if (balls.Sum(b => b.velocity) + whiteBall.velocity > 0)
                     {
                         if (whiteBall.velocity > 0 && !staticCamera)
-                            engine.ChangeCameraPosition2( whiteBall.position + new Vector3(0, -30, 30), whiteBall.position);
+                            engine.ChangeCameraPosition( whiteBall.position + cameraDirection, whiteBall.position);
                         UpdateBallPosition(whiteBall);
                         foreach (var b in balls)
                             UpdateBallPosition(b);
+                        UpdateLights();
                     }
                     else
                     {
