@@ -10,7 +10,7 @@ namespace TheGame
 {
     class ObjectParameters
     {
-        Model model;
+        public Model model { get; private set; }
         public Vector3 position { get => pos; }
         Vector3 pos;
         public float velocity { get; private set; } = 0;

@@ -34,8 +34,8 @@ namespace TheGame
             AddTable(Colors.DarkGreen);
             AddStick(Colors.Brown);
             AddWhiteBall();
-            AddBall(Colors.Red, 0, 5);
-            //AddBallTriangle(0, 5);
+            //AddBall(Colors.Red, 0, 5);
+            AddBallTriangle(0, 5);
         }
         void AddBall(Color color, float x, float y)
         {
@@ -153,10 +153,11 @@ namespace TheGame
                     var speedratio = distanceBetweenBalls.Y / distanceBetweenBalls.X;
                     var bAngle = (float)Math.Atan(distanceBetweenBalls.Y / distanceBetweenBalls.X);
                     var newAngle = -((float)Math.PI - 2 * bAngle + ball.directionAngle);
-                    var speedRatio = 1 - (float)Math.Cos(bAngle);
+                    var speedRatio = 0.75f;// 1 - (float)Math.Abs(Math.Cos(bAngle));
+                    var velocity = Math.Abs(ball.velocity + b.velocity);
                     ball.MoveInDirection(ball.directionAngle, (-distanceBetweenBalls).Length() - GameParameters.ballRadius * 2);
-                    b.ApplyVelocity(ball.velocity * speedRatio, bAngle);
-                    ball.ApplyVelocity(ball.velocity * (1 - speedRatio), newAngle);
+                    b.ApplyVelocity(velocity* speedRatio, bAngle);
+                    ball.ApplyVelocity(Math.Max(velocity * (1 - speedRatio), 0), newAngle);
                 }
         }
         public void RotateStickLeft() => rotateLeft = true;
@@ -211,10 +212,14 @@ namespace TheGame
                     var release = Math.Min(GameParameters.releaseSpeed, stick.velocity);
                     stick.MoveInDirection(stick.directionAngle, release);
                     stick.ApplyVelocity(stick.velocity - release, stick.directionAngle);
-                    if (stick.velocity <= 0) whiteBall.ApplyVelocity(GameParameters.ballVelocity * power, stick.directionAngle);
+                    if (stick.velocity <= 0)
+                    {
+                        whiteBall.ApplyVelocity(GameParameters.ballVelocity * power, stick.directionAngle);
+                    }
                 }
                 else
                 {
+                    if (models.Contains(stick.model)) models.Remove(stick.model);
                     if (balls.Sum(b => b.velocity) + whiteBall.velocity > 0)
                     {
                         UpdateBallPosition(whiteBall);
@@ -225,6 +230,7 @@ namespace TheGame
                     {
                         duringMove = false;
                         stick.Move(whiteBall.position.X - stick.position.X, whiteBall.position.Y - stick.position.Y);
+                        models.Add(stick.model);
                     }
                 }
             }
