@@ -23,7 +23,7 @@ namespace TheGame
         static readonly public float ballAcceleration = 0.01f;
         static readonly public float eps = 0.1f;
         static readonly public float cameraDistance = 30;
-        static readonly public float lightHeight = 20;
+        static readonly public float lightHeight = 10;
         static public readonly Color[] ballColors = new Color[6]
             {
                 Colors.Red,

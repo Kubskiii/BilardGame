@@ -9,7 +9,7 @@ namespace GraphicsEngine
 {
     public abstract class Light
     {
-        public virtual float GetIntensivity() => 1;
+        public virtual float GetIntensivity(Vector3 point) => 1;
         public abstract Vector3 getValue(Vector3 point);
     }
 }

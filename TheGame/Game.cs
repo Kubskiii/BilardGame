@@ -175,7 +175,7 @@ namespace TheGame
             {
                 engine.RemoveAllLights();
                 if (staticLightOn) engine.AddLight(staticLight);
-                engine.AddLight(new PointLight(new Vector3(whiteBall.position.X, whiteBall.position.Y, GameParameters.cameraDistance)));
+                engine.AddLight(new ReflectorLight(new Vector3(whiteBall.position.X, whiteBall.position.Y, GameParameters.lightHeight), 30));
             }
         }
         public void RotateStickLeft() => rotateLeft = true;

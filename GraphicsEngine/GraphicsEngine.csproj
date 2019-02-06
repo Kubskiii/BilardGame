@@ -51,6 +51,7 @@
     <Compile Include="PointLight.cs" />
     <Compile Include="Progam.cs" />
     <Compile Include="ProjectionBuilder.cs" />
+    <Compile Include="ReflectorLight.cs" />
     <Compile Include="Resolution.cs" />
     <Compile Include="Transformations.cs" />
     <Compile Include="Triangle.cs" />

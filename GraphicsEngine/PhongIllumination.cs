@@ -24,7 +24,7 @@ namespace GraphicsEngine
             foreach (var light in Lights)
             {
                 var L = light.getValue(point);
-                var Il = light.GetIntensivity();
+                var Il = light.GetIntensivity(point);
                 Vector3 R = Vector3.Normalize(2 * Vector3.Dot(L, N) * N - L);
                 intensivity += kd * Il * Vector3.Dot(N, L) + ks * Il * (float)Math.Pow(Math.Abs(Vector3.Dot(R, V)), nshiny);
             }
