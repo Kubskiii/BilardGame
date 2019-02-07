@@ -30,16 +30,16 @@ namespace TheGame
         public Game(Resolution res)
         {
             engine = new CPUEngine(res);
-            engine.FOV = 90;
+            engine.FOV = 60;
 
             AddTable(Colors.DarkGreen);
             AddStick(Colors.Brown);
             AddWhiteBall();
             AddBallTriangle(0, 5);
-            engine.SwitchToPhongShading();
+            engine.SwitchToGouraudShading();
             StaticCamera();
-            //SwitchPointLight();
-            SwitchTrackingLight();
+            SwitchPointLight();
+            //SwitchTrackingLight();
             UpdateLights();
         }
         void AddBall(Color color, float x, float y)
@@ -83,7 +83,7 @@ namespace TheGame
                     var p4 = new Vector4(x2, y2, 0, 1);
                     model.Add(new Triangle(new List<(Vector4 point, Vector4 NormalVector)>()
                     {
-                        (p1, n) , (p2, n), (p3,n)
+                        (p1, n) , (p2, n), (p3, n)
                     })
                     { color = c });
                     model.Add(new Triangle(new List<(Vector4 point, Vector4 NormalVector)>()
@@ -113,9 +113,11 @@ namespace TheGame
         }
         IEnumerable<ObjectParameters> AllOtherBalls(ObjectParameters ball)
         {
+            List<ObjectParameters> list = new List<ObjectParameters>();
             foreach (var b in balls)
-                if (b != ball) yield return b;
-            if (ball != whiteBall) yield return whiteBall;
+                if (b != ball) list.Add(b);
+            if (ball != whiteBall) list.Add(whiteBall);
+            return list;
         }
         void UpdateBallPosition(ObjectParameters ball)
         {
@@ -175,7 +177,11 @@ namespace TheGame
             {
                 engine.RemoveAllLights();
                 if (staticLightOn) engine.AddLight(staticLight);
-                engine.AddLight(new ReflectorLight(new Vector3(whiteBall.position.X, whiteBall.position.Y, GameParameters.lightHeight), 30));
+                engine.AddLight(new ReflectorLight(new Vector3(whiteBall.position.X, whiteBall.position.Y, GameParameters.lightHeight), whiteBall.position));
+                //engine.AddLight(new ReflectorLight(new Vector3(GameParameters.tableWidth / 2, GameParameters.tableDepth / 2, GameParameters.lightHeight), whiteBall.position));
+                //var testsphere = ModelBuilder.CreateSphere(1, Colors.YellowGreen);
+                //testsphere.Translate(GameParameters.tableWidth / 2, GameParameters.tableDepth / 2, 0);
+                //models.Add(testsphere);
             }
         }
         public void RotateStickLeft() => rotateLeft = true;

@@ -96,8 +96,9 @@ namespace GraphicsEngine
                 {
                     var middle = model.matrix.Multiply(triangle.Middle).To3Dim();
                     var normalToMiddle = Vector3.Normalize(model.matrix.Multiply(triangle.NormalVector).To3Dim());
-                    var view = Vector3.Normalize(middle - cameraPos);
-                    if (Vector3.Dot(normalToMiddle, view) > 0) return;
+                    // CHANGED VIEW VECTOR DIRECTION
+                    var view = Vector3.Normalize(-middle + cameraPos);
+                    if (Vector3.Dot(normalToMiddle, view) < 0) return;
                     var filler1 = new Filler(resolution);
                     var barycentricPoints = new List<Vector3>();
                     var normalVectors = new List<Vector3>();
@@ -124,10 +125,7 @@ namespace GraphicsEngine
                             case Shading.Constant:
                                 {
                                     var intensivity = phong.getIntensivity(normalToMiddle, Lights, view, middle);
-                                    Color c = triangle.color;
-                                    c.R = (byte)(Math.Min(Math.Max(c.R * intensivity, 0), 255));
-                                    c.G = (byte)(Math.Min(Math.Max(c.G * intensivity, 0), 255));
-                                    c.B = (byte)(Math.Min(Math.Max(c.B * intensivity, 0), 255));
+                                    Color c = Interpolations.ColorFromIntensivity(triangle.color, intensivity);
                                     filler1.Draw(barycentricPoints, (x, y) =>
                                     {
                                         float Z = 1 - (float)Math.Log10((-plane.W - plane.X * x - plane.Y * y) / plane.Z);
@@ -162,10 +160,7 @@ namespace GraphicsEngine
                                             var pview = Interpolations.Phong(views, x, y);
                                             var pposition = Interpolations.Phong(positions, x, y);
                                             var intensivity = phong.getIntensivity(N, Lights, pview, pposition);
-                                            Color c = triangle.color;
-                                            c.R = (byte)(Math.Min(Math.Max(c.R * intensivity, 0), 255));
-                                            c.G = (byte)(Math.Min(Math.Max(c.G * intensivity, 0), 255));
-                                            c.B = (byte)(Math.Min(Math.Max(c.B * intensivity, 0), 255));
+                                            Color c = Interpolations.ColorFromIntensivity(triangle.color, intensivity);
 
                                             colors[x, y] = BitmapExtensions.ConvertColor(c);
                                         }
@@ -189,10 +184,7 @@ namespace GraphicsEngine
                                         {
                                             Zbuffer[x, y] = Z;
                                             float intensivity = Interpolations.Gouraud(intensivityVector, x, y);
-                                            Color c = triangle.color;
-                                            c.R = (byte)(Math.Min(Math.Max(c.R * intensivity, 0), 255));
-                                            c.G = (byte)(Math.Min(Math.Max(c.G * intensivity, 0), 255));
-                                            c.B = (byte)(Math.Min(Math.Max(c.B * intensivity, 0), 255));
+                                            Color c = Interpolations.ColorFromIntensivity(triangle.color, intensivity);
                                             colors[x, y] = BitmapExtensions.ConvertColor(c);
                                         }
                                     });

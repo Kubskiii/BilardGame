@@ -54,5 +54,13 @@ namespace GraphicsEngine
                 (-vectors[1].W - vectors[1].X * x - vectors[1].Y * y) / vectors[1].Z,
                 (-vectors[2].W - vectors[2].X * x - vectors[2].Y * y) / vectors[2].Z);
         }
+        public static Color ColorFromIntensivity(Color color, float intensivity)
+        {
+            Color c = color;
+            c.R = (byte)(Math.Min(Math.Max(c.R * intensivity, 0), 255));
+            c.G = (byte)(Math.Min(Math.Max(c.G * intensivity, 0), 255));
+            c.B = (byte)(Math.Min(Math.Max(c.B * intensivity, 0), 255));
+            return c;
+        }
     }
 }
