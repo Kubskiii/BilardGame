@@ -15,6 +15,9 @@ namespace TheGame
         static readonly public float stickLength = 40;
         static readonly public float tableWidth = 40;
         static readonly public float tableDepth = 80;
+        static readonly public float tableHeight = 1.5f;
+        static readonly public float borderThickness = 3;
+        static readonly public float pocketSize = 3;
         static readonly public float angleStep = (float)Math.PI / 100;
         static readonly public float powerStep = 0.5f;
         static readonly public float maxPower = 10;

@@ -14,10 +14,6 @@ namespace GraphicsEngine
         {
             position = _position;
         }
-        public void Move(Vector3 newposition)
-        {
-            position = newposition;
-        }
 
         public override Vector3 getValue(Vector3 point)
         {

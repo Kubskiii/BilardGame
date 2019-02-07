@@ -17,10 +17,6 @@ namespace GraphicsEngine
             position = _position;
             D = Vector3.Normalize(target - _position);
         }
-        public void Move(Vector3 newposition)
-        {
-            position = newposition;
-        }
         public override Vector3 getValue(Vector3 point)
         {
             return Vector3.Normalize(position - point);

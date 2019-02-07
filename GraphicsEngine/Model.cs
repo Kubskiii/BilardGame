@@ -13,6 +13,7 @@ namespace GraphicsEngine
         List<Triangle> triangles;
         Matrix4x4 modelMatrix;
         public Vector4 Middle;
+        public bool isConvex = true;
         public Matrix4x4 matrix { get => modelMatrix; }
         public Model(params Triangle[] _triangles)
         {

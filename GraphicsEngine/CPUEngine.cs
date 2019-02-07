@@ -98,7 +98,7 @@ namespace GraphicsEngine
                     var normalToMiddle = Vector3.Normalize(model.matrix.Multiply(triangle.NormalVector).To3Dim());
                     // CHANGED VIEW VECTOR DIRECTION
                     var view = Vector3.Normalize(-middle + cameraPos);
-                    if (Vector3.Dot(normalToMiddle, view) < 0) return;
+                    if (model.isConvex && Vector3.Dot(normalToMiddle, view) < 0) return;
                     var filler1 = new Filler(resolution);
                     var barycentricPoints = new List<Vector3>();
                     var normalVectors = new List<Vector3>();

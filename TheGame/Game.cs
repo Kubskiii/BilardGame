@@ -36,11 +36,12 @@ namespace TheGame
             AddStick(Colors.Brown);
             AddWhiteBall();
             AddBallTriangle(0, 5);
+
             engine.SwitchToGouraudShading();
-            ActiveCamera();
-            //StaticCamera();
-            //SwitchPointLight();
-            SwitchTrackingLight();
+            //ActiveCamera();
+            StaticCamera();
+            SwitchPointLight();
+            //SwitchTrackingLight();
             UpdateLights();
         }
         void AddBall(Color color, float x, float y)
@@ -67,10 +68,13 @@ namespace TheGame
         }
         void AddTable(Color c)
         {
-            var N = 20;
-            var M = 50;
-            var model = new Model();
+            const int N = 20;
+            const int M = 50;
+            var model = new Model() { isConvex = false };
             var n = new Vector4(0, 0, 1, 0);
+            const float step = 0.1f;
+
+            #region table base
             for (int i = 0; i < N; i++)
                 for(int j = 0; j < M; j++)
                 {
@@ -93,6 +97,174 @@ namespace TheGame
                     })
                     { color = c });
                 }
+            #endregion
+
+            #region borders on depth
+            for (int i = 0; i < N; i++)
+            {
+                float x1 = -GameParameters.tableWidth / 2 + GameParameters.tableWidth * ((float)i / N);
+                float x2 = -GameParameters.tableWidth / 2 + GameParameters.tableWidth * ((float)(i + 1) / N);
+
+                if (x1 <= -GameParameters.tableWidth / 2 + GameParameters.pocketSize / 2)
+                    if (x2 >= -GameParameters.tableWidth / 2 + GameParameters.pocketSize / 2)
+                        x1 = -GameParameters.tableWidth / 2 + GameParameters.pocketSize / 2;
+                    else continue;
+                if (x2 >= GameParameters.tableWidth / 2 - GameParameters.pocketSize / 2)
+                    if (x1 <= GameParameters.tableWidth / 2 - GameParameters.pocketSize / 2)
+                        x2 = GameParameters.tableWidth / 2 - GameParameters.pocketSize / 2;
+                    else continue;
+                if (x1 < -GameParameters.pocketSize / 2 && x2 > -GameParameters.pocketSize / 2) x2 = -GameParameters.pocketSize / 2;
+                if (x1 < GameParameters.pocketSize / 2 && x2 > GameParameters.pocketSize / 2) x1 = GameParameters.pocketSize / 2;
+                if (x1 > -GameParameters.pocketSize / 2 && x2 < GameParameters.pocketSize / 2) continue;
+
+                var n1 = new Vector4(1, 0, 0, 0);
+
+                var p1 = new Vector4(x1, -GameParameters.tableDepth / 2, 0, 1);
+                var p2 = new Vector4(x2, -GameParameters.tableDepth / 2, 0, 1);
+                var p3 = new Vector4(x1, -GameParameters.tableDepth / 2, GameParameters.tableHeight, 1);
+                var p4 = new Vector4(x2, -GameParameters.tableDepth / 2, GameParameters.tableHeight, 1);
+                model.Add(new Triangle(new List<(Vector4 point, Vector4 NormalVector)>()
+                {
+                    (p1, n1), (p2, n1), (p3, n1)
+                })
+                { color = c });
+                model.Add(new Triangle(new List<(Vector4 point, Vector4 NormalVector)>()
+                {
+                    (p4, n1), (p2, n1), (p3, n1)
+                })
+                { color = c });
+
+                p1 = p3; p1.Y -= GameParameters.borderThickness;
+                p2 = p4; p2.Y -= GameParameters.borderThickness;
+                model.Add(new Triangle(new List<(Vector4 point, Vector4 NormalVector)>()
+                {
+                    (p1, n), (p2, n), (p3, n)
+                })
+                { color = c });
+                model.Add(new Triangle(new List<(Vector4 point, Vector4 NormalVector)>()
+                {
+                    (p4, n), (p2, n), (p3, n)
+                })
+                { color = c });
+
+
+                n1 *= -1;
+                p1 = new Vector4(x1, GameParameters.tableDepth / 2, 0, 1);
+                p2 = new Vector4(x2, GameParameters.tableDepth / 2, 0, 1);
+                p3 = new Vector4(x1, GameParameters.tableDepth / 2, GameParameters.tableHeight, 1);
+                p4 = new Vector4(x2, GameParameters.tableDepth / 2, GameParameters.tableHeight, 1);
+                model.Add(new Triangle(new List<(Vector4 point, Vector4 NormalVector)>()
+                {
+                    (p1, n1), (p2, n1), (p3, n1)
+                })
+                { color = c });
+                model.Add(new Triangle(new List<(Vector4 point, Vector4 NormalVector)>()
+                {
+                    (p4, n1), (p2, n1), (p3, n1)
+                })
+                { color = c });
+
+
+                p1 = p3; p1.Y += GameParameters.borderThickness;
+                p2 = p4; p2.Y += GameParameters.borderThickness;
+                model.Add(new Triangle(new List<(Vector4 point, Vector4 NormalVector)>()
+                {
+                    (p1, n), (p2, n), (p3, n)
+                })
+                { color = c });
+                model.Add(new Triangle(new List<(Vector4 point, Vector4 NormalVector)>()
+                {
+                    (p4, n), (p2, n), (p3, n)
+                })
+                { color = c });
+            }
+            #endregion
+
+            #region borders on width
+            for (int j = 0; j < M; j++)
+            {
+                var n1 = new Vector4(0, 1, 0, 0);
+                float y1 = -GameParameters.tableDepth / 2 + GameParameters.tableDepth * ((float)j / M);
+                float y2 = -GameParameters.tableDepth / 2 + GameParameters.tableDepth * ((float)(j + 1) / M);
+
+                if (y1 <= -GameParameters.tableDepth / 2 + GameParameters.pocketSize / 2)
+                    if (y2 >= -GameParameters.tableDepth / 2 + GameParameters.pocketSize / 2)
+                        y1 = -GameParameters.tableDepth / 2 + GameParameters.pocketSize / 2;
+                    else continue;
+                if (y2 >= GameParameters.tableDepth / 2 - GameParameters.pocketSize / 2)
+                    if (y1 <= GameParameters.tableDepth / 2 - GameParameters.pocketSize / 2)
+                        y2 = GameParameters.tableDepth / 2 - GameParameters.pocketSize / 2;
+                    else continue;
+                if (y1 < -GameParameters.pocketSize / 2 && y2 > -GameParameters.pocketSize / 2) y2 = -GameParameters.pocketSize / 2;
+                if (y1 < GameParameters.pocketSize / 2 && y2 > GameParameters.pocketSize / 2) y1 = GameParameters.pocketSize / 2;
+                if (y1 > -GameParameters.pocketSize / 2 && y2 < GameParameters.pocketSize / 2) continue;
+
+                var p1 = new Vector4(-GameParameters.tableWidth / 2, y1, 0, 1);
+                var p2 = new Vector4(-GameParameters.tableWidth / 2, y2, 0, 1);
+                var p3 = new Vector4(-GameParameters.tableWidth / 2, y1, GameParameters.tableHeight, 1);
+                var p4 = new Vector4(-GameParameters.tableWidth / 2, y2, GameParameters.tableHeight, 1);
+                model.Add(new Triangle(new List<(Vector4 point, Vector4 NormalVector)>()
+                {
+                    (p1, n1), (p2, n1), (p3, n1)
+                })
+                { color = c });
+                model.Add(new Triangle(new List<(Vector4 point, Vector4 NormalVector)>()
+                {
+                    (p4, n1), (p2, n1), (p3, n1)
+                })
+                { color = c });
+
+                p1 = p3; p1.X -= GameParameters.borderThickness;
+                p2 = p4; p2.X -= GameParameters.borderThickness;
+                model.Add(new Triangle(new List<(Vector4 point, Vector4 NormalVector)>()
+                {
+                    (p1, n), (p2, n), (p3, n)
+                })
+                { color = c });
+                model.Add(new Triangle(new List<(Vector4 point, Vector4 NormalVector)>()
+                {
+                    (p4, n), (p2, n), (p3, n)
+                })
+                { color = c });
+
+                n1 *= -1;
+                p1 = new Vector4(GameParameters.tableWidth / 2, y1, 0, 1);
+                p2 = new Vector4(GameParameters.tableWidth / 2, y2, 0, 1);
+                p3 = new Vector4(GameParameters.tableWidth / 2, y1, GameParameters.tableHeight, 1);
+                p4 = new Vector4(GameParameters.tableWidth / 2, y2, GameParameters.tableHeight, 1);
+                model.Add(new Triangle(new List<(Vector4 point, Vector4 NormalVector)>()
+                {
+                    (p1, n1), (p2, n1), (p3, n1)
+                })
+                { color = c });
+                model.Add(new Triangle(new List<(Vector4 point, Vector4 NormalVector)>()
+                {
+                    (p4, n1), (p2, n1), (p3, n1)
+                })
+                { color = c });
+
+                p1 = p3; p1.X += GameParameters.borderThickness;
+                p2 = p4; p2.X += GameParameters.borderThickness;
+                model.Add(new Triangle(new List<(Vector4 point, Vector4 NormalVector)>()
+                {
+                    (p1, n), (p2, n), (p3, n)
+                })
+                { color = c });
+                model.Add(new Triangle(new List<(Vector4 point, Vector4 NormalVector)>()
+                {
+                    (p4, n), (p2, n), (p3, n)
+                })
+                { color = c });
+            }
+            #endregion
+
+            #region pockets
+            for(float t = 0; t < step; t++)
+            {
+
+            }
+            #endregion
+
             models.Add(model);
             table = new ObjectParameters(model, new Vector3(0, 0, 0));
         }
@@ -179,10 +351,6 @@ namespace TheGame
                 engine.RemoveAllLights();
                 if (staticLightOn) engine.AddLight(staticLight);
                 engine.AddLight(new ReflectorLight(new Vector3(whiteBall.position.X, whiteBall.position.Y, GameParameters.lightHeight), whiteBall.position));
-                //engine.AddLight(new ReflectorLight(new Vector3(GameParameters.tableWidth / 2, GameParameters.tableDepth / 2, GameParameters.lightHeight), whiteBall.position));
-                //var testsphere = ModelBuilder.CreateSphere(1, Colors.YellowGreen);
-                //testsphere.Translate(GameParameters.tableWidth / 2, GameParameters.tableDepth / 2, 0);
-                //models.Add(testsphere);
             }
         }
         public void RotateStickLeft() => rotateLeft = true;
