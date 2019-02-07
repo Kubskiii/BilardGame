@@ -37,9 +37,10 @@ namespace TheGame
             AddWhiteBall();
             AddBallTriangle(0, 5);
             engine.SwitchToGouraudShading();
-            StaticCamera();
-            SwitchPointLight();
-            //SwitchTrackingLight();
+            ActiveCamera();
+            //StaticCamera();
+            //SwitchPointLight();
+            SwitchTrackingLight();
             UpdateLights();
         }
         void AddBall(Color color, float x, float y)
@@ -66,8 +67,8 @@ namespace TheGame
         }
         void AddTable(Color c)
         {
-            var N = 50;
-            var M = 100;
+            var N = 20;
+            var M = 50;
             var model = new Model();
             var n = new Vector4(0, 0, 1, 0);
             for (int i = 0; i < N; i++)
