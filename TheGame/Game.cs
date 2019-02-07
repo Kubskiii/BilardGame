@@ -259,8 +259,95 @@ namespace TheGame
             #endregion
 
             #region pockets
-            for(float t = 0; t < step; t++)
+            for(float t = 0; t < 1; t += step)
             {
+                float ang = (float)Math.PI / 2;
+                var p1 = PointExtensions.fromPolarCoordinates(GameParameters.pocketSize / 2, t * (float)Math.PI + ang, GameParameters.tableHeight);
+                var p2 = PointExtensions.fromPolarCoordinates(GameParameters.pocketSize / 2, (t + step) * (float)Math.PI + ang, GameParameters.tableHeight);
+
+                var p3 = new Vector4(-GameParameters.tableWidth / 2 - GameParameters.borderThickness, p1.Y, GameParameters.tableHeight, 1);
+                var p4 = new Vector4(p3.X, p2.Y, p3.Z, 1);
+
+                p1.X -= (GameParameters.tableWidth + GameParameters.pocketSize) / 2;
+                p2.X -= (GameParameters.tableWidth + GameParameters.pocketSize) / 2;
+
+                model.Add(new Triangle(new List<(Vector4 point, Vector4 NormalVector)>()
+                {
+                    (p1, n), (p2, n), (p3, n)
+                })
+                { color = c });
+
+                model.Add(new Triangle(new List<(Vector4 point, Vector4 NormalVector)>()
+                {
+                    (p4, n), (p2, n), (p3, n)
+                })
+                { color = c });
+
+                ang *= -1;
+                p1 = PointExtensions.fromPolarCoordinates(GameParameters.pocketSize / 2, t * (float)Math.PI + ang, GameParameters.tableHeight);
+                p2 = PointExtensions.fromPolarCoordinates(GameParameters.pocketSize / 2, (t + step) * (float)Math.PI + ang, GameParameters.tableHeight);
+
+                p3 = new Vector4(GameParameters.tableWidth / 2 + GameParameters.borderThickness, p1.Y, GameParameters.tableHeight, 1);
+                p4 = new Vector4(p3.X, p2.Y, p3.Z, 1);
+
+                p1.X += (GameParameters.tableWidth + GameParameters.pocketSize) / 2;
+                p2.X += (GameParameters.tableWidth + GameParameters.pocketSize) / 2;
+
+                model.Add(new Triangle(new List<(Vector4 point, Vector4 NormalVector)>()
+                {
+                    (p1, n), (p2, n), (p3, n)
+                })
+                { color = c });
+
+                model.Add(new Triangle(new List<(Vector4 point, Vector4 NormalVector)>()
+                {
+                    (p4, n), (p2, n), (p3, n)
+                })
+                { color = c });
+
+                ang = 0;
+                p1 = PointExtensions.fromPolarCoordinates(GameParameters.pocketSize / 2, t * (float)Math.PI + ang, GameParameters.tableHeight);
+                p2 = PointExtensions.fromPolarCoordinates(GameParameters.pocketSize / 2, (t + step) * (float)Math.PI + ang, GameParameters.tableHeight);
+
+                p3 = new Vector4(p1.X, GameParameters.tableDepth / 2 + GameParameters.borderThickness, GameParameters.tableHeight, 1);
+                p4 = new Vector4(p2.X, p3.Y, p3.Z, 1);
+
+                p1.Y += (GameParameters.tableDepth + GameParameters.pocketSize) / 2;
+                p2.Y += (GameParameters.tableDepth + GameParameters.pocketSize) / 2;
+
+                model.Add(new Triangle(new List<(Vector4 point, Vector4 NormalVector)>()
+                {
+                    (p1, n), (p2, n), (p3, n)
+                })
+                { color = c });
+
+                model.Add(new Triangle(new List<(Vector4 point, Vector4 NormalVector)>()
+                {
+                    (p4, n), (p2, n), (p3, n)
+                })
+                { color = c });
+
+                ang = (float)Math.PI;
+                p1 = PointExtensions.fromPolarCoordinates(GameParameters.pocketSize / 2, t * (float)Math.PI + ang, GameParameters.tableHeight);
+                p2 = PointExtensions.fromPolarCoordinates(GameParameters.pocketSize / 2, (t + step) * (float)Math.PI + ang, GameParameters.tableHeight);
+
+                p3 = new Vector4(p1.X, -GameParameters.tableDepth / 2 - GameParameters.borderThickness, GameParameters.tableHeight, 1);
+                p4 = new Vector4(p2.X, p3.Y, p3.Z, 1);
+
+                p1.Y -= (GameParameters.tableDepth + GameParameters.pocketSize) / 2;
+                p2.Y -= (GameParameters.tableDepth + GameParameters.pocketSize) / 2;
+
+                model.Add(new Triangle(new List<(Vector4 point, Vector4 NormalVector)>()
+                {
+                    (p1, n), (p2, n), (p3, n)
+                })
+                { color = c });
+
+                model.Add(new Triangle(new List<(Vector4 point, Vector4 NormalVector)>()
+                {
+                    (p4, n), (p2, n), (p3, n)
+                })
+                { color = c });
 
             }
             #endregion
