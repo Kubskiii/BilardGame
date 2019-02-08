@@ -24,7 +24,7 @@ namespace TheGame
         static readonly public float releaseSpeed = 1;
         static readonly public float ballVelocity = 0.2f;
         static readonly public float ballAcceleration = 0.01f;
-        static readonly public float eps = 0.1f;
+        static readonly public float eps = 0.5f;
         static readonly public float cameraDistance = 50;
         static readonly public float lightHeight = 20;
         static public readonly Color[] ballColors = new Color[6]

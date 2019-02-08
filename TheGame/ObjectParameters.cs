@@ -51,10 +51,14 @@ namespace TheGame
                 var y = (float)Math.Sin(directionAngle) * velocity;
                 Move(x, y);
                 velocity -= acceleration;
-                //if (velocity == 0) directionAngle = 0;
                 return new Vector3(x, y, 0);
             }
             return new Vector3(0, 0, 0);
+        }
+        public void Fall(float dz)
+        {
+            pos.Z -= dz;
+            model.Translate(0, 0, -dz);
         }
     }
 }

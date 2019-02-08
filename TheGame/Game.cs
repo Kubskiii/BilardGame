@@ -33,6 +33,7 @@ namespace TheGame
         bool staticLightOn = false;
         bool trackingLightOn = false;
         PointLight staticLight = new PointLight(new Vector3(0, 0, GameParameters.lightHeight));
+        Stack<ObjectParameters> stack = new Stack<ObjectParameters>();
         public Game(Resolution res)
         {
             engine = new CPUEngine(res);
@@ -42,11 +43,12 @@ namespace TheGame
             AddStick(Colors.Brown);
             AddWhiteBall();
             AddBallTriangle(0, 5);
+            AddBall(Colors.Turquoise, 5, 0);
 
             engine.SwitchToGouraudShading();
             //ActiveCamera();
-            //StaticCamera();
-            TrackingCamera();
+            StaticCamera();
+            //TrackingCamera();
             SwitchPointLight();
             //SwitchTrackingLight();
             UpdateLights();
@@ -96,16 +98,6 @@ namespace TheGame
                     p2 = new Vector4(x2, y1, 0, 1);
                     p3 = new Vector4(x1, y2, 0, 1);
                     p4 = new Vector4(x2, y2, 0, 1);
-
-                    //if (x1 + y1 <= GameParameters.pocketSize / 2 * sqrt2 - GameParameters.tableWidth / 2 - GameParameters.tableDepth / 2)
-                    //{
-                    //    model.Add(new Triangle(new List<(Vector4 point, Vector4 NormalVector)>()
-                    //    {
-                    //        (p4, n) , (p2, n), (p3, n)
-                    //    })
-                    //    { color = c });
-                    //    continue;
-                    //}
 
                     model.Add(new Triangle(new List<(Vector4 point, Vector4 NormalVector)>()
                     {
@@ -527,10 +519,10 @@ namespace TheGame
 
             #region black wholes
             // 4th quarter
-            pp1 = new Vector4(-GameParameters.tableWidth / 2 + GameParameters.pocketSize * sqrt2 / 2, -GameParameters.tableDepth / 2, 0.02f, 1);
-            pp2 = new Vector4(-GameParameters.tableWidth / 2, -GameParameters.tableDepth / 2 + GameParameters.pocketSize * sqrt2 / 2, 0.02f, 1);
-            pp3 = new Vector4(-GameParameters.tableWidth / 2, -GameParameters.tableDepth / 2 - GameParameters.pocketSize * sqrt2 / 2, 0.02f, 1);
-            pp4 = new Vector4(-GameParameters.tableWidth / 2 - GameParameters.pocketSize * sqrt2 / 2, -GameParameters.tableDepth / 2, 0.02f, 1);
+            pp1 = new Vector4(-GameParameters.tableWidth / 2 + GameParameters.pocketSize * sqrt2 / 2, -GameParameters.tableDepth / 2, 0.05f, 1);
+            pp2 = new Vector4(-GameParameters.tableWidth / 2, -GameParameters.tableDepth / 2 + GameParameters.pocketSize * sqrt2 / 2, 0.05f, 1);
+            pp3 = new Vector4(-GameParameters.tableWidth / 2, -GameParameters.tableDepth / 2 - GameParameters.pocketSize * sqrt2 / 2, 0.05f, 1);
+            pp4 = new Vector4(-GameParameters.tableWidth / 2 - GameParameters.pocketSize * sqrt2 / 2, -GameParameters.tableDepth / 2, 0.05f, 1);
 
             model.Add(new Triangle(new List<(Vector4 point, Vector4 NormalVector)>()
             {
@@ -542,10 +534,10 @@ namespace TheGame
             }));
 
             // 1st quarter
-            pp1 = new Vector4(GameParameters.tableWidth / 2 - GameParameters.pocketSize * sqrt2 / 2, GameParameters.tableDepth / 2, 0.02f, 1);
-            pp2 = new Vector4(GameParameters.tableWidth / 2, GameParameters.tableDepth / 2 - GameParameters.pocketSize * sqrt2 / 2, 0.02f, 1);
-            pp3 = new Vector4(GameParameters.tableWidth / 2, GameParameters.tableDepth / 2 + GameParameters.pocketSize * sqrt2 / 2, 0.02f, 1);
-            pp4 = new Vector4(GameParameters.tableWidth / 2 + GameParameters.pocketSize * sqrt2 / 2, GameParameters.tableDepth / 2, 0.02f, 1);
+            pp1 = new Vector4(GameParameters.tableWidth / 2 - GameParameters.pocketSize * sqrt2 / 2, GameParameters.tableDepth / 2, 0.05f, 1);
+            pp2 = new Vector4(GameParameters.tableWidth / 2, GameParameters.tableDepth / 2 - GameParameters.pocketSize * sqrt2 / 2, 0.05f, 1);
+            pp3 = new Vector4(GameParameters.tableWidth / 2, GameParameters.tableDepth / 2 + GameParameters.pocketSize * sqrt2 / 2, 0.05f, 1);
+            pp4 = new Vector4(GameParameters.tableWidth / 2 + GameParameters.pocketSize * sqrt2 / 2, GameParameters.tableDepth / 2, 0.05f, 1);
 
             model.Add(new Triangle(new List<(Vector4 point, Vector4 NormalVector)>()
             {
@@ -557,10 +549,10 @@ namespace TheGame
             }));
 
             // 2nd quarter
-            pp1 = new Vector4(-GameParameters.tableWidth / 2 + GameParameters.pocketSize * sqrt2 / 2, GameParameters.tableDepth / 2, 0.02f, 1);
-            pp2 = new Vector4(-GameParameters.tableWidth / 2, GameParameters.tableDepth / 2 - GameParameters.pocketSize * sqrt2 / 2, 0.02f, 1);
-            pp3 = new Vector4(-GameParameters.tableWidth / 2, GameParameters.tableDepth / 2 + GameParameters.pocketSize * sqrt2 / 2, 0.02f, 1);
-            pp4 = new Vector4(-GameParameters.tableWidth / 2 - GameParameters.pocketSize * sqrt2 / 2, GameParameters.tableDepth / 2, 0.02f, 1);
+            pp1 = new Vector4(-GameParameters.tableWidth / 2 + GameParameters.pocketSize * sqrt2 / 2, GameParameters.tableDepth / 2, 0.05f, 1);
+            pp2 = new Vector4(-GameParameters.tableWidth / 2, GameParameters.tableDepth / 2 - GameParameters.pocketSize * sqrt2 / 2, 0.05f, 1);
+            pp3 = new Vector4(-GameParameters.tableWidth / 2, GameParameters.tableDepth / 2 + GameParameters.pocketSize * sqrt2 / 2, 0.05f, 1);
+            pp4 = new Vector4(-GameParameters.tableWidth / 2 - GameParameters.pocketSize * sqrt2 / 2, GameParameters.tableDepth / 2, 0.05f, 1);
 
             model.Add(new Triangle(new List<(Vector4 point, Vector4 NormalVector)>()
             {
@@ -572,10 +564,10 @@ namespace TheGame
             }));
 
             // 3rd quarter
-            pp1 = new Vector4(GameParameters.tableWidth / 2 - GameParameters.pocketSize * sqrt2 / 2, -GameParameters.tableDepth / 2, 0.02f, 1);
-            pp2 = new Vector4(GameParameters.tableWidth / 2, -GameParameters.tableDepth / 2 + GameParameters.pocketSize * sqrt2 / 2, 0.02f, 1);
-            pp3 = new Vector4(GameParameters.tableWidth / 2, -GameParameters.tableDepth / 2 - GameParameters.pocketSize * sqrt2 / 2, 0.02f, 1);
-            pp4 = new Vector4(GameParameters.tableWidth / 2 + GameParameters.pocketSize * sqrt2 / 2, -GameParameters.tableDepth / 2, 0.02f, 1);
+            pp1 = new Vector4(GameParameters.tableWidth / 2 - GameParameters.pocketSize * sqrt2 / 2, -GameParameters.tableDepth / 2, 0.05f, 1);
+            pp2 = new Vector4(GameParameters.tableWidth / 2, -GameParameters.tableDepth / 2 + GameParameters.pocketSize * sqrt2 / 2, 0.05f, 1);
+            pp3 = new Vector4(GameParameters.tableWidth / 2, -GameParameters.tableDepth / 2 - GameParameters.pocketSize * sqrt2 / 2, 0.05f, 1);
+            pp4 = new Vector4(GameParameters.tableWidth / 2 + GameParameters.pocketSize * sqrt2 / 2, -GameParameters.tableDepth / 2, 0.05f, 1);
 
             model.Add(new Triangle(new List<(Vector4 point, Vector4 NormalVector)>()
             {
@@ -587,10 +579,10 @@ namespace TheGame
             }));
 
             // others
-            pp1 = new Vector4(GameParameters.tableWidth / 2, -GameParameters.pocketSize / 2, 0.02f, 1);
-            pp2 = new Vector4(GameParameters.tableWidth / 2, GameParameters.pocketSize / 2, 0.02f, 1);
-            pp3 = new Vector4(GameParameters.tableWidth / 2 + GameParameters.pocketSize, -GameParameters.pocketSize / 2, 0.02f, 1);
-            pp4 = new Vector4(GameParameters.tableWidth / 2 + GameParameters.pocketSize, GameParameters.pocketSize / 2, 0.02f, 1);
+            pp1 = new Vector4(GameParameters.tableWidth / 2, -GameParameters.pocketSize / 2, 0.05f, 1);
+            pp2 = new Vector4(GameParameters.tableWidth / 2, GameParameters.pocketSize / 2, 0.05f, 1);
+            pp3 = new Vector4(GameParameters.tableWidth / 2 + GameParameters.pocketSize, -GameParameters.pocketSize / 2, 0.05f, 1);
+            pp4 = new Vector4(GameParameters.tableWidth / 2 + GameParameters.pocketSize, GameParameters.pocketSize / 2, 0.05f, 1);
 
             model.Add(new Triangle(new List<(Vector4 point, Vector4 NormalVector)>()
             {
@@ -601,10 +593,10 @@ namespace TheGame
                 (pp4, Vector4.Zero), (pp2, Vector4.Zero), (pp3, Vector4.Zero)
             }));
 
-            pp1 = new Vector4(-GameParameters.tableWidth / 2, -GameParameters.pocketSize / 2, 0.02f, 1);
-            pp2 = new Vector4(-GameParameters.tableWidth / 2, GameParameters.pocketSize / 2, 0.02f, 1);
-            pp3 = new Vector4(-GameParameters.tableWidth / 2 - GameParameters.pocketSize, -GameParameters.pocketSize / 2, 0.02f, 1);
-            pp4 = new Vector4(-GameParameters.tableWidth / 2 - GameParameters.pocketSize, GameParameters.pocketSize / 2, 0.02f, 1);
+            pp1 = new Vector4(-GameParameters.tableWidth / 2, -GameParameters.pocketSize / 2, 0.05f, 1);
+            pp2 = new Vector4(-GameParameters.tableWidth / 2, GameParameters.pocketSize / 2, 0.05f, 1);
+            pp3 = new Vector4(-GameParameters.tableWidth / 2 - GameParameters.pocketSize, -GameParameters.pocketSize / 2, 0.05f, 1);
+            pp4 = new Vector4(-GameParameters.tableWidth / 2 - GameParameters.pocketSize, GameParameters.pocketSize / 2, 0.05f, 1);
 
             model.Add(new Triangle(new List<(Vector4 point, Vector4 NormalVector)>()
             {
@@ -643,37 +635,95 @@ namespace TheGame
             if (ball != whiteBall) list.Add(whiteBall);
             return list;
         }
+        bool BallFalling(ObjectParameters ball)
+        {
+            ball.Fall(ball.velocity / 2);
+            if (ball.position.X > GameParameters.tableWidth / 2 - GameParameters.ballRadius * (-1)) ball.Move(GameParameters.tableWidth / 2 - GameParameters.ballRadius * (-1) - ball.position.X, 0);
+            if (ball.position.X < -GameParameters.tableWidth / 2 + GameParameters.ballRadius * (-1)) ball.Move(-GameParameters.tableWidth / 2 + GameParameters.ballRadius * (-1) - ball.position.X, 0);
+            if (ball.position.Y > GameParameters.tableDepth / 2 - GameParameters.ballRadius * (-1)) ball.Move(0, GameParameters.tableDepth / 2 - GameParameters.ballRadius * (-1) - ball.position.Y);
+            if (ball.position.Y < -GameParameters.tableDepth / 2 + GameParameters.ballRadius * (-1)) ball.Move(0, -GameParameters.tableDepth / 2 + GameParameters.ballRadius * (-1) - ball.position.Y);
+            if (ball.position.Z < -GameParameters.ballRadius)
+            {
+                ball.ApplyVelocity(0, 0);
+                if (ball == whiteBall)
+                {
+                    ball.Fall(ball.position.Z - GameParameters.ballRadius);
+                    ball.Move(-ball.position.X, -ball.position.Y);
+                }
+                else
+                {
+                    models.Remove(ball.model);
+                    //balls.Remove(ball);
+                    stack.Push(ball);
+                }
+                return true;
+            }
+            return false;
+        }
         void UpdateBallPosition(ObjectParameters ball)
         {
             if (ball.velocity == 0) return;
             var move = ball.UpdatePosition(GameParameters.ballAcceleration);
             float distance = move.Length();
 
-            #region borders detection
-            if (ball.position.X + GameParameters.ballRadius > GameParameters.tableWidth / 2)
+            #region borders and pockets detection
+            if ((ball.position.X <= -GameParameters.tableWidth / 2 + GameParameters.ballRadius + GameParameters.eps && ball.position.Y <= -GameParameters.tableDepth / 2 + GameParameters.ballRadius + GameParameters.eps)
+                || (ball.position.X >= GameParameters.tableWidth / 2 - GameParameters.ballRadius - GameParameters.eps && ball.position.Y <= -GameParameters.tableDepth / 2 + GameParameters.ballRadius + GameParameters.eps)
+                || (ball.position.X <= -GameParameters.tableWidth / 2 + GameParameters.ballRadius + GameParameters.eps && ball.position.Y >= GameParameters.tableDepth / 2 - GameParameters.ballRadius - GameParameters.eps)
+                || (ball.position.X >= GameParameters.tableWidth / 2 - GameParameters.ballRadius - GameParameters.eps && ball.position.Y >= GameParameters.tableDepth / 2 - GameParameters.ballRadius - GameParameters.eps))
             {
-                float alpha = 1 - (GameParameters.tableWidth / 2 - ball.position.X - GameParameters.ballRadius + move.X) / move.X;
-                ball.MoveInDirection(ball.directionAngle, -distance * alpha);
-                ball.ApplyVelocity(ball.velocity - GameParameters.ballAcceleration, (float)Math.PI - ball.directionAngle);
+                var dx = (float)Math.Sign(ball.position.X);
+                var dy = (float)Math.Sign(ball.position.Y);
+                float directon = 0;
+                if (dx > 0 && dy > 0) directon = (float)Math.PI / 4;
+                if (dx > 0 && dy < 0) directon = -(float)Math.PI / 4;
+                if (dx < 0 && dy > 0) directon = (float)Math.PI * 0.75f;
+                if (dx < 0 && dy < 0) directon = (float)Math.PI * 1.25f;
+                ball.ApplyVelocity(ball.velocity, directon);
+                if (BallFalling(ball)) return;
             }
-            else if (ball.position.X - GameParameters.ballRadius < -GameParameters.tableWidth / 2)
+            else
             {
-                float alpha = 1 - (-GameParameters.tableWidth / 2 - ball.position.X + GameParameters.ballRadius + move.X) / move.X;
-                ball.MoveInDirection(ball.directionAngle, -distance * alpha);
-                ball.ApplyVelocity(ball.velocity - GameParameters.ballAcceleration, (float)Math.PI - ball.directionAngle);
-            }
+                if (ball.position.X + GameParameters.ballRadius > GameParameters.tableWidth / 2)
+                {
+                    if (ball.position.Y >= -GameParameters.pocketSize / 2 + GameParameters.ballRadius && ball.position.Y <= GameParameters.pocketSize / 2 - GameParameters.ballRadius)
+                    {
+                        if (BallFalling(ball)) return;
+                    }
+                    else
+                    {
+                        float alpha = 1 - (GameParameters.tableWidth / 2 - ball.position.X - GameParameters.ballRadius + move.X) / move.X;
+                        ball.MoveInDirection(ball.directionAngle, -distance * alpha);
+                        ball.ApplyVelocity(ball.velocity - GameParameters.ballAcceleration, (float)Math.PI - ball.directionAngle);
+                    }
+                }
+                else if (ball.position.X - GameParameters.ballRadius < -GameParameters.tableWidth / 2)
+                {
 
-            if (ball.position.Y + GameParameters.ballRadius > GameParameters.tableDepth / 2)
-            {
-                var alpha = 1 - (GameParameters.tableDepth / 2 - ball.position.Y - GameParameters.ballRadius + move.Y) / move.Y;
-                ball.MoveInDirection(ball.directionAngle, -distance * alpha);
-                ball.ApplyVelocity(ball.velocity - GameParameters.ballAcceleration, -ball.directionAngle);
-            }
-            else if (ball.position.Y - GameParameters.ballRadius < -GameParameters.tableDepth / 2)
-            {
-                var alpha = 1 - (-GameParameters.tableDepth / 2 - ball.position.Y + GameParameters.ballRadius + move.Y) / move.Y;
-                ball.MoveInDirection(ball.directionAngle, -distance * alpha);
-                ball.ApplyVelocity(ball.velocity - GameParameters.ballAcceleration, -ball.directionAngle);
+                    if (ball.position.Y >= -GameParameters.pocketSize / 2 + GameParameters.ballRadius && ball.position.Y <= GameParameters.pocketSize / 2 - GameParameters.ballRadius)
+                    {
+                        if (BallFalling(ball)) return;
+                    }
+                    else
+                    {
+                        float alpha = 1 - (-GameParameters.tableWidth / 2 - ball.position.X + GameParameters.ballRadius + move.X) / move.X;
+                        ball.MoveInDirection(ball.directionAngle, -distance * alpha);
+                        ball.ApplyVelocity(ball.velocity - GameParameters.ballAcceleration, (float)Math.PI - ball.directionAngle);
+                    }
+                }
+
+                if (ball.position.Y + GameParameters.ballRadius > GameParameters.tableDepth / 2)
+                {
+                    var alpha = 1 - (GameParameters.tableDepth / 2 - ball.position.Y - GameParameters.ballRadius + move.Y) / move.Y;
+                    ball.MoveInDirection(ball.directionAngle, -distance * alpha);
+                    ball.ApplyVelocity(ball.velocity - GameParameters.ballAcceleration, -ball.directionAngle);
+                }
+                else if (ball.position.Y - GameParameters.ballRadius < -GameParameters.tableDepth / 2)
+                {
+                    var alpha = 1 - (-GameParameters.tableDepth / 2 - ball.position.Y + GameParameters.ballRadius + move.Y) / move.Y;
+                    ball.MoveInDirection(ball.directionAngle, -distance * alpha);
+                    ball.ApplyVelocity(ball.velocity - GameParameters.ballAcceleration, -ball.directionAngle);
+                }
             }
             #endregion
 
@@ -814,6 +864,11 @@ namespace TheGame
                         UpdateBallPosition(whiteBall);
                         foreach (var b in balls)
                             UpdateBallPosition(b);
+                        while(stack.Count > 0)
+                        {
+                            var ball = stack.Pop();
+                            balls.Remove(ball);
+                        }
                         UpdateLights();
                     }
                     else
