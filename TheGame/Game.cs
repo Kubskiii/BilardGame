@@ -114,9 +114,6 @@ namespace TheGame
                     if (x1 <= GameParameters.tableWidth / 2 - GameParameters.pocketSize / 2 * sqrt2)
                         x2 = GameParameters.tableWidth / 2 - GameParameters.pocketSize / 2 * sqrt2;
                     else continue;
-                if (x1 < -GameParameters.pocketSize / 2 && x2 > -GameParameters.pocketSize / 2) x2 = -GameParameters.pocketSize / 2;
-                if (x1 < GameParameters.pocketSize / 2 && x2 > GameParameters.pocketSize / 2) x1 = GameParameters.pocketSize / 2;
-                if (x1 > -GameParameters.pocketSize / 2 && x2 < GameParameters.pocketSize / 2) continue;
 
                 var n1 = new Vector4(1, 0, 0, 0);
 
@@ -306,66 +303,117 @@ namespace TheGame
                 })
                 { color = c });
 
-                ang = 0;
-                p1 = PointExtensions.fromPolarCoordinates(GameParameters.pocketSize / 2, t * (float)Math.PI + ang, GameParameters.tableHeight);
-                p2 = PointExtensions.fromPolarCoordinates(GameParameters.pocketSize / 2, (t + step) * (float)Math.PI + ang, GameParameters.tableHeight);
-
-                p3 = new Vector4(p1.X, GameParameters.tableDepth / 2 + GameParameters.borderThickness, GameParameters.tableHeight, 1);
-                p4 = new Vector4(p2.X, p3.Y, p3.Z, 1);
-
-                p1.Y += (GameParameters.tableDepth + GameParameters.pocketSize) / 2;
-                p2.Y += (GameParameters.tableDepth + GameParameters.pocketSize) / 2;
-
-                model.Add(new Triangle(new List<(Vector4 point, Vector4 NormalVector)>()
-                {
-                    (p1, n), (p2, n), (p3, n)
-                })
-                { color = c });
-
-                model.Add(new Triangle(new List<(Vector4 point, Vector4 NormalVector)>()
-                {
-                    (p4, n), (p2, n), (p3, n)
-                })
-                { color = c });
-
-                ang = (float)Math.PI;
-                p1 = PointExtensions.fromPolarCoordinates(GameParameters.pocketSize / 2, t * (float)Math.PI + ang, GameParameters.tableHeight);
-                p2 = PointExtensions.fromPolarCoordinates(GameParameters.pocketSize / 2, (t + step) * (float)Math.PI + ang, GameParameters.tableHeight);
-
-                p3 = new Vector4(p1.X, -GameParameters.tableDepth / 2 - GameParameters.borderThickness, GameParameters.tableHeight, 1);
-                p4 = new Vector4(p2.X, p3.Y, p3.Z, 1);
-
-                p1.Y -= (GameParameters.tableDepth + GameParameters.pocketSize) / 2;
-                p2.Y -= (GameParameters.tableDepth + GameParameters.pocketSize) / 2;
-
-                model.Add(new Triangle(new List<(Vector4 point, Vector4 NormalVector)>()
-                {
-                    (p1, n), (p2, n), (p3, n)
-                })
-                { color = c });
-
-                model.Add(new Triangle(new List<(Vector4 point, Vector4 NormalVector)>()
-                {
-                    (p4, n), (p2, n), (p3, n)
-                })
-                { color = c });
-
+                // 4th quarter
                 ang = (float)Math.PI * 0.75f;
                 p1 = PointExtensions.fromPolarCoordinates(GameParameters.pocketSize / 2, t * (float)Math.PI + ang, GameParameters.tableHeight);
                 p2 = PointExtensions.fromPolarCoordinates(GameParameters.pocketSize / 2, (t + step) * (float)Math.PI + ang, GameParameters.tableHeight);
 
-                p3 = p1;
-                p4 = p2;
+                p3 = PointExtensions.fromPolarCoordinates(GameParameters.pocketSize / 2, t * (float)Math.PI + ang, GameParameters.tableHeight);
+                p4 = PointExtensions.fromPolarCoordinates(GameParameters.pocketSize / 2, (t + step) * (float)Math.PI + ang, GameParameters.tableHeight);
 
-                p1.X -= (GameParameters.tableWidth + GameParameters.pocketSize) / 2;
-                p2.X -= (GameParameters.tableWidth + GameParameters.pocketSize) / 2;
-                p1.Y -= (GameParameters.tableDepth + GameParameters.pocketSize) / 2;
-                p2.Y -= (GameParameters.tableDepth + GameParameters.pocketSize) / 2;
 
-                p3.X -= (GameParameters.tableWidth + GameParameters.borderThickness - GameParameters.pocketSize) / 2;
-                p4.X -= (GameParameters.tableWidth + GameParameters.borderThickness - GameParameters.pocketSize) / 2;
-                p3.Y -= (GameParameters.tableDepth + GameParameters.borderThickness - GameParameters.pocketSize) / 2;
-                p4.Y -= (GameParameters.tableDepth + GameParameters.borderThickness - GameParameters.pocketSize) / 2;
+                p3.X -= (GameParameters.tableWidth / 2 + GameParameters.borderThickness - GameParameters.pocketSize / 2);
+                p4.X -= (GameParameters.tableWidth / 2 + GameParameters.borderThickness - GameParameters.pocketSize / 2);
+                p3.Y -= (GameParameters.tableDepth / 2 + GameParameters.borderThickness - GameParameters.pocketSize / 2);
+                p4.Y -= (GameParameters.tableDepth / 2 + GameParameters.borderThickness - GameParameters.pocketSize / 2);
+
+                p1.X -= (GameParameters.tableWidth + GameParameters.pocketSize / 2) / 2;
+                p2.X -= (GameParameters.tableWidth + GameParameters.pocketSize / 2) / 2;
+                p1.Y -= (GameParameters.tableDepth + GameParameters.pocketSize  / 2) / 2;
+                p2.Y -= (GameParameters.tableDepth + GameParameters.pocketSize / 2) / 2;
+
+                model.Add(new Triangle(new List<(Vector4 point, Vector4 NormalVector)>()
+                {
+                    (p1, n), (p2, n), (p3, n)
+                })
+                { color = c });
+
+                model.Add(new Triangle(new List<(Vector4 point, Vector4 NormalVector)>()
+                {
+                    (p4, n), (p2, n), (p3, n)
+                })
+                { color = c });
+
+                // 1st quarter
+                ang = -(float)Math.PI * 0.25f;
+                p1 = PointExtensions.fromPolarCoordinates(GameParameters.pocketSize / 2, t * (float)Math.PI + ang, GameParameters.tableHeight);
+                p2 = PointExtensions.fromPolarCoordinates(GameParameters.pocketSize / 2, (t + step) * (float)Math.PI + ang, GameParameters.tableHeight);
+
+                p3 = PointExtensions.fromPolarCoordinates(GameParameters.pocketSize / 2, t * (float)Math.PI + ang, GameParameters.tableHeight);
+                p4 = PointExtensions.fromPolarCoordinates(GameParameters.pocketSize / 2, (t + step) * (float)Math.PI + ang, GameParameters.tableHeight);
+
+
+                p3.X += (GameParameters.tableWidth / 2 + GameParameters.borderThickness - GameParameters.pocketSize / 2);
+                p4.X += (GameParameters.tableWidth / 2 + GameParameters.borderThickness - GameParameters.pocketSize / 2);
+                p3.Y += (GameParameters.tableDepth / 2 + GameParameters.borderThickness - GameParameters.pocketSize / 2);
+                p4.Y += (GameParameters.tableDepth / 2 + GameParameters.borderThickness - GameParameters.pocketSize / 2);
+
+                p1.X += (GameParameters.tableWidth + GameParameters.pocketSize / 2) / 2;
+                p2.X += (GameParameters.tableWidth + GameParameters.pocketSize / 2) / 2;
+                p1.Y += (GameParameters.tableDepth + GameParameters.pocketSize / 2) / 2;
+                p2.Y += (GameParameters.tableDepth + GameParameters.pocketSize / 2) / 2;
+
+                model.Add(new Triangle(new List<(Vector4 point, Vector4 NormalVector)>()
+                {
+                    (p1, n), (p2, n), (p3, n)
+                })
+                { color = c });
+
+                model.Add(new Triangle(new List<(Vector4 point, Vector4 NormalVector)>()
+                {
+                    (p4, n), (p2, n), (p3, n)
+                })
+                { color = c });
+
+                // 2nd quarter
+                ang = (float)Math.PI * 0.25f;
+                p1 = PointExtensions.fromPolarCoordinates(GameParameters.pocketSize / 2, t * (float)Math.PI + ang, GameParameters.tableHeight);
+                p2 = PointExtensions.fromPolarCoordinates(GameParameters.pocketSize / 2, (t + step) * (float)Math.PI + ang, GameParameters.tableHeight);
+
+                p3 = PointExtensions.fromPolarCoordinates(GameParameters.pocketSize / 2, t * (float)Math.PI + ang, GameParameters.tableHeight);
+                p4 = PointExtensions.fromPolarCoordinates(GameParameters.pocketSize / 2, (t + step) * (float)Math.PI + ang, GameParameters.tableHeight);
+
+
+                p3.X -= (GameParameters.tableWidth / 2 + GameParameters.borderThickness - GameParameters.pocketSize / 2);
+                p4.X -= (GameParameters.tableWidth / 2 + GameParameters.borderThickness - GameParameters.pocketSize / 2);
+                p3.Y += (GameParameters.tableDepth / 2 + GameParameters.borderThickness - GameParameters.pocketSize / 2);
+                p4.Y += (GameParameters.tableDepth / 2 + GameParameters.borderThickness - GameParameters.pocketSize / 2);
+
+                p1.X -= (GameParameters.tableWidth + GameParameters.pocketSize / 2) / 2;
+                p2.X -= (GameParameters.tableWidth + GameParameters.pocketSize / 2) / 2;
+                p1.Y += (GameParameters.tableDepth + GameParameters.pocketSize / 2) / 2;
+                p2.Y += (GameParameters.tableDepth + GameParameters.pocketSize / 2) / 2;
+
+                model.Add(new Triangle(new List<(Vector4 point, Vector4 NormalVector)>()
+                {
+                    (p1, n), (p2, n), (p3, n)
+                })
+                { color = c });
+
+                model.Add(new Triangle(new List<(Vector4 point, Vector4 NormalVector)>()
+                {
+                    (p4, n), (p2, n), (p3, n)
+                })
+                { color = c });
+
+                // 3rd quarter
+                ang = -(float)Math.PI * 0.75f;
+                p1 = PointExtensions.fromPolarCoordinates(GameParameters.pocketSize / 2, t * (float)Math.PI + ang, GameParameters.tableHeight);
+                p2 = PointExtensions.fromPolarCoordinates(GameParameters.pocketSize / 2, (t + step) * (float)Math.PI + ang, GameParameters.tableHeight);
+
+                p3 = PointExtensions.fromPolarCoordinates(GameParameters.pocketSize / 2, t * (float)Math.PI + ang, GameParameters.tableHeight);
+                p4 = PointExtensions.fromPolarCoordinates(GameParameters.pocketSize / 2, (t + step) * (float)Math.PI + ang, GameParameters.tableHeight);
+
+
+                p3.X += (GameParameters.tableWidth / 2 + GameParameters.borderThickness - GameParameters.pocketSize / 2);
+                p4.X += (GameParameters.tableWidth / 2 + GameParameters.borderThickness - GameParameters.pocketSize / 2);
+                p3.Y -= (GameParameters.tableDepth / 2 + GameParameters.borderThickness - GameParameters.pocketSize / 2);
+                p4.Y -= (GameParameters.tableDepth / 2 + GameParameters.borderThickness - GameParameters.pocketSize / 2);
+
+                p1.X += (GameParameters.tableWidth + GameParameters.pocketSize / 2) / 2;
+                p2.X += (GameParameters.tableWidth + GameParameters.pocketSize / 2) / 2;
+                p1.Y -= (GameParameters.tableDepth + GameParameters.pocketSize / 2) / 2;
+                p2.Y -= (GameParameters.tableDepth + GameParameters.pocketSize / 2) / 2;
 
                 model.Add(new Triangle(new List<(Vector4 point, Vector4 NormalVector)>()
                 {
@@ -380,12 +428,70 @@ namespace TheGame
                 { color = c });
             }
 
+            // 4th quarter
             var pp1 = new Vector4(-GameParameters.tableWidth / 2 + GameParameters.pocketSize / 2 * sqrt2, -GameParameters.tableDepth / 2, GameParameters.tableHeight, 1);
             var pp2 = new Vector4(-GameParameters.tableWidth / 2, -GameParameters.tableDepth / 2 + GameParameters.pocketSize / 2 * sqrt2, GameParameters.tableHeight, 1);
             var pp3 = new Vector4(pp1.X, pp1.Y - GameParameters.borderThickness, pp1.Z, 1);
             var pp4 = new Vector4(pp2.X - GameParameters.borderThickness, pp2.Y, pp2.Z, 1);
             var pp5 = new Vector4(pp3.X - GameParameters.borderThickness, pp3.Y, pp3.Z, 1);
             var pp6 = new Vector4(pp4.X, pp4.Y - GameParameters.borderThickness, pp4.Z, 1);
+
+            model.Add(new Triangle(new List<(Vector4 point, Vector4 NormalVector)>()
+            {
+                (pp1, n), (pp3, n), (pp5, n)
+            })
+            { color = c });
+            model.Add(new Triangle(new List<(Vector4 point, Vector4 NormalVector)>()
+            {
+                (pp2, n), (pp4, n), (pp6, n)
+            })
+            { color = c });
+
+            // 1st quarter
+            pp1 = new Vector4(GameParameters.tableWidth / 2 - GameParameters.pocketSize / 2 * sqrt2, GameParameters.tableDepth / 2, GameParameters.tableHeight, 1);
+            pp2 = new Vector4(GameParameters.tableWidth / 2, GameParameters.tableDepth / 2 - GameParameters.pocketSize / 2 * sqrt2, GameParameters.tableHeight, 1);
+            pp3 = new Vector4(pp1.X, pp1.Y + GameParameters.borderThickness, pp1.Z, 1);
+            pp4 = new Vector4(pp2.X + GameParameters.borderThickness, pp2.Y, pp2.Z, 1);
+            pp5 = new Vector4(pp3.X + GameParameters.borderThickness, pp3.Y, pp3.Z, 1);
+            pp6 = new Vector4(pp4.X, pp4.Y + GameParameters.borderThickness, pp4.Z, 1);
+
+            model.Add(new Triangle(new List<(Vector4 point, Vector4 NormalVector)>()
+            {
+                (pp1, n), (pp3, n), (pp5, n)
+            })
+            { color = c });
+            model.Add(new Triangle(new List<(Vector4 point, Vector4 NormalVector)>()
+            {
+                (pp2, n), (pp4, n), (pp6, n)
+            })
+            { color = c });
+
+            // 2nd quarter
+            pp1 = new Vector4(-GameParameters.tableWidth / 2 + GameParameters.pocketSize / 2 * sqrt2, GameParameters.tableDepth / 2, GameParameters.tableHeight, 1);
+            pp2 = new Vector4(-GameParameters.tableWidth / 2, GameParameters.tableDepth / 2 - GameParameters.pocketSize / 2 * sqrt2, GameParameters.tableHeight, 1);
+            pp3 = new Vector4(pp1.X, pp1.Y + GameParameters.borderThickness, pp1.Z, 1);
+            pp4 = new Vector4(pp2.X - GameParameters.borderThickness, pp2.Y, pp2.Z, 1);
+            pp5 = new Vector4(pp3.X - GameParameters.borderThickness, pp3.Y, pp3.Z, 1);
+            pp6 = new Vector4(pp4.X, pp4.Y + GameParameters.borderThickness, pp4.Z, 1);
+
+            model.Add(new Triangle(new List<(Vector4 point, Vector4 NormalVector)>()
+            {
+                (pp1, n), (pp3, n), (pp5, n)
+            })
+            { color = c });
+            model.Add(new Triangle(new List<(Vector4 point, Vector4 NormalVector)>()
+            {
+                (pp2, n), (pp4, n), (pp6, n)
+            })
+            { color = c });
+
+            // 3rd quarter
+            pp1 = new Vector4(GameParameters.tableWidth / 2 - GameParameters.pocketSize / 2 * sqrt2, -GameParameters.tableDepth / 2, GameParameters.tableHeight, 1);
+            pp2 = new Vector4(GameParameters.tableWidth / 2, -GameParameters.tableDepth / 2 + GameParameters.pocketSize / 2 * sqrt2, GameParameters.tableHeight, 1);
+            pp3 = new Vector4(pp1.X, pp1.Y - GameParameters.borderThickness, pp1.Z, 1);
+            pp4 = new Vector4(pp2.X + GameParameters.borderThickness, pp2.Y, pp2.Z, 1);
+            pp5 = new Vector4(pp3.X + GameParameters.borderThickness, pp3.Y, pp3.Z, 1);
+            pp6 = new Vector4(pp4.X, pp4.Y - GameParameters.borderThickness, pp4.Z, 1);
 
             model.Add(new Triangle(new List<(Vector4 point, Vector4 NormalVector)>()
             {
