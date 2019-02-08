@@ -11,6 +11,12 @@ namespace TheGame
 {
     public class Game
     {
+        enum CameraPosition
+        {
+            Static,
+            Active,
+            Tracking
+        }
         List<ObjectParameters> balls = new List<ObjectParameters>();
         ObjectParameters whiteBall;
         ObjectParameters stick;
@@ -21,7 +27,7 @@ namespace TheGame
         bool rotateLeft = false;
         bool Hold = false;
         bool duringMove = false;
-        bool staticCamera = false;
+        CameraPosition cameraPosition = CameraPosition.Static;
         float power = 0;
         Vector3 cameraDirection = new Vector3(0, -GameParameters.cameraDistance, GameParameters.cameraDistance);
         bool staticLightOn = false;
@@ -39,7 +45,8 @@ namespace TheGame
 
             engine.SwitchToGouraudShading();
             //ActiveCamera();
-            StaticCamera();
+            //StaticCamera();
+            TrackingCamera();
             SwitchPointLight();
             //SwitchTrackingLight();
             UpdateLights();
@@ -608,6 +615,7 @@ namespace TheGame
                 (pp4, Vector4.Zero), (pp2, Vector4.Zero), (pp3, Vector4.Zero)
             }));
             #endregion
+
             models.Add(model);
             table = new ObjectParameters(model, Vector3.Zero);
         }
@@ -683,7 +691,7 @@ namespace TheGame
                     ball.ApplyVelocity(Math.Max(velocity * (1 - speedRatio), 0), newAngle);
                 }
         }
-        Vector3 UpdateCameraDirection()
+        Vector3 UpdateActiveCameraDirection()
         {
             return new Vector3(-(float)Math.Cos(stick.directionAngle), -(float)Math.Sin(stick.directionAngle), 1) * GameParameters.cameraDistance;
         }
@@ -714,14 +722,19 @@ namespace TheGame
         }
         public void StaticCamera()
         {
-            staticCamera = true;
+            cameraPosition = CameraPosition.Static;
             engine.ChangeCameraPosition(new Vector3(0.5f, 0, 1.5f) * GameParameters.cameraDistance, new Vector3(0, 0, 0));
         }
         public void ActiveCamera()
         {
-            staticCamera = false;
-            cameraDirection = UpdateCameraDirection();
+            cameraPosition = CameraPosition.Active;
+            cameraDirection = UpdateActiveCameraDirection();
             engine.ChangeCameraPosition(stick.position + cameraDirection, stick.position);
+        }
+        public void TrackingCamera()
+        {
+            cameraPosition = CameraPosition.Tracking;
+            engine.ChangeCameraPosition(new Vector3(1, 0, 1) * GameParameters.cameraDistance, whiteBall.position);
         }
         public void SwitchPointLight()
         {
@@ -751,9 +764,9 @@ namespace TheGame
                     if (rotateLeft)
                     {
                         stick.Rotate(-GameParameters.angleStep);
-                        if (!staticCamera)
+                        if (cameraPosition == CameraPosition.Active)
                         {
-                            cameraDirection = UpdateCameraDirection();
+                            cameraDirection = UpdateActiveCameraDirection();
                             engine.ChangeCameraPosition(stick.position + cameraDirection, stick.position);
                         }
                         rotateLeft = false;
@@ -761,9 +774,9 @@ namespace TheGame
                     if (rotateRigth)
                     {
                         stick.Rotate(GameParameters.angleStep);
-                        if (!staticCamera)
+                        if (cameraPosition == CameraPosition.Active)
                         {
-                            cameraDirection = UpdateCameraDirection();
+                            cameraDirection = UpdateActiveCameraDirection();
                             engine.ChangeCameraPosition(stick.position + cameraDirection, stick.position);
                         }
                         rotateRigth = false;
@@ -788,8 +801,16 @@ namespace TheGame
                     if (models.Contains(stick.model)) models.Remove(stick.model);
                     if (balls.Sum(b => b.velocity) + whiteBall.velocity > 0)
                     {
-                        if (whiteBall.velocity > 0 && !staticCamera)
-                            engine.ChangeCameraPosition( whiteBall.position + cameraDirection, whiteBall.position);
+                        if (whiteBall.velocity > 0)
+                            switch(cameraPosition)
+                            {
+                                case CameraPosition.Active:
+                                    engine.ChangeCameraPosition(whiteBall.position + cameraDirection, whiteBall.position);
+                                    break;
+                                case CameraPosition.Tracking:
+                                    engine.ChangeCameraPosition(new Vector3(1, 0, 1) * GameParameters.cameraDistance, whiteBall.position);
+                                    break;
+                            }
                         UpdateBallPosition(whiteBall);
                         foreach (var b in balls)
                             UpdateBallPosition(b);
