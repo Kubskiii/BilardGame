@@ -1,0 +1,34 @@
+﻿<Window x:Class="BilardGame.Nicknames"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:BilardGame"
+        mc:Ignorable="d"
+        Title="Nicknames" Height="200" Width="400" WindowStyle="None" ResizeMode="NoResize" WindowStartupLocation="CenterOwner">
+    <Border>
+        <Grid>
+            <Grid.Background>
+                <LinearGradientBrush StartPoint="0, 0" EndPoint="1, 1">
+                    <GradientStop Color="DarkGreen" Offset="0"/>
+                    <GradientStop Color="Green" Offset="0.6" />
+                    <GradientStop Color="Black" Offset="1"/>
+                </LinearGradientBrush>
+            </Grid.Background>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition/>
+                <RowDefinition/>
+                <RowDefinition/>
+            </Grid.RowDefinitions>
+            <TextBlock FontSize="20">Player 1:</TextBlock>
+            <TextBlock FontSize="20" Grid.Row="1">Player 2:</TextBlock>
+            <TextBox Grid.Column="1" Text="{Binding Player1Name}"/>
+            <TextBox Grid.Column="1" Grid.Row="1" Text="{Binding Player2Name}"/>
+            <Button Grid.Row="2" Grid.ColumnSpan="2" Width="100" Height="40" Click="Button_Click">Back</Button>
+        </Grid>
+    </Border>
+</Window>

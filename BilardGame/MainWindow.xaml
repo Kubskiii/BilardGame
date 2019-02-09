@@ -36,7 +36,7 @@
         </TextBlock>
         <StackPanel Name="MainMenu" Grid.Row="1" VerticalAlignment="Center" Visibility="Visible">
             <Button Name="NewGame" Click="NewGame_Click">New Game</Button>
-            <Button Name="ChangeNicknames" FontSize="18">Change nicknames</Button>
+            <Button Name="ChangeNicknames" FontSize="18" Click="ChangeNicknames_Click">Change nicknames</Button>
             <Button Name="Settings" Click="Settings_Click">Settings</Button>
             <Button Name="Instruction" Click="Instruction_Click">Instruction</Button>
             <Button Name="About" Click="About_Click">About</Button>
@@ -65,10 +65,10 @@
         <Border Grid.Column="1" Grid.Row="1" Grid.ColumnSpan="2" Background="Black">
             <Image Name="img"/>
         </Border>
-        <Border Name="Player1Border" Grid.Column="1" Margin="10" Background="{Binding IsPlayer1Playing, RelativeSource={RelativeSource FindAncestor, AncestorType=Window}, Converter={StaticResource BorderColorConverter}}">
+        <Border Width="200" Name="Player1Border" Grid.Column="1" Margin="10" Background="{Binding IsPlayer1Playing, RelativeSource={RelativeSource FindAncestor, AncestorType=Window}, Converter={StaticResource BorderColorConverter}}">
             <TextBlock FontSize="20" Text="{Binding Player1Name, RelativeSource={RelativeSource FindAncestor, AncestorType=Window}}"/>
         </Border>
-        <Border Grid.Column="2" Margin="10" Background="{Binding IsPlayer2Playing, RelativeSource={RelativeSource FindAncestor, AncestorType=Window}, Converter={StaticResource BorderColorConverter}}">
+        <Border Width="200" Grid.Column="2" Margin="10" Background="{Binding IsPlayer2Playing, RelativeSource={RelativeSource FindAncestor, AncestorType=Window}, Converter={StaticResource BorderColorConverter}}">
             <TextBlock FontSize="20" Text="{Binding Player2Name, RelativeSource={RelativeSource FindAncestor, AncestorType=Window}}"/>
         </Border>
     </Grid>

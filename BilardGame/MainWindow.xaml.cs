@@ -97,7 +97,17 @@ namespace BilardGame
         {
             (img.Source as WriteableBitmap).FillBitmap(colors);
             game.Update();
-            worker.RunWorkerAsync();
+            if (game.Player1Playng)
+            {
+                IsPlayer1Playing = true;
+                IsPlayer2Playing = false;
+            }
+            else
+            {
+                IsPlayer1Playing = false;
+                IsPlayer2Playing = true;
+            }
+            if(!game.IsGameFinished) worker.RunWorkerAsync();
         }
         private void Worker_DoWork(object sender, DoWorkEventArgs e)
         {
@@ -205,6 +215,14 @@ namespace BilardGame
             var instruction = new Instruction();
             instruction.Owner = this;
             instruction.ShowDialog();
+        }
+
+        private void ChangeNicknames_Click(object sender, RoutedEventArgs e)
+        {
+            var nicknames = new Nicknames();
+            nicknames.Owner = this;
+            nicknames.DataContext = this;
+            nicknames.ShowDialog();
         }
         #endregion
     }

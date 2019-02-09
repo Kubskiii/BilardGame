@@ -32,8 +32,11 @@ namespace TheGame
         Vector3 cameraDirection = new Vector3(0, -GameParameters.cameraDistance, GameParameters.cameraDistance);
         bool staticLightOn = false;
         bool trackingLightOn = false;
+        bool scored = false;
         PointLight staticLight = new PointLight(new Vector3(0, 0, GameParameters.lightHeight));
         Stack<ObjectParameters> stack = new Stack<ObjectParameters>();
+        public bool Player1Playng { get; private set; } = true;
+        public bool IsGameFinished { get; private set; } = false;
         public Game(Resolution res)
         {
             engine = new CPUEngine(res);
@@ -43,14 +46,11 @@ namespace TheGame
             AddStick(Colors.Brown);
             AddWhiteBall();
             AddBallTriangle(0, 5);
-            AddBall(Colors.Turquoise, 5, 0);
+            AddBall(Colors.Aqua, 5, 0);
 
             engine.SwitchToGouraudShading();
-            //ActiveCamera();
             StaticCamera();
-            //TrackingCamera();
             SwitchPointLight();
-            //SwitchTrackingLight();
             UpdateLights();
         }
         void AddBall(Color color, float x, float y)
@@ -653,7 +653,6 @@ namespace TheGame
                 else
                 {
                     models.Remove(ball.model);
-                    //balls.Remove(ball);
                     stack.Push(ball);
                 }
                 return true;
@@ -801,6 +800,7 @@ namespace TheGame
         public void PhongShading() => engine.SwitchToPhongShading();
         public void Update()
         {
+            if (IsGameFinished) return;
             if (!duringMove)
             {
                 #region setting hit parameters
@@ -870,13 +870,17 @@ namespace TheGame
                             UpdateBallPosition(b);
                         while(stack.Count > 0)
                         {
+                            scored = true;
                             var ball = stack.Pop();
                             balls.Remove(ball);
                         }
+                        if (balls.Count == 0) IsGameFinished = true;
                         UpdateLights();
                     }
                     else
                     {
+                        if (!scored) Player1Playng = !Player1Playng;
+                        scored = false;
                         duringMove = false;
                         stick.Move(whiteBall.position.X - stick.position.X, whiteBall.position.Y - stick.position.Y);
                         models.Add(stick.model);
