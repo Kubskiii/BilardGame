@@ -107,6 +107,13 @@ namespace BilardGame
                 IsPlayer1Playing = false;
                 IsPlayer2Playing = true;
             }
+            if(game.IsGameFinished)
+            {
+                var winner = new Winner(IsPlayer1Playing ? Player1Name : Player2Name);
+                winner.Owner = this;
+                winner.ShowDialog();
+                game = new Game(res);
+            }
             if(!game.IsGameFinished) worker.RunWorkerAsync();
         }
         private void Worker_DoWork(object sender, DoWorkEventArgs e)

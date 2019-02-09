@@ -45,7 +45,7 @@ namespace TheGame
             AddTable(Colors.DarkGreen);
             AddStick(Colors.Brown);
             AddWhiteBall();
-            AddBallTriangle(0, 5);
+            //AddBallTriangle(0, 5);
             AddBall(Colors.Aqua, 5, 0);
 
             engine.SwitchToGouraudShading();
