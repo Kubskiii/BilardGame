@@ -7,149 +7,7 @@
         mc:Ignorable="d"
         Title="The Bilard Game" Height="600" Width="1000" KeyDown="Window_KeyDown" KeyUp="Window_KeyUp">
     <Window.Resources>
-        <Style TargetType="Button">
-            <Setter Property="Height" Value="50"/>
-            <Setter Property="Margin" Value="10"/>
-            <Setter Property="FontWeight" Value="SemiBold"/>
-            <Setter Property="FontSize" Value="20"/>
-            <Setter Property="Foreground" Value="Gold"/>
-            <Setter Property="FontFamily" Value="Courier New"/>
-            <Setter Property="FontStyle" Value="Italic"/>
-            <Setter Property="Cursor" Value="Hand"/>
-            <Setter Property="Template">
-                <Setter.Value>
-                    <ControlTemplate TargetType="Button">
-                        <Grid>
-                            <Ellipse Width="{TemplateBinding Width}" Height="{TemplateBinding Height}" Name="Ellipse">
-                                <Ellipse.Fill>
-                                    <SolidColorBrush Color="DarkRed"/>
-                                </Ellipse.Fill>
-                                <Ellipse.Effect>
-                                    <BlurEffect Radius="30"/>
-                                </Ellipse.Effect>
-                            </Ellipse>
-                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center">
-                                <ContentPresenter.Effect>
-                                    <DropShadowEffect BlurRadius="10" ShadowDepth="5"/>
-                                </ContentPresenter.Effect>
-                            </ContentPresenter>
-                        </Grid>
-                        <ControlTemplate.Triggers>
-                            <Trigger Property="IsMouseOver" Value="true">
-                                <Setter TargetName="Ellipse" Property="Fill" Value="Wheat"/>
-                                <Setter Property="Foreground" Value="DarkRed"/>
-                            </Trigger>
-                        </ControlTemplate.Triggers>
-                    </ControlTemplate>
-                </Setter.Value>
-            </Setter>
-        </Style>
-        <Style TargetType="Label">
-            <Setter Property="Height" Value="30"/>
-            <Setter Property="Margin" Value="10"/>
-            <Setter Property="FontWeight" Value="SemiBold"/>
-            <Setter Property="FontSize" Value="16"/>
-            <Setter Property="Foreground" Value="Gold"/>
-            <Setter Property="FontFamily" Value="Courier New"/>
-            <Setter Property="FontStyle" Value="Italic"/>
-            <Setter Property="Template">
-                <Setter.Value>
-                    <ControlTemplate TargetType="Label">
-                        <Grid>
-                            <Ellipse Width="{TemplateBinding Width}" Height="{TemplateBinding Height}" Name="Ellipse">
-                                <Ellipse.Fill>
-                                    <SolidColorBrush Color="DarkRed"/>
-                                </Ellipse.Fill>
-                                <Ellipse.Effect>
-                                    <BlurEffect Radius="30"/>
-                                </Ellipse.Effect>
-                            </Ellipse>
-                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center">
-                                <ContentPresenter.Effect>
-                                    <DropShadowEffect BlurRadius="10" ShadowDepth="5"/>
-                                </ContentPresenter.Effect>
-                            </ContentPresenter>
-                        </Grid>
-                    </ControlTemplate>
-                </Setter.Value>
-            </Setter>
-        </Style>
-        <Style TargetType="CheckBox">
-            <Setter Property="Height" Value="20"/>
-            <Setter Property="Width" Value="120"/>
-            <Setter Property="Margin" Value="4"/>
-            <Setter Property="FontWeight" Value="SemiBold"/>
-            <Setter Property="FontSize" Value="14"/>
-            <Setter Property="Foreground" Value="Gold"/>
-            <Setter Property="FontFamily" Value="Courier New"/>
-            <Setter Property="FontStyle" Value="Italic"/>
-            <Setter Property="Cursor" Value="Hand"/>
-            <Setter Property="Template">
-                <Setter.Value>
-                    <ControlTemplate TargetType="CheckBox">
-                        <Grid>
-                            <Ellipse Width="{TemplateBinding Width}" Height="{TemplateBinding Height}" Name="Ellipse" >
-                                <Ellipse.Fill>
-                                    <SolidColorBrush Color="DarkRed"/>
-                                </Ellipse.Fill>
-                                <Ellipse.Effect>
-                                    <BlurEffect Radius="20"/>
-                                </Ellipse.Effect>
-                            </Ellipse>
-                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center">
-                                <ContentPresenter.Effect>
-                                    <DropShadowEffect BlurRadius="10" ShadowDepth="5"/>
-                                </ContentPresenter.Effect>
-                            </ContentPresenter>
-                        </Grid>
-                        <ControlTemplate.Triggers>
-                            <Trigger Property="IsChecked" Value="true">
-                                <Setter TargetName="Ellipse" Property="Fill" Value="Wheat"/>
-                                <Setter Property="Foreground" Value="DarkRed"/>
-                            </Trigger>
-                        </ControlTemplate.Triggers>
-                    </ControlTemplate>
-                </Setter.Value>
-            </Setter>
-        </Style>
-        <Style TargetType="RadioButton">
-            <Setter Property="Height" Value="20"/>
-            <Setter Property="Width" Value="120"/>
-            <Setter Property="Margin" Value="4"/>
-            <Setter Property="FontWeight" Value="SemiBold"/>
-            <Setter Property="FontSize" Value="14"/>
-            <Setter Property="Foreground" Value="Gold"/>
-            <Setter Property="FontFamily" Value="Courier New"/>
-            <Setter Property="FontStyle" Value="Italic"/>
-            <Setter Property="Cursor" Value="Hand"/>
-            <Setter Property="Template">
-                <Setter.Value>
-                    <ControlTemplate TargetType="RadioButton">
-                        <Grid>
-                            <Ellipse Width="{TemplateBinding Width}" Height="{TemplateBinding Height}" Name="Ellipse" >
-                                <Ellipse.Fill>
-                                    <SolidColorBrush Color="DarkRed"/>
-                                </Ellipse.Fill>
-                                <Ellipse.Effect>
-                                    <BlurEffect Radius="20"/>
-                                </Ellipse.Effect>
-                            </Ellipse>
-                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center">
-                                <ContentPresenter.Effect>
-                                    <DropShadowEffect BlurRadius="10" ShadowDepth="5"/>
-                                </ContentPresenter.Effect>
-                            </ContentPresenter>
-                        </Grid>
-                        <ControlTemplate.Triggers>
-                            <Trigger Property="IsChecked" Value="true">
-                                <Setter TargetName="Ellipse" Property="Fill" Value="Wheat"/>
-                                <Setter Property="Foreground" Value="DarkRed"/>
-                            </Trigger>
-                        </ControlTemplate.Triggers>
-                    </ControlTemplate>
-                </Setter.Value>
-            </Setter>
-        </Style>
+       
     </Window.Resources>
     <Grid>
         <Grid.Background>
@@ -167,19 +25,16 @@
             <RowDefinition Height="70"/>
             <RowDefinition/>
         </Grid.RowDefinitions>
-        <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="26" Foreground="Gold" FontFamily="Courier New" FontWeight="Bold">
+        <TextBlock FontSize="26">
             <Run Text="The Bilard"/>
             <LineBreak/>
             <Polyline Width="30"/>
             <Run Text="Game"/>
-            <TextBlock.Effect>
-                <DropShadowEffect BlurRadius="10" ShadowDepth="5"/>
-            </TextBlock.Effect>
         </TextBlock>
         <StackPanel Name="MainMenu" Grid.Row="1" VerticalAlignment="Center" Visibility="Visible">
             <Button Name="NewGame" Click="NewGame_Click">New Game</Button>
             <Button Name="Settings" Click="Settings_Click">Settings</Button>
-            <Button Name="About">About</Button>
+            <Button Name="About" Click="About_Click">About</Button>
             <Button Name="Exit" Click="Exit_Click">Exit</Button>
         </StackPanel>
         <StackPanel Name="SettingsMenu" Grid.Row="1" VerticalAlignment="Center" Visibility="Collapsed">
@@ -203,12 +58,6 @@
             <Button Name="Back" Click="Back_Click" Height="30">Back</Button>
         </StackPanel>
         <Border Grid.Column="1" Grid.Row="1">
-            <Border.Background>
-                <LinearGradientBrush>
-                    <GradientStop Color="Gold" Offset="0"/>
-                    <GradientStop Color="Black" Offset="1"/>
-                </LinearGradientBrush>
-            </Border.Background>
             <Border Background="Black" Margin="5">
                 <Image Name="img"/>
             </Border>

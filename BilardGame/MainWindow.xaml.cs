@@ -87,6 +87,7 @@ namespace BilardGame
             }
         }
 
+        #region Button handlers
         private void StaticCamera_Checked(object sender, RoutedEventArgs e)
         {
             game.StaticCamera();
@@ -147,6 +148,14 @@ namespace BilardGame
         private void NewGame_Click(object sender, RoutedEventArgs e)
         {
             game = new Game(res);
+        }
+        #endregion
+
+        private void About_Click(object sender, RoutedEventArgs e)
+        {
+            var about = new About();
+            about.Owner = this;
+            about.ShowDialog();
         }
     }
 }
