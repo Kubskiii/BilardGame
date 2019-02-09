@@ -1,11 +1,11 @@
-﻿<Window x:Class="BilardGame.About"
+﻿<Window x:Class="BilardGame.Instruction"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:BilardGame"
         mc:Ignorable="d"
-        Title="About" Height="200" Width="400" WindowStyle="None" ResizeMode="NoResize" WindowStartupLocation="CenterOwner">
+        Title="Instruction" Height="200" Width="400" WindowStyle="None" ResizeMode="NoResize" WindowStartupLocation="CenterOwner">
     <Border>
         <Grid Margin="5">
             <Grid.Background>
@@ -20,12 +20,14 @@
                 <RowDefinition/>
             </Grid.RowDefinitions>
             <Button Grid.Row="1" HorizontalAlignment="Center" Width="100" Height="40" Click="Button_Click">Close</Button>
-            <TextBlock FontSize="16">
-            <Polyline Width="50"/><Run>The Bilard Game</Run>
-            <LineBreak/>
-            <Polyline Width="65"/><Run>Version 1.0</Run>
-            <LineBreak/>
-            <Run>Created by Jakub Waszkiewicz</Run>
+            <TextBlock FontSize="13">
+                <Polyline Width="100"/><Run FontSize="20">Instruction</Run>
+                <LineBreak/>
+                <Run>1. Hold left or right arrow to rotate the stick</Run>
+                <LineBreak/>
+                <Run>2. Hold 'H' key to push away the stick</Run>
+                <LineBreak/>
+                <Run>3. Release 'H' key to release the stick</Run>
             </TextBlock>
         </Grid>
     </Border>

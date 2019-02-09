@@ -157,5 +157,12 @@ namespace BilardGame
             about.Owner = this;
             about.ShowDialog();
         }
+
+        private void Instruction_Click(object sender, RoutedEventArgs e)
+        {
+            var instruction = new Instruction();
+            instruction.Owner = this;
+            instruction.ShowDialog();
+        }
     }
 }

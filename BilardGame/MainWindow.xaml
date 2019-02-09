@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:BilardGame"
         mc:Ignorable="d"
-        Title="The Bilard Game" Height="600" Width="1000" KeyDown="Window_KeyDown" KeyUp="Window_KeyUp">
+        Title="The Bilard Game" Height="600" Width="1000" MinHeight="600" MinWidth="1000" KeyDown="Window_KeyDown" KeyUp="Window_KeyUp">
     <Window.Resources>
        
     </Window.Resources>
@@ -34,6 +34,7 @@
         <StackPanel Name="MainMenu" Grid.Row="1" VerticalAlignment="Center" Visibility="Visible">
             <Button Name="NewGame" Click="NewGame_Click">New Game</Button>
             <Button Name="Settings" Click="Settings_Click">Settings</Button>
+            <Button Name="Instruction" Click="Instruction_Click">Instruction</Button>
             <Button Name="About" Click="About_Click">About</Button>
             <Button Name="Exit" Click="Exit_Click">Exit</Button>
         </StackPanel>
@@ -47,7 +48,7 @@
             <StackPanel Margin="10">
                 <Label>Lights</Label>
                 <CheckBox Name="PointLight" Checked="PointLight_Checked" Unchecked="PointLight_Checked" IsChecked="True">Point light</CheckBox>
-                <CheckBox Name="TrackingLight" Checked="TrackingLight_Checked" Unchecked="TrackingLight_Checked">Tracking reflect.</CheckBox>
+                <CheckBox Name="TrackingLight" Checked="TrackingLight_Checked" Unchecked="TrackingLight_Checked" FontSize="10">Tracking reflect.</CheckBox>
             </StackPanel>
             <StackPanel Margin="10">
                 <Label>Shading</Label>

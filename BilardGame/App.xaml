@@ -160,10 +160,10 @@
             </Setter>
         </Style>
         <Style TargetType="Border">
-            <Setter Property="BorderThickness" Value="3"/>
+            <Setter Property="BorderThickness" Value="0"/>
             <Setter Property="Background">
                 <Setter.Value>
-                    <LinearGradientBrush>
+                    <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
                         <GradientStop Color="Gold" Offset="0"/>
                         <GradientStop Color="Black" Offset="1"/>
                     </LinearGradientBrush>
