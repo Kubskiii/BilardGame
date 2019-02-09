@@ -15,6 +15,7 @@
             <Setter Property="Foreground" Value="Gold"/>
             <Setter Property="FontFamily" Value="Courier New"/>
             <Setter Property="FontStyle" Value="Italic"/>
+            <Setter Property="Cursor" Value="Hand"/>
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="Button">
@@ -43,6 +44,112 @@
                 </Setter.Value>
             </Setter>
         </Style>
+        <Style TargetType="Label">
+            <Setter Property="Height" Value="30"/>
+            <Setter Property="Margin" Value="10"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="FontSize" Value="16"/>
+            <Setter Property="Foreground" Value="Gold"/>
+            <Setter Property="FontFamily" Value="Courier New"/>
+            <Setter Property="FontStyle" Value="Italic"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Label">
+                        <Grid>
+                            <Ellipse Width="{TemplateBinding Width}" Height="{TemplateBinding Height}" Name="Ellipse">
+                                <Ellipse.Fill>
+                                    <SolidColorBrush Color="DarkRed"/>
+                                </Ellipse.Fill>
+                                <Ellipse.Effect>
+                                    <BlurEffect Radius="30"/>
+                                </Ellipse.Effect>
+                            </Ellipse>
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center">
+                                <ContentPresenter.Effect>
+                                    <DropShadowEffect BlurRadius="10" ShadowDepth="5"/>
+                                </ContentPresenter.Effect>
+                            </ContentPresenter>
+                        </Grid>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        <Style TargetType="CheckBox">
+            <Setter Property="Height" Value="20"/>
+            <Setter Property="Width" Value="120"/>
+            <Setter Property="Margin" Value="4"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="Foreground" Value="Gold"/>
+            <Setter Property="FontFamily" Value="Courier New"/>
+            <Setter Property="FontStyle" Value="Italic"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="CheckBox">
+                        <Grid>
+                            <Ellipse Width="{TemplateBinding Width}" Height="{TemplateBinding Height}" Name="Ellipse" >
+                                <Ellipse.Fill>
+                                    <SolidColorBrush Color="DarkRed"/>
+                                </Ellipse.Fill>
+                                <Ellipse.Effect>
+                                    <BlurEffect Radius="20"/>
+                                </Ellipse.Effect>
+                            </Ellipse>
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center">
+                                <ContentPresenter.Effect>
+                                    <DropShadowEffect BlurRadius="10" ShadowDepth="5"/>
+                                </ContentPresenter.Effect>
+                            </ContentPresenter>
+                        </Grid>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsChecked" Value="true">
+                                <Setter TargetName="Ellipse" Property="Fill" Value="Wheat"/>
+                                <Setter Property="Foreground" Value="DarkRed"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        <Style TargetType="RadioButton">
+            <Setter Property="Height" Value="20"/>
+            <Setter Property="Width" Value="120"/>
+            <Setter Property="Margin" Value="4"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="Foreground" Value="Gold"/>
+            <Setter Property="FontFamily" Value="Courier New"/>
+            <Setter Property="FontStyle" Value="Italic"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="RadioButton">
+                        <Grid>
+                            <Ellipse Width="{TemplateBinding Width}" Height="{TemplateBinding Height}" Name="Ellipse" >
+                                <Ellipse.Fill>
+                                    <SolidColorBrush Color="DarkRed"/>
+                                </Ellipse.Fill>
+                                <Ellipse.Effect>
+                                    <BlurEffect Radius="20"/>
+                                </Ellipse.Effect>
+                            </Ellipse>
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center">
+                                <ContentPresenter.Effect>
+                                    <DropShadowEffect BlurRadius="10" ShadowDepth="5"/>
+                                </ContentPresenter.Effect>
+                            </ContentPresenter>
+                        </Grid>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsChecked" Value="true">
+                                <Setter TargetName="Ellipse" Property="Fill" Value="Wheat"/>
+                                <Setter Property="Foreground" Value="DarkRed"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
     </Window.Resources>
     <Grid>
         <Grid.Background>
@@ -57,13 +164,43 @@
             <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
-            <RowDefinition Height="50"/>
+            <RowDefinition Height="70"/>
             <RowDefinition/>
         </Grid.RowDefinitions>
-        <StackPanel Grid.Row="1" VerticalAlignment="Center">
-            <Button>New Game</Button>
-            <Button>Settings</Button>
-            <Button>Exit</Button>
+        <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="26" Foreground="Gold" FontFamily="Courier New" FontWeight="Bold">
+            <Run Text="The Bilard"/>
+            <LineBreak/>
+            <Polyline Width="30"/>
+            <Run Text="Game"/>
+            <TextBlock.Effect>
+                <DropShadowEffect BlurRadius="10" ShadowDepth="5"/>
+            </TextBlock.Effect>
+        </TextBlock>
+        <StackPanel Name="MainMenu" Grid.Row="1" VerticalAlignment="Center" Visibility="Visible">
+            <Button Name="NewGame" Click="NewGame_Click">New Game</Button>
+            <Button Name="Settings" Click="Settings_Click">Settings</Button>
+            <Button Name="About">About</Button>
+            <Button Name="Exit" Click="Exit_Click">Exit</Button>
+        </StackPanel>
+        <StackPanel Name="SettingsMenu" Grid.Row="1" VerticalAlignment="Center" Visibility="Collapsed">
+            <StackPanel Margin="10">
+                <Label>Camera Position</Label>
+                <RadioButton Name="StaticCamera" Checked="StaticCamera_Checked" IsChecked="True">Static</RadioButton>
+                <RadioButton Name="ActiveCamera" Checked="ActiveCamera_Checked">Active</RadioButton>
+                <RadioButton Name="TrackingCamera" Checked="TrackingCamera_Checked">Tracking</RadioButton>
+            </StackPanel>
+            <StackPanel Margin="10">
+                <Label>Lights</Label>
+                <CheckBox Name="PointLight" Checked="PointLight_Checked" Unchecked="PointLight_Checked" IsChecked="True">Point light</CheckBox>
+                <CheckBox Name="TrackingLight" Checked="TrackingLight_Checked" Unchecked="TrackingLight_Checked">Tracking reflect.</CheckBox>
+            </StackPanel>
+            <StackPanel Margin="10">
+                <Label>Shading</Label>
+                <RadioButton Name="ConstantShading" Checked="ConstantShading_Checked">Constant</RadioButton>
+                <RadioButton Name="GouraudShading" Checked="GouraudShading_Checked" IsChecked="True">Gouraud</RadioButton>
+                <RadioButton Name="PhongShading" Checked="PhongShading_Checked">Phong</RadioButton>
+            </StackPanel>
+            <Button Name="Back" Click="Back_Click" Height="30">Back</Button>
         </StackPanel>
         <Border Grid.Column="1" Grid.Row="1">
             <Border.Background>

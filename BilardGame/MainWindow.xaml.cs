@@ -38,7 +38,7 @@ namespace BilardGame
         #endregion
         Resolution res = new Resolution(1200, 800);
         uint[,] colors;
-        Game game;
+        Game game = new Game(new Resolution(1200, 800));
         BackgroundWorker worker = new BackgroundWorker();
         public MainWindow()
         {
@@ -63,7 +63,7 @@ namespace BilardGame
 
         private void Window_KeyDown(object sender, KeyEventArgs e)
         {
-            switch(e.Key)
+            switch (e.Key)
             {
                 case Key.Left:
                     game.RotateStickLeft();
@@ -71,7 +71,7 @@ namespace BilardGame
                 case Key.Right:
                     game.RotateStickRigth();
                     break;
-                case Key.Space:
+                case Key.H:
                     game.HoldStick();
                     break;
             }
@@ -79,12 +79,74 @@ namespace BilardGame
 
         private void Window_KeyUp(object sender, KeyEventArgs e)
         {
-            switch(e.Key)
+            switch (e.Key)
             {
-                case Key.Space:
+                case Key.H:
                     game.ReleaseStick();
                     break;
             }
+        }
+
+        private void StaticCamera_Checked(object sender, RoutedEventArgs e)
+        {
+            game.StaticCamera();
+        }
+
+        private void ActiveCamera_Checked(object sender, RoutedEventArgs e)
+        {
+            game.ActiveCamera();
+        }
+
+        private void TrackingCamera_Checked(object sender, RoutedEventArgs e)
+        {
+            game.TrackingCamera();
+        }
+
+        private void PointLight_Checked(object sender, RoutedEventArgs e)
+        {
+            game.SwitchPointLight();
+        }
+
+        private void TrackingLight_Checked(object sender, RoutedEventArgs e)
+        {
+            game.SwitchTrackingLight();
+        }
+
+        private void ConstantShading_Checked(object sender, RoutedEventArgs e)
+        {
+            game.ConstantShading();
+        }
+
+        private void GouraudShading_Checked(object sender, RoutedEventArgs e)
+        {
+            game.GouraudShading();
+        }
+
+        private void PhongShading_Checked(object sender, RoutedEventArgs e)
+        {
+            game.PhongShading();
+        }
+
+        private void Settings_Click(object sender, RoutedEventArgs e)
+        {
+            MainMenu.Visibility = Visibility.Collapsed;
+            SettingsMenu.Visibility = Visibility.Visible;
+        }
+
+        private void Back_Click(object sender, RoutedEventArgs e)
+        {
+            SettingsMenu.Visibility = Visibility.Collapsed;
+            MainMenu.Visibility = Visibility.Visible;
+        }
+
+        private void Exit_Click(object sender, RoutedEventArgs e)
+        {
+            Close();
+        }
+
+        private void NewGame_Click(object sender, RoutedEventArgs e)
+        {
+            game = new Game(res);
         }
     }
 }

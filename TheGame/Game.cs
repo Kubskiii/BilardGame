@@ -78,8 +78,8 @@ namespace TheGame
         void AddTable(Color c)
         {
             float sqrt2 = (float)Math.Sqrt(2);
-            const int N = 20;
-            const int M = 50;
+            const int N = 10;
+            const int M = 20;
             var model = new Model() { isConvex = false };
             var n = new Vector4(0, 0, 1, 0);
             const float step = 0.1f;
@@ -747,10 +747,10 @@ namespace TheGame
         }
         void UpdateLights()
         {
-            if(trackingLightOn)
+            engine.RemoveAllLights();
+            if (staticLightOn) engine.AddLight(staticLight);
+            if (trackingLightOn)
             {
-                engine.RemoveAllLights();
-                if (staticLightOn) engine.AddLight(staticLight);
                 engine.AddLight(new ReflectorLight(new Vector3(whiteBall.position.X, whiteBall.position.Y, GameParameters.lightHeight), whiteBall.position));
             }
         }
@@ -789,12 +789,16 @@ namespace TheGame
         public void SwitchPointLight()
         {
             staticLightOn = !staticLightOn;
-            engine.AddLight(staticLight);
+            UpdateLights();
         }
         public void SwitchTrackingLight()
         {
             trackingLightOn = !trackingLightOn;
+            UpdateLights();
         }
+        public void ConstantShading() => engine.SwitchToConstantShading();
+        public void GouraudShading() => engine.SwitchToGouraudShading();
+        public void PhongShading() => engine.SwitchToPhongShading();
         public void Update()
         {
             if (!duringMove)
