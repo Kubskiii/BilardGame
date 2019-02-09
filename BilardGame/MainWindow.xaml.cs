@@ -16,6 +16,7 @@ using System.Windows.Shapes;
 using System.Numerics;
 using GraphicsEngine;
 using TheGame;
+using System.Globalization;
 
 namespace BilardGame
 {
@@ -36,6 +37,48 @@ namespace BilardGame
             }
         }
         #endregion
+        string player1name = "Player 1";
+        string player2name = "Player 2";
+        bool isPlayer1Playing = true;
+        bool isPlayer2Playing = false;
+        public string Player1Name
+        {
+            get => player1name;
+            set
+            {
+                player1name = value;
+                OnPropertyChanged(nameof(Player1Name));
+            }
+        }
+        public string Player2Name
+        {
+            get => player2name;
+            set
+            {
+                player2name = value;
+                OnPropertyChanged(nameof(Player2Name));
+            }
+        }
+        public bool IsPlayer1Playing
+        {
+            get => isPlayer1Playing;
+            set
+            {
+                isPlayer1Playing = value;
+                if (isPlayer1Playing) IsPlayer2Playing = false;
+                OnPropertyChanged(nameof(IsPlayer1Playing));
+            }
+        }
+        public bool IsPlayer2Playing
+        {
+            get => isPlayer2Playing;
+            set
+            {
+                isPlayer2Playing = value;
+                if (isPlayer2Playing) isPlayer1Playing = false;
+                OnPropertyChanged(nameof(IsPlayer2Playing));
+            }
+        }
         Resolution res = new Resolution(1200, 800);
         uint[,] colors;
         Game game = new Game(new Resolution(1200, 800));
@@ -149,7 +192,6 @@ namespace BilardGame
         {
             game = new Game(res);
         }
-        #endregion
 
         private void About_Click(object sender, RoutedEventArgs e)
         {
@@ -163,6 +205,20 @@ namespace BilardGame
             var instruction = new Instruction();
             instruction.Owner = this;
             instruction.ShowDialog();
+        }
+        #endregion
+    }
+    class BorderColorConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            if ((bool)value) return Brushes.DarkRed;
+            else return Brushes.Transparent;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            throw new NotImplementedException();
         }
     }
 }

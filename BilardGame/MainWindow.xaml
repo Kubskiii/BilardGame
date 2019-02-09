@@ -7,7 +7,9 @@
         mc:Ignorable="d"
         Title="The Bilard Game" Height="600" Width="1000" MinHeight="600" MinWidth="1000" KeyDown="Window_KeyDown" KeyUp="Window_KeyUp">
     <Window.Resources>
-       
+        <ResourceDictionary>
+            <local:BorderColorConverter x:Key="BorderColorConverter"/>
+        </ResourceDictionary>
     </Window.Resources>
     <Grid>
         <Grid.Background>
@@ -19,6 +21,7 @@
         </Grid.Background>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="200"/>
+            <ColumnDefinition Width="*"/>
             <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
@@ -33,6 +36,7 @@
         </TextBlock>
         <StackPanel Name="MainMenu" Grid.Row="1" VerticalAlignment="Center" Visibility="Visible">
             <Button Name="NewGame" Click="NewGame_Click">New Game</Button>
+            <Button Name="ChangeNicknames" FontSize="18">Change nicknames</Button>
             <Button Name="Settings" Click="Settings_Click">Settings</Button>
             <Button Name="Instruction" Click="Instruction_Click">Instruction</Button>
             <Button Name="About" Click="About_Click">About</Button>
@@ -58,10 +62,14 @@
             </StackPanel>
             <Button Name="Back" Click="Back_Click" Height="30">Back</Button>
         </StackPanel>
-        <Border Grid.Column="1" Grid.Row="1">
-            <Border Background="Black" Margin="5">
-                <Image Name="img"/>
-            </Border>
+        <Border Grid.Column="1" Grid.Row="1" Grid.ColumnSpan="2" Background="Black">
+            <Image Name="img"/>
+        </Border>
+        <Border Name="Player1Border" Grid.Column="1" Margin="10" Background="{Binding IsPlayer1Playing, RelativeSource={RelativeSource FindAncestor, AncestorType=Window}, Converter={StaticResource BorderColorConverter}}">
+            <TextBlock FontSize="20" Text="{Binding Player1Name, RelativeSource={RelativeSource FindAncestor, AncestorType=Window}}"/>
+        </Border>
+        <Border Grid.Column="2" Margin="10" Background="{Binding IsPlayer2Playing, RelativeSource={RelativeSource FindAncestor, AncestorType=Window}, Converter={StaticResource BorderColorConverter}}">
+            <TextBlock FontSize="20" Text="{Binding Player2Name, RelativeSource={RelativeSource FindAncestor, AncestorType=Window}}"/>
         </Border>
     </Grid>
 </Window>
