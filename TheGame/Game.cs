@@ -45,8 +45,8 @@ namespace TheGame
             AddTable(Colors.DarkGreen);
             AddStick(Colors.Brown);
             AddWhiteBall();
-            //AddBallTriangle(0, 5);
-            AddBall(Colors.Aqua, 5, 0);
+            AddBallTriangle(0, 5);
+            //AddBall(Colors.Aqua, 5, 0);
 
             engine.SwitchToGouraudShading();
             StaticCamera();
@@ -633,6 +633,7 @@ namespace TheGame
             foreach (var b in balls)
                 if (b != ball) list.Add(b);
             if (ball != whiteBall) list.Add(whiteBall);
+            list.Sort((b1, b2) => (b1.position - ball.position).Length().CompareTo((b2.position - ball.position).Length()));
             return list;
         }
         bool BallFalling(ObjectParameters ball)

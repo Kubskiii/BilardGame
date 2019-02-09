@@ -5,13 +5,14 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:BilardGame"
         mc:Ignorable="d"
-        Title="The Bilard Game" Height="600" Width="1000" MinHeight="600" MinWidth="1000" KeyDown="Window_KeyDown" KeyUp="Window_KeyUp">
+        Title="The Bilard Game" Height="600" Width="1000" MinHeight="600" MinWidth="1000" KeyDown="Window_KeyDown" KeyUp="Window_KeyUp" WindowStyle="None">
     <Window.Resources>
         <ResourceDictionary>
             <local:BorderColorConverter x:Key="BorderColorConverter"/>
         </ResourceDictionary>
     </Window.Resources>
-    <Grid>
+    <Border>
+        <Grid>
         <Grid.Background>
             <LinearGradientBrush StartPoint="0, 0" EndPoint="1, 1">
                 <GradientStop Color="DarkGreen" Offset="0"/>
@@ -72,4 +73,5 @@
             <TextBlock FontSize="20" Text="{Binding Player2Name, RelativeSource={RelativeSource FindAncestor, AncestorType=Window}}"/>
         </Border>
     </Grid>
+    </Border>
 </Window>
