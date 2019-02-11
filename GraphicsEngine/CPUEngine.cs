@@ -79,11 +79,12 @@ namespace GraphicsEngine
             var planeN = Vector3.Cross(p2 - p1, p3 - p1);
             return new Vector4(planeN.X, planeN.Y, planeN.Z, -(planeN.X * p1.X + planeN.Y * p1.Y + planeN.Z * p1.Z));
         }
+        static readonly float eps = 0.01f;
         static bool isNormal(Vector3 point)
         {
-            return Math.Abs(point.X) <= 1 &&
-                Math.Abs(point.Y) <= 1 &&
-                Math.Abs(point.Z) <= 1;
+            return Math.Abs(point.X) <= 1 + eps &&
+                Math.Abs(point.Y) <= 1 + eps &&
+                Math.Abs(point.Z) <= 1 + eps;
         }
         public uint[,] Render(IEnumerable<Model> models)
         {
